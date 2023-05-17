@@ -1,0 +1,40 @@
+<!-- Wrapper -->
+<div class="grid wrapper">
+    <!-- Navigation -->
+    <div class="grid-cell navigation-container">
+        <nav class="navigation">
+            <ul>
+                <li>
+                    <a href="javascript:void(0);" routerLink="stake" routerLinkActive="active">
+                        <div class="grid grid-center">
+                            <div class="grid-cell">
+                                <img src="assets/img/icon/safe4.svg" class="svg" alt="Stake icon">
+                            </div>
+                            <div class="grid-cell">
+                                Stake
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" routerLink="vote" routerLinkActive="active">
+                        <div class="grid grid-center">
+                            <div class="grid-cell">
+                                <img src="assets/img/icon/vote.svg" class="svg" alt="Vote icon">
+                            </div>
+                            <div class="grid-cell">
+                                <span class="{{userHasNotVotedClass()}}">Vote</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="grid-cell">
+        <!-- Router outlet for content -->
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

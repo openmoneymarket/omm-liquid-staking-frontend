@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 39 47" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-4.04984e-06,-6.66134e-16)">
+        <g transform="matrix(1,0,0,1,-4.75477,-0.8)">
+            <clipPath id="_clip1">
+                <path d="M32.2,47L15.8,47C10.7,47 6.4,43.6 5.1,38.7C4.3,35.6 4.9,32.3 6.8,29.7L17.6,14.3C18.2,13.5 19.1,13 20.1,13L28,13C29,13 29.9,13.5 30.5,14.3L41.3,29.7C43.1,32.3 43.7,35.6 43,38.7C41.6,43.6 37.2,47 32.2,47ZM20,15C19.7,15 19.4,15.2 19.2,15.4L8.4,30.8C6.9,32.9 6.4,35.6 7,38.1C8,42.1 11.6,44.9 15.7,44.9L32.1,44.9C36.2,44.9 39.8,42.1 40.8,38.1C41.4,35.6 40.9,32.9 39.4,30.8L28.8,15.4C28.6,15.2 28.3,15 28,15L20,15ZM27.6,11L20.5,11C19.2,11 18,10.1 17.6,8.8L15.8,2.6L16.3,2.2C16.4,2.1 17.9,0.8 20,0.8C21.3,0.8 22.5,1.3 23.6,2.1C23.7,2.2 23.9,2.3 24.1,2.3C24.5,2.3 25.1,2.1 25.6,1.9C26.3,1.7 27.1,1.4 28,1.4C29.7,1.4 30.9,2.4 31.8,4.5L32.1,5L30.4,9.1C30,10.3 28.9,11 27.6,11ZM20.989,3.025C20.696,2.942 20.398,2.9 20.1,2.9C19.3,2.9 18.6,3.2 18.2,3.4L19.6,8.3C19.7,8.7 20.1,9 20.6,9L21.843,9L21,3.1C20.995,3.075 20.991,3.05 20.989,3.025ZM23.786,9L27.7,9C28.1,9 28.5,8.8 28.6,8.4L29.9,5C29.1,3.5 28.4,3.5 28.1,3.5C27.6,3.5 27,3.7 26.4,3.9C25.7,4.1 25,4.4 24.2,4.4C23.801,4.4 23.435,4.335 23.101,4.205L23.786,9Z" clip-rule="nonzero"/>
+            </clipPath>
+            <g clip-path="url(#_clip1)">
+                <g transform="matrix(1,-0,-0,1,4.75477,0.8)">
+                    <use xlink:href="#_Image2" x="0" y="0" width="38.53px" height="46.2px" transform="matrix(0.987946,0,0,0.982979,0,0)"/>
+                </g>
+            </g>
+        </g>
+        <g transform="matrix(1,0,0,1,-4.75477,-0.8)">
+            <clipPath id="_clip3">
+                <path d="M23.5,39C20.1,39 18.9,36.3 18.9,36.3C18.7,35.8 18.9,35.2 19.4,34.9C19.9,34.7 20.5,34.9 20.7,35.4C20.7,35.4 21.5,36.8 23.6,36.8C24.6,36.8 25.5,36 25.7,34.9C25.9,33.5 24.7,32.2 22.4,31.4C19.7,30.5 19,28.2 19.3,26.6C19.6,24.8 21.2,22.9 23.5,22.9L23.6,22.9C26.4,22.9 27.5,25.3 27.6,25.4C27.8,25.9 27.6,26.6 27.1,26.8C26.6,27 26,26.9 25.8,26.4C25.8,26.3 25.1,25.1 23.6,25.1C22.3,25.1 21.5,26 21.3,27C21.1,28.1 21.8,29 23.1,29.5C28,31.2 27.9,34.4 27.8,35.3C27.3,37.4 25.6,39 23.5,39C23.6,39 23.6,39 23.5,39Z" clip-rule="nonzero"/>
+            </clipPath>
+            <g clip-path="url(#_clip3)">
+                <g transform="matrix(1,-0,-0,1,4.75477,0.8)">
+                    <use xlink:href="#_Image4" x="15.623" y="23.335" width="9.005px" height="16.1px" transform="matrix(0.900492,0,0,0.947059,0,0)"/>
+                </g>
+            </g>
+        </g>
+        <g transform="matrix(1,0,0,1,-4.75477,-0.8)">
+            <path d="M23.5,41C22.9,41 22.5,40.6 22.5,40.1L22.4,22C22.4,21.4 22.8,21 23.4,21C23.9,21 24.4,21.5 24.4,22L24.5,40.1C24.5,40.6 24,41 23.5,41Z" style="fill:rgb(91,133,221);fill-rule:nonzero;"/>
+        </g>
+    </g>
+    <defs>
+        <image id="_Image2" width="39px" height="47px" xlink:href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAvACcDAREAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAwUE/8QAFhABAQEAAAAAAAAAAAAAAAAAAgAB/8QAFwEBAQEBAAAAAAAAAAAAAAAAAwUHBv/EABcRAAMBAAAAAAAAAAAAAAAAAAACAwH/2gAMAwEAAhEDEQA/ANB20tlM+tIU7Cykq0hDsDYSrSEOwMpKtIQ7Cykq0iWdugZTZrSEOwspKtIQ7Aykq0hDsDYSrSEOwspKrIlnboGw2a0hDsDKSrSEOwspKtIU7Aykq0hDsLKSrSJR26BlNmtIU7A2Eu0hDsDKSbSEOwspKtIQ7AykusiWdugZTZrSEOwspKtIQ7Aykq0hDsDKSrSFKhZSVWRKO3QMpstpCHYWwlWkKdgZSVaQh2BlJdpCHYWUlWkf/9k="/>
+        <image id="_Image4" width="10px" height="17px" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAARCAYAAADkIz3lAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAq0lEQVQokXWRQZIDIQwD28o385x95/5kUA42YIqEqjngsSy5ifffv4fMI/O8zBA8MrM2XjBkJEOQnxyEQYaYdQMGUZeopiBPELtmUF5iKWOck3GKNBX5I0W4WTpSHC0P7FzdKahGKo/6ZPaSK6PGturWfbKWZd+8luoibW5lvSxPpkpV4fkyeTI98FxM3Ziu8XTBzbSWOZ8rHBdTnQ0zERfTK+MvprqW+MH0A7aSkhm7EszdAAAAAElFTkSuQmCC"/>
+    </defs>
+</svg>

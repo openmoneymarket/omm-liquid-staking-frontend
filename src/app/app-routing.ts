@@ -1,23 +1,25 @@
 import { Routes } from "@angular/router";
-import {AppComponent} from "./app.component";
+import {StakeComponent} from "./components/stake/stake.component";
 
 export const APP_ROUTES: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home'
+    title: "Stake | Omm",
+    redirectTo: "stake",
   },
   {
-    path: 'home',
-    component: AppComponent
+    path: "stake",
+    title: "Stake | Omm",
+    component: StakeComponent,
   },
   // { LAZY LOAD placeholder example
   //   path: 'product',
   //   loadComponent: () => import('./product/product.component')
   //       .then(m => m.ProductComponent)
   // },
-  // {
-  //   path: '**',
-  //   component: PagenotfoundComponent
-  // }
+  {
+    path: '**',
+    redirectTo: "stake",
+  }
 ];

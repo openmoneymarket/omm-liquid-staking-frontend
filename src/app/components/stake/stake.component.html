@@ -1,0 +1,263 @@
+<!-- Stake content -->
+<div class="grid-cell">
+    <main>
+
+        <section class="overview">
+            <!-- Staking overview -->
+            <div id="staking-overview" class="grid panel">
+                <div class="grid-cell">
+                    <div class="grid">
+                        <!-- ICX staked -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>ICX staked</dt>
+                                <dd>2,951,867</dd>
+                            </dl>
+                        </div>
+
+                        <!-- Total sICX -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>Total sICX</dt>
+                                <dd>58,023,459</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="grid">
+                        <!-- sICX holders -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>sICX holders</dt>
+                                <dd>12,420</dd>
+                            </dl>
+                        </div>
+
+                        <!-- Fees collected (7D) -->
+                        <div class="grid-cell text-center">
+                            <dl class="metadata">
+                                <dt>Fees collected (7D)</dt>
+                                <dd>80,000 <span class="label">ICX</span></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stake -->
+        <section class="">
+            <div class="grid">
+                <div class="grid-cell">
+                    <h2>Staked ICX</h2>
+                    <ul class="toggle">
+                        <li id="toggle-stake" class="{{stakePanelActive() ? 'active' : ''}}" (click)="onStakeToggleClick($event)">Stake</li>
+                        <li id="toggle-unstake" class="{{unstakePanelActive() ? 'active' : ''}}" (click)="onUnstakeToggleClick($event)">Unstake</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stake panel -->
+            <div id="panel-stake" class="panel {{stakePanelActive() ? '' : 'hide'}}">
+                <div class="grid stake-container">
+                    <!-- Inputs -->
+                    <div class="grid-cell border-right">
+                        <!-- Supply title -->
+                        <div class="grid grid-center title">
+                            <div class="grid-cell">
+                                <h3>Stake</h3>
+                            </div>
+                            <div class="grid-cell"><p class="label text-right">Wallet: <a href="#" class="text-green"><span class="value-wallet-icx">0</span> ICX</a></p></div>
+                        </div>
+                        <!-- Swap from -->
+                        <div class="grid grid-center input-asset stake">
+                            <div class="grid-cell">
+                                <a href="#" class="asset icx swap-from">ICX</a>
+                            </div>
+
+                            <div class="grid-cell">
+                                <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0">
+                            </div>
+                        </div>
+
+                        <!-- Swap to -->
+                        <div class="grid grid-center">
+                            <div class="grid-cell"><label for="swap-to">Receive</label></div>
+                            <div class="grid-cell"><p class="label text-right">Wallet: 0 sICX</p></div>
+                        </div>
+                        <div class="grid grid-center input-asset unstake">
+                            <div class="grid-cell">
+                                <a href="#" class="asset sicx swap-to">sICX</a>
+                            </div>
+
+                            <div class="grid-cell">
+                                <input id="swap-to" pattern="[0-9]*" type="text" name="swap-to" placeholder="0">
+                            </div>
+                        </div>
+
+                        <!-- Swap button -->
+                        <p class="text-center"><a href="#" class="button modal-trigger" data-modal="modal-stake-confirm">Stake</a></p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid-cell stats-container">
+                        <!-- Supply title -->
+                        <div class="grid grid-center title">
+                            <div class="grid-cell">
+                                <h3>Staking APY
+                                    <span class="tooltip">
+													<span class="tooltip-item">
+                                                        <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
+                                                    </span>
+													<div class="tooltip-content" style="min-width: 320px;">
+													<p class="label">The traditional ICX staking return (6.92%), minus a 10% fee.</p>
+													</div>
+												</span>
+                                </h3>
+                            </div>
+                            <div class="grid-cell text-right">
+                                <p><span class="supply-apy text-green">6.23%</span></p>
+                            </div>
+                        </div>
+
+                        <div id="chart-line-1" class="chart-apy" #stkApyChart></div>
+
+                        <div class="grid notice">
+                            <div class="grid-cell text-center">
+                                <dl class="metadata">
+                                    <dt>ICX Value</dt>
+                                    <dd><span class="value-liquidity-apy-4">$0.2923</span></dd>
+                                </dl>
+                            </div>
+                            <div class="grid-cell text-center">
+                                <dl class="metadata">
+                                    <dt>sICX Value</dt>
+                                    <dd><span class="value-liquidity-apy-4">$0.3451</span></dd>
+                                </dl>
+                            </div>
+                            <div class="grid-cell text-center">
+                                <dl class="metadata">
+                                    <dt>Conversion rate</dt>
+                                    <dd><span class="value-liquidity-apy-4">0.8470</span></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unstaking messgae -->
+                <div class="notice hide">
+                    <p class="label">Your unstaking request for <span class="text-bold">7,186 sICX</span> is <span class="text-bold">27th</span> in the queue. It will be ready to claim within <span class="text-bold">2d 4h 11m</span>.</p>
+                    <p class="label hide">7,185 ICX is ready to claim. <a href="#">Claim ICX.</a></p>
+                </div>
+            </div>
+
+            <!-- Unstake panel -->
+            <div id="panel-unstake" class="panel {{unstakePanelActive() ? '' : 'hide'}}">
+                <div class="grid unstake-container">
+                    <div class="grid-cell border-right">
+                        <!-- Supply title -->
+                        <div class="grid grid-center title" style="margin-bottom:5px;">
+                            <div class="grid-cell">
+                                <h3>Unstake</h3>
+                            </div>
+                            <div class="grid-cell"><p class="label text-right">Wallet: <a href="#" class="text-purple"><span class="value-wallet-sicx">0</span> sICX</a></p></div>
+                        </div>
+
+                        <div class="grid grid-center input-asset stake">
+                            <div class="grid-cell">
+                                <a href="#" class="asset sicx swap-from">sICX</a>
+                            </div>
+
+                            <div class="grid-cell">
+                                <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="grid graphical-options" style="margin-top: 20px;max-width: 285px;margin-left: auto;margin-right: auto;">
+                            <div id="withdraw-wait" class="grid-cell text-center" (click)="onUnstakeWaitClick($event)">
+                                <input class="checkbox-tools" type="radio" name="tools" id="tool-2" checked="">
+                                <label class="for-checkbox-tools" for="tool-2">
+                                    <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" class="svg replaced-svg"><g fill="none" stroke="#7a8294" stroke-width="2" transform="translate(-1 -1)"><circle cx="12" cy="12" r="10"></circle><path d="m12 6v6l4 2"></path></g></svg>
+                                    <span class="text-bold">Wait</span>
+                                    <br>
+                                    <span>175 ICX</span>
+                                </label>
+                            </div>
+
+                            <div class="grid-cell">
+                                <div class="or"></div>
+                            </div>
+
+                            <div id="withdraw-keep" class="grid-cell text-center" (click)="onUnstakeInstantClick($event)">
+                                <input class="checkbox-tools" type="radio" name="tools" id="tool-3">
+                                <label class="for-checkbox-tools" for="tool-3">
+                                    <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 77 66" xmlns="http://www.w3.org/2000/svg" class="svg replaced-svg"><path d="m72.325 33.234v-2.947c0-5.389-3.698-9.919-8.686-11.217l-.009-4.859c0-4.742-3.859-8.601-8.603-8.601h-.455l-40.262 12.49c-.917.053-1.787.265-2.604.584h-.105c-6.396 0-11.601 5.205-11.601 11.603v28.804c0 6.397 5.204 11.603 11.601 11.603h49.123c6.396 0 11.601-5.205 11.601-11.603v-3.831c2.323-.899 3.979-3.151 3.979-5.789v-10.45c-.001-2.636-1.656-4.888-3.979-5.787zm-2.022 16.236c0 .118-.093.211-.211.211h-16.241c-.118 0-.21-.093-.21-.211v-10.449c0-.115.094-.209.21-.209h16.241c.116 0 .211.094.211.209zm-14.905-37.833c1.261.18 2.232 1.266 2.232 2.579l.008 4.469h-24.959zm5.326 53.056h-49.122c-3.093 0-5.601-2.509-5.601-5.603v-28.803c0-3.095 2.508-5.603 5.601-5.603h49.122c3.094 0 5.601 2.508 5.601 5.603v2.525h-12.474c-3.424 0-6.21 2.785-6.21 6.209v10.449c0 3.425 2.786 6.211 6.21 6.211h12.474v3.41c0 3.093-2.507 5.602-5.601 5.602z" fill="#7a8294" fill-rule="nonzero" transform="translate(0 -5.61)"></path></svg>
+                                    <span class="text-bold" >Instant</span>
+                                    <br>
+                                    <span>170 ICX</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <p id="wait-text" class="text-center label {{unstakeWaitIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Join the unstaking queue to receive your ICX within 7 days.</p>
+
+                        <p id="instant-text" class="text-center label {{unstakeInstantIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Pay a 1% fee to swap your sICX for ICX.</p>
+
+                        <!-- Swap button -->
+                        <p class="text-center" style="margin-top: 0;">
+                            <a href="#" class="button purple modal-trigger" data-modal="modal-unstake-confirm">Unstake</a>
+                        </p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid-cell stats-container">
+                        <!-- Supply title -->
+                        <div class="grid grid-center title">
+                            <div class="grid-cell">
+                                <h3>Unstaking requests</h3>
+                            </div>
+                            <div class="grid-cell text-right">
+                                <p><span class="text-purple" style="font-size: 20px;">73,865 ICX</span></p>
+                            </div>
+                        </div>
+
+                        <div id="chart-line-2" class="chart-apy" #unstkApyChart></div>
+
+                        <div class="grid notice" style="margin-top: 0;">
+                            <div class="grid-cell text-center">
+                                <dl class="metadata">
+                                    <dt>Avg. unstaking time <span id="p-rep-tooltip" class="tooltip">
+									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
+									<div class="tooltip-content">
+										<p>Based on the volume of staking and unstaking requests over the last 10 days.</p>
+										<br>
+										<p>The maximum unstaking time is currently 7d 5h.</p>
+									</div>
+								</span></dt>
+                                    <dd><span class="value-liquidity-apy-4">2 days</span></dd>
+                                </dl>
+                            </div>
+                            <div class="grid-cell text-center">
+                                <dl class="metadata">
+                                    <dt>Instant liquidity <span id="p-rep-tooltip" class="tooltip">
+									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
+									<div class="tooltip-content" style="min-width: 300px;">
+										<p>The amount of ICX available to swap via the Balanced exchange.</p>
+									</div>
+								</span></dt>
+                                    <dd><span class="value-liquidity-apy-4">200,000 ICX</span></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="notice hide">
+                    <p class="label">Your unstaking request for <span class="text-bold">7,186 sICX</span> is <span class="text-bold">27th</span> in the queue. It will be ready to claim within <span class="text-bold">2d 4h 11m</span>.</p>
+                    <p class="label hide">7,185 ICX is ready to claim. <a href="#">Claim ICX.</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
