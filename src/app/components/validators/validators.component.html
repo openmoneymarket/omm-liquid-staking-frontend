@@ -1,0 +1,269 @@
+<!-- Validators list -->
+<section id="p-rep-list">
+    <!-- Title -->
+    <div class="grid grid-center title filters">
+        <div class="grid-cell">
+            <h2>Validators</h2>
+            <span id="p-rep-tooltip" class="tooltip">
+									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon"></span>
+									<div class="tooltip-content"><p>ICON validators verify blockchain transactions and earn ICX based on the votes they receive. Many of them work within the ICON ecosystem, and some offer voting incentives.</p>
+										<br>
+										<p><span class="text-bold">sICX holders:</span> Choose where to delegate votes for the sICX in your wallet.</p>
+										<br>
+										<p><span class="text-bold">bOMM holders:</span> Influence the default delegation for sICX and the amount validators earn from the Omm staking fee.</p>
+									</div>
+								</span>
+            <ul class="toggle">
+                <li class="{{isbOmmVotesActive() ? 'active': ''}}" id="toggle-bomm-votes" (click)="onbOmmVotesClick($event)">bOMM votes</li>
+                <li class="{{isSIcxVotesActive() ? 'active' : ''}}"  id="toggle-sicx-votes" (click)="onsIcxVotesClick($event)">sICX votes</li>
+            </ul>
+        </div>
+        <div class="grid-cell text-right">
+            <input type="text" name="" class="search" placeholder="Search validators">
+        </div>
+    </div>
+
+    <!-- bOMM votes list -->
+    <table class="list bomm-votes {{isbOmmVotesActive() ? '' : 'hide'}}">
+        <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Name<a href="javascript:void(0);" class="mobile-adjust {{adjustVotesActiveMobile ? 'hide' : ''}}" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
+            </a><span class="mobile-adjust-options {{adjustVotesActiveMobile ? '' : 'hide'}}">
+                <a href="javascript:void(0);" class="text-red mobile-adjust-cancel" (click)="onAdjustVotesClick($event, true)">Cancel</a> <span class="label"> | </span>
+                <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm">
+										<span class="tooltip active">
+											<span class="tooltip-item">Confirm</span>
+											<div class="tooltip-content"><p>You've allocated <span class="text-red">107%</span> of your votes. Remove 7% to continue.</p></div>
+											<div class="tooltip-content hide"><p>You've allocated <span class="text-red">97%</span> of your votes. Allocate 3% to continue.</p></div>
+										</span>
+									</a></span></th>
+            <th class="text-right">
+                <a href="javascript:void(0);" class="adjust-votes {{adjustVotesActive ? 'hide' : ''}}" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
+                </a><span class="adjust-options {{adjustVotesActive ? '' : 'hide'}}">
+                <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span> <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm">
+										<span class="tooltip active">
+											<span class="tooltip-item">Confirm</span>
+											<div class="tooltip-content"><p>You've allocated <span class="text-red">107%</span> of your votes. Remove 7% to continue.</p></div>
+											<div class="tooltip-content hide"><p>You've allocated <span class="text-red">97%</span> of your votes. Allocate 3% to continue.</p></div>
+										</span>
+									</a>
+									</span><br>Your delegation</th>
+            <th class="text-right">bOMM delegation</th>
+            <th class="text-right">Earnings (7D)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>
+                <!-- Desktop -->
+                <div class="desktop-vote">
+                    <div class="grid grid-center">
+                        <div class="grid-cell">
+                            <img src="assets/img/icon/profile.svg" alt="logo">
+                        </div>
+                        <div class="grid-cell">
+                            ICON Foundation
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div class="mobile-vote hide">
+                    <div class="grid metadata-group notice">
+                        <div class="grid-cell">
+                            <div class="grid supply-group">
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>bOMM delegation</dt>
+                                        <dd>2,186 bOMM</dd>
+                                    </dl>
+                                </div>
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>Earnings (7D)</dt>
+                                        <dd>2,186 ICX</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="grid borrow-group">
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>Your delegation</dt>
+                                        <dd><span class="input-amount {{adjustVotesActive ? 'hide' : ''}}">317 bOMM</span><input type="text" name="" placeholder="15%" class="text-center input-edit {{adjustVotesActive ? '' : 'hide'}}"><br><span class="label"></span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td><span class="input-amount {{adjustVotesActive ? 'hide' : ''}}">15%</span><input type="text" name="" class="input-edit {{adjustVotesActive ? '' : 'hide'}}" placeholder="15%"><br><span class="label">317 bOMM</span></td>
+            <td>14.85%<br><span class="label">2,186 bOMM</span></td>
+            <td>$75<br><span class="label">2,186 ICX</span></td>
+        </tr>
+<!--        <tr>-->
+<!--            <td>2</td>-->
+<!--            <td>-->
+<!--                &lt;!&ndash; Desktop &ndash;&gt;-->
+<!--                <div class="desktop-vote">-->
+<!--                    <div class="grid grid-center">-->
+<!--                        <div class="grid-cell">-->
+<!--                            <img src="assets/img/icon/profile.svg">-->
+<!--                        </div>-->
+<!--                        <div class="grid-cell">-->
+<!--                            Lydia Labs<br><span class="label contributor">Omm contributor</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Mobile &ndash;&gt;-->
+<!--                <div class="mobile-vote hide">-->
+<!--                    <div class="grid metadata-group notice">-->
+<!--                        <div class="grid-cell">-->
+<!--                            <div class="grid supply-group">-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>bOMM delegation</dt>-->
+<!--                                        <dd>2,186 bOMM</dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>Earnings (7D)</dt>-->
+<!--                                        <dd>2,186 ICX</dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="grid borrow-group">-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>Your delegation</dt>-->
+<!--                                        <dd><span class="input-amount">317 bOMM</span>Staking income (7D)-->
+<!--                                            <input type="text" name="" class="input-edit hide"><br></dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </td>-->
+<!--            <td><span class="input-amount">-</span><input type="text" name="" class="input-edit hide" placeholder="-"><br><span class="label">-</span></td>-->
+<!--            <td>14.85%<br><span class="label">2,186 bOMM</span></td>-->
+<!--            <td>$75<br><span class="label">2,186 ICX</span></td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>3</td>-->
+<!--            <td>-->
+<!--                &lt;!&ndash; Desktop &ndash;&gt;-->
+<!--                <div class="desktop-vote">-->
+<!--                    <div class="grid grid-center">-->
+<!--                        <div class="grid-cell">-->
+<!--                            <img src="assets/img/icon/profile.svg">-->
+<!--                        </div>-->
+<!--                        <div class="grid-cell">-->
+<!--                            GangstaBet<br><span class="label rewards"><a href="https://docs.omm.finance/user-guide/vote-validators">Offers incentives</a></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Mobile &ndash;&gt;-->
+<!--                <div class="mobile-vote hide">-->
+<!--                    <div class="grid metadata-group notice">-->
+<!--                        <div class="grid-cell">-->
+<!--                            <div class="grid supply-group">-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>bOMM delegation</dt>-->
+<!--                                        <dd>2,186 bOMM</dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>Earnings (7D)</dt>-->
+<!--                                        <dd>2,186 ICX</dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="grid borrow-group">-->
+<!--                                <div class="grid-cell">-->
+<!--                                    <dl class="metadata">-->
+<!--                                        <dt>Your delegation</dt>-->
+<!--                                        <dd><span class="input-amount">317 bOMM</span><input type="text" name="" class="input-edit hide"><br></dd>-->
+<!--                                    </dl>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </td>-->
+<!--            <td><span class="input-amount">-</span><input type="text" name="" class="input-edit hide" placeholder="-"><br><span class="label">-</span></td>-->
+<!--            <td>14.85%<br><span class="label">2,186 bOMM</span></td>-->
+<!--            <td>$75<br><span class="label">2,186 ICX</span></td>-->
+<!--        </tr>-->
+        </tbody>
+    </table>
+
+    <!-- sICX votes list -->
+    <table class="list sicx-votes {{isSIcxVotesActive() ? '' : 'hide'}}">
+        <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Name<a href="javascript:void(0);" class="mobile-adjust {{adjustVotesActiveMobile ? 'hide' : ''}}" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
+            </a><span class="mobile-adjust-options {{adjustVotesActiveMobile ? '' : 'hide'}}">
+                <a href="javascript:void(0);" class="text-red mobile-adjust-cancel" (click)="onAdjustVotesClick($event, true)">Cancel</a> <span class="label"> | </span>
+                <a href="javascript:void(0);" class="adjust-confirm">Confirm</a></span></th>
+            <th class="text-right">
+                <a href="javascript:void(0);" class="adjust-votes {{adjustVotesActive ? 'hide' : ''}}" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
+                </a><span class="adjust-options {{adjustVotesActive ? '' : 'hide'}}">
+                <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
+                <a href="javascript:void(0);" class="adjust-confirm">Confirm</a></span><br>Your delegation</th>
+            <th class="text-right">sICX delegation</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>
+                <!-- Desktop -->
+                <div class="desktop-vote">
+                    <div class="grid grid-center">
+                        <div class="grid-cell">
+                            <img src="assets/img/icon/profile.svg" alt="">
+                        </div>
+                        <div class="grid-cell">
+                            ICON Foundation<br><span class="label contributor">Omm contributor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div class="mobile-vote hide">
+                    <div class="grid metadata-group notice">
+                        <div class="grid-cell">
+                            <div class="grid supply-group">
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>Your delegation</dt>
+                                        <dd><span class="input-amount">15%</span><input type="text" name="" placeholder="15%" class="input-edit hide"><br><span class="label"></span></dd>
+                                    </dl>
+                                </div>
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>sICX delegation</dt>
+                                        <dd>2,186 sICX</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td><span class="input-amount">15%</span><input type="text" name="" placeholder="15%" class="input-edit hide"><br><span class="label">317 bOMM</span></td>
+            <td>14.85%<br><span class="label">2,186 sICX</span></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+<!-- /Validators list -->

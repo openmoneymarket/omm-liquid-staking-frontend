@@ -1,0 +1,302 @@
+<!-- Content -->
+<div class="grid-cell">
+    <main class="vote">
+        <section class="overview">
+            <!-- Vote overview -->
+            <div id="vote-overview" class="grid panel" style="margin-top: 0;">
+                <!-- Supplied -->
+                <div class="grid-cell">
+                    <div class="grid">
+                        <!-- You've supplied -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>DAO Fund
+                                    <span class="tooltip">
+                                        <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon"></span>
+                                        <div class="tooltip-content">
+                                        <p class="text-right">85,536,347 OMM<br>20,000 ICX</p>
+                                        </div>
+                                    </span>
+                                </dt>
+                                <dd>$500,480</dd>
+                            </dl>
+                        </div>
+
+                        <!-- Your supply APY -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>Staking income</dt>
+                                <dd>20,000 <span class="label">ICX</span></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Borrowed -->
+                <div class="grid-cell">
+                    <div class="grid">
+                        <!-- You've borrowed -->
+                        <div class="grid-cell text-center border-right">
+                            <dl class="metadata">
+                                <dt>Validator rewards</dt>
+                                <dd>32,000 <span class="label">ICX</span></dd>
+                            </dl>
+                        </div>
+
+                        <!-- Your borrow APY -->
+                        <div class="grid-cell text-center">
+                            <dl class="metadata">
+                                <dt>bOMM holders</dt>
+                                <dd>1,490</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Vote overview -->
+        <section class="hide">
+            <h2>Overview</h2>
+            <!-- Container -->
+            <div class="grid panel">
+                <!-- Omm stake -->
+                <div id="omm-stake" class="grid-cell">
+                    <!-- Title -->
+                    <h3>Omm stake</h3>
+
+                    <!-- Stake slider -->
+                    <div class="slider-stake" disabled></div>
+
+                    <!-- Message (If staked but not voted) -->
+                    <p class="label text-center hide">You have no Omm Tokens.<br>Supply or borrow to earn them.</p>
+
+                    <!-- Message (If not logged in) -->
+                    <div id="message-vote-logged-out" class="grid hide">
+                        <div class="grid-cell">
+                            <p>Sign in to lock up Omm Tokens.</p>
+                            <a href="#" class="button">Sign in</a>
+                        </div>
+                    </div>
+
+                    <!-- Stake actions -->
+                    <div class="grid">
+                        <div class="grid-cell text-center">
+                            <!-- Actions to show by default -->
+                            <div class="grid grid-center actions-default">
+                                <div class="grid-cell text-center">
+                                    <a href="#" class="button" id="stake-adjust">Stake Omm Tokens</a>
+                                </div>
+                            </div>
+
+                            <!-- Actions to show if already staked -->
+                            <div class="grid grid-center actions-default hide">
+                                <div class="grid-cell text-center">
+                                    <a href="#" class="button">Adjust stake</a>
+                                </div>
+                            </div>
+
+                            <!-- Actions to show if max staked -->
+                            <div class="grid grid-center actions-default hide">
+                                <div class="grid-cell text-center">
+                                    <a href="#" class="button">Unstake Omm Tokens</a>
+                                </div>
+                            </div>
+
+                            <!-- Actions to show when adjust class is active -->
+                            <div class="grid grid-center actions-adjust">
+                                <div class="grid-cell text-right">
+                                    <a href="#" id="stake-adjust-cancel" class="cancel">Cancel</a>
+                                </div>
+                                <div class="grid-cell text-left">
+                                    <a href="#" class="button modal-trigger" data-modal="modal-confirm-stake">Confirm</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stake -->
+                        <div class="grid-cell text-center">
+                            <dl class="metadata">
+                                <dt>Your stake</dt>
+                                <dd><input id="stake-input" type="text" name="" class="hide"><span class="value-omm-stake-amount">0</span> / 150 OMM</dd>
+                            </dl>
+
+                            <!-- Message (If unstaking) -->
+                            <p class="label hide" style="margin-top: 5px;">43 OMM unstaking</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voting power -->
+                <div id="vote-power" class="grid-cell">
+                    <div id="vote-conversion" class="grid-cell border-bottom text-center">
+                        <dl class="metadata">
+                            <dt>Voting power</dt>
+                            <dd>1 OMM = 1.3 ICX</dd>
+                        </dl>
+                    </div>
+                    <div class="grid">
+                        <div class="grid-cell">
+                            <dl class="metadata text-center">
+                                <dt>Your voting power</dt>
+                                <dd><span class="value-icx-stake-amount">0</span> ICX</dd>
+                            </dl>
+                        </div>
+                        <div class="grid-cell">
+                            <dl class="metadata text-center">
+                                <dt>Omm's voting power</dt>
+                                <dd>71,285 ICX</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voting power -->
+        <app-omm-locking style="display: contents"></app-omm-locking>
+
+        <!-- Proposals -->
+        <section id="proposal-cards">
+            <!-- Title -->
+            <div class="grid grid-center">
+                <div class="grid-cell">
+                    <h2>Governance</h2><span class="label"><a href="./all-proposals/" class="animation-underline">View all proposals</a></span>
+                </div>
+                <div class="grid-cell">
+                    <a href="./new-proposal/" class="button">New proposal</a>
+                </div>
+            </div>
+
+            <div class="grid cards">
+                <a href="./proposal/" class="grid-cell panel active-vote">
+                    <h3>OIP3: Use the DAO fund to incentivise a bug bounty listing...</h3>
+                    <p>We should always be proactive about security, especially as we prepare to increase the...</p>
+
+                    <div class="grid proposal-metadata border-top">
+                        <img class="time" src="assets/img/icon/clock.svg"><span class="label">3 days</span>
+                        <div class="green-square"></div><span class="label">25%</span>
+                        <div class="purple-square"></div><span class="label">12%</span>
+                    </div>
+                </a>
+
+                <a href="./proposal/" class="grid-cell panel">
+                    <h3>OIP2: Add a bnUSD market and incentivise it with...</h3>
+                    <p>It's time to list Balanced Dollars on Omm, with 2.5% of the OMM rewarded to suppliers and...</p>
+
+                    <div class="grid proposal-metadata border-top">
+                        <img class="time" src="assets/img/icon/tick-circle-green.svg"><span class="label">Enacted</span>
+                        <div class="green-square"></div><span class="label">25%</span>
+                        <div class="purple-square"></div><span class="label">12%</span>
+                    </div>
+                </a>
+
+                <a href="./proposal/" class="grid-cell panel">
+                    <h3>OIP1: Suspend ICON borrow market in preparation for the...</h3>
+                    <p>ICX borrowed from Omm may be able to claim the ICE airdrop. To prevent this, we'd...</p>
+
+                    <div class="grid proposal-metadata border-top">
+                        <img class="time" src="assets/img/icon/cross-circle-purple.svg"><span class="label">Failed</span>
+                        <div class="green-square"></div><span class="label">25%</span>
+                        <div class="purple-square"></div><span class="label">12%</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Validator rewards -->
+        <section class="overview">
+            <div class="grid">
+                <div class="grid-cell">
+                    <h2>Validator rewards</h2>
+                </div>
+            </div>
+
+            <!-- Your liquidity -->
+            <div id="your-liquidity" class="grid panel">
+                <!-- Claim rewards -->
+                <div class="grid-cell text-center border-right">
+                    <p class="reward-amount">43 ICX</p>
+                    <a href="#" class="button modal-trigger" style="margin-top: 5px;" data-modal="modal-claim-rewards">Claim rewards</a>
+                </div>
+
+                <div class="grid-cell text-center border-right hide">
+                    <p style="margin-top: 25px;" class="label">No rewards to claim</p>
+                </div>
+
+                <!-- Past earnings -->
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>Earned past 7D</dt>
+                        <dd class="value-rewards-total">200 <span class="label">ICX</span><br><span class="label">$50</span></dd>
+                        <dd class="hide" style="opacity: 0.5;">—</dd>
+
+                    </dl>
+                </div>
+
+                <!-- bOMM delegation -->
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>bOMM delegation</dt>
+                        <dd>43,000 <span class="label">bOMM</span><br><span class="label">600,000 ICX</span></dd>
+                    </dl>
+                </div>
+
+                <!-- sICX delegation -->
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>sICX delegation</dt>
+                        <dd class="">200,000 <span class="label">sICX</span><br><span class="label">240,000 ICX</span></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- All liquidity -->
+            <div id="all-liquidity" class="grid panel hide">
+                <div class="grid-cell text-center border-right">
+                    <dl class="metadata">
+                        <dt>Total daily rewards</dt>
+                        <dd>300,000 <span class="label">OMM</span></dd>
+                    </dl>
+                </div>
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>Markets
+                            <span class="tooltip expanded-risk-tooltip">
+											<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon"></span>
+											<div class="tooltip-content"><p>The amount you've earned from your locked OMM since you last claimed.</p></div>
+										</span>
+                        </dt>
+                        <dd>100,000 <span class="label">OMM</span></dd>
+                    </dl>
+                </div>
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>Boosted OMM
+                            <span class="tooltip expanded-risk-tooltip">
+											<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon"></span>
+											<div class="tooltip-content"><p>Lock up OMM to earn these rewards.</p></div>
+										</span>
+                        </dt>
+                        <dd>50,000 <span class="label">OMM</span></dd>
+                    </dl>
+                </div>
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>Liquidity
+                            <span class="tooltip expanded-risk-tooltip">
+											<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon"></span>
+											<div class="tooltip-content"><p>Supply OMM liquidity on Balanced, then stake your LP tokens here to earn rewards.</p></div>
+										</span>
+                        </dt>
+                        <dd>150,000 <span class="label">OMM</span></dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- Validators section -->
+        <app-validators style="display: contents"></app-validators>
+    </main>
+</div>

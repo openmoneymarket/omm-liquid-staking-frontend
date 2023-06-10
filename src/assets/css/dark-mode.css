@@ -95,7 +95,11 @@
 	.metadata dt,
 	.label,
 	.list tbody tr.available-to-supply p {
-		color: #a8b1c4;
+		color: #a8b1c4 !important;
+	}
+	.list.bomm-votes tbody,
+	.list.sicx-votes tbody {
+		color: #ffffff !important;
 	}
 	#apr-toggle .switch-slider {
 		background-color: #515462;
@@ -154,7 +158,8 @@
 	.adjust input[type="text"].input-supply,
 	.adjust input[type="text"].input-supply-available,
 	.adjust input[type="text"].input-borrow,
-	.adjust input[type="text"].input-borrow-available {
+	.adjust input[type="text"].input-borrow-available,
+	input[type="text"].input-edit {
 		border: 2px solid #565b66;
 	}
 	.ticker {
@@ -174,17 +179,26 @@
 		color: #ffffff;
 	}
 	.navigation ul li a:hover svg path,
-	.navigation ul li a:hover svg rect {
+	.navigation ul li a:hover svg rect,
+	.navigation ul li a:hover svg circle {
 		stroke: #ffffff !important;
 		transition: stroke 0.2s ease;
 	}
 	.navigation ul li a.active svg path,
-	.navigation ul li a.active svg rect {
+	.navigation ul li a.active svg rect,
+	.navigation ul li a.active svg circle {
 		stroke: #ffffff !important;
 		transition: stroke 0.2s ease;
 	}
 	.header .wallet-content a {
 		color: #ffffff;
+	}
+	.or::before {
+		background-color: #3f414a;
+		color: #ffffff;
+	}
+	.or::after {
+		background-color: #565b66;
 	}
 
 	/* Rewards */
@@ -408,7 +422,15 @@
 		border: 2px solid #565b66;
 		color: #ffffff;
 	}
-	.bomm-tooltip-content {
+	.reward-amount {
+		color: #ffffff;
+	}
+	.mobile-vote > .metadata-group .borrow-group {
+		border-top: 1px solid #7a808e;
+	}
+	.bomm-tooltip-content,
+	.bomm-tooltip .tooltip-content,
+	#vote-overview  {
 		color: #ffffff;
 	}
 	.dropdown-content {

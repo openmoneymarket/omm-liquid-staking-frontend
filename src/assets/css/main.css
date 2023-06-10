@@ -863,7 +863,8 @@ ul.toggle li:hover:after {
 	transform: translate3d(0,-10px,0) rotate3d(1,1,0,25deg);
 	transition: opacity 0.3s, transform 0.3s;
 }
-.tooltip:hover .tooltip-content {
+.tooltip:hover .tooltip-content,
+.tooltip.active .tooltip-content {
 	pointer-events: auto;
 	opacity: 1;
 	transform: translate3d(0,0,0) rotate3d(0,0,0,0);
@@ -2054,6 +2055,10 @@ input[type="text"].input-borrow-available {
 #panel-stake .supply-apy {
 	font-size: 20px;
 }
+#panel-stake .title .tooltip .tooltip-content {
+	width: 255px;
+	left: -130px;
+}
 
 /*
 *
@@ -2069,6 +2074,13 @@ input[type="text"].input-borrow-available {
 }
 #panel-unstake .unstake-container > .grid-cell:first-of-type .title {
 	margin-bottom: 5px;
+}
+#panel-unstake .stats-container .notice {
+	margin-top: 0;
+}
+#panel-unstake .stats-container .notice .tooltip .tooltip-content {
+	width: 240px;
+	left: -170px;
 }
 
 .graphical-options #withdraw-wait [type="radio"]:checked + label svg path,
@@ -2152,20 +2164,6 @@ text-align: right;
 *
 */
 
-/*
-#proposal-cards > .grid > .grid-cell.active-vote:before {
-	content: "";
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: -1;
-	margin: -2px;
-	border-radius: 13px;
-	background: linear-gradient(40deg, #9d4df1, #00d3c2);
-}
-*/
 #proposal-cards p,
 #proposal-list p {
 	color: #7a8294;
@@ -2319,6 +2317,16 @@ text-align: right;
 }
 .proposal-decision > .grid > .grid-cell:first-of-type {
 	max-width: 65px;
+}
+#adjust-confirm .tooltip p {
+	color: #7a8294;
+}
+#adjust-confirm .tooltip .tooltip-content {
+	width: 240px;
+	left: -125px;
+}
+#adjust-confirm .tooltip {
+	cursor: pointer;
 }
 
 /* Breadcrumbs */
@@ -2622,6 +2630,15 @@ input.input-boost {
 #p-rep-list .title {
 	margin-bottom: 35px;
 }
+.adjust-options .tooltip .tooltip-content {
+	min-width: 240px;
+	left: -115px;
+	color: #7a8294;
+}
+.mobile-adjust-options .tooltip .tooltip-content {
+	left: -190px;
+}
+
 .list.bomm-votes tbody tr td:first-of-type,
 .list.sicx-votes tbody tr td:first-of-type {
 	padding-left: 10px;
@@ -2658,10 +2675,6 @@ input.input-boost {
 .list.sicx-votes tbody tr {
 	cursor: default;
 	border-radius: 10px;
-}
-.list.bomm-votes tbody tr td,
-.list.sicx-votes tbody tr td {
-	border-bottom: 1px solid #d3d9e7;
 }
 .list tr th:first-of-type,
 .list tr td:first-of-type,
@@ -2700,6 +2713,7 @@ input.input-boost {
 .list.bomm-votes tbody tr td:nth-of-type(2) .grid .grid-cell:first-of-type,
 .list.sicx-votes tbody tr td:nth-of-type(2) .grid .grid-cell:first-of-type {
 	max-width: 70px;
+	border-radius: 100px;
 }
 .list.bomm-votes.adjust .plus {
 	display: block;
@@ -2718,143 +2732,15 @@ input.input-boost {
 	width: 170px;
 }
 
-/* ==========================================================================
-	Rewards specific styles (Layout styles: sizing, spacing, etc.)
-========================================================================== */
-
-#modal-manage-staked-omm {
-	max-width: 420px;
-}
-
-#modal-manage-staked-omm .graphical-options .checkbox-tools:checked + label,
-#modal-manage-staked-omm .graphical-options .checkbox-tools:not(:checked) + label {
-	width: 150px;
-}
-
-.pool-expanded .content {
-	max-width: 400px;
-	margin: 25px auto;
-}
-.pool-expanded .content .noUi-target {
-	margin-top: 15px;
-	margin-bottom: 15px;
-	background: -moz-linear-gradient( 180deg, rgb(0,211,194, 0.25) 0%, rgb(63,157,213, 0.25) 100%);
-	background: -webkit-linear-gradient( 180deg, rgb(0,211,194, 0.25) 0%, rgb(63,157,213, 0.25) 100%);
-	background: -ms-linear-gradient( 180deg, rgb(0,211,194, 0.25) 0%, rgb(63,157,213, 0.25) 100%);
-}
-.pool-expanded .content .noUi-connect {
-	background: -moz-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-	background: -webkit-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-	background: -ms-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-}
-.pool-expanded input {
-	border: 2px solid #d3d9e7;
-}
-#your-liquidity dd .label {
-	font-size: 16px;
-}
-
-#your-liquidity .tooltip-content,
-#all-liquidity .tooltip-content {
-	left: -145px;
-	bottom: 60px;
-}
-
-/*
-*
-* Staking overview
-*
-*/
-
-/* Omm stake */
-
-#staking-overview.adjust #omm-stake .actions-default {
-	display: none;
-}
-#staking-overview:not(.adjust) #omm-stake .actions-adjust {
-	display: none;
-}
-#staking-overview #omm-stake .actions-adjust {
-	margin-top: 10px;
-}
-#staking-overview #omm-stake .actions-adjust .button {
-	margin-top: 0;
-}
-#staking-overview #omm-stake .actions-default .button {
-	margin-top: 10px;
-}
-#staking-overview input[type="text"] {
-	border: 2px solid #d3d9e7;
-	max-width: 70%;
-	margin-bottom: 5px;
-	text-align: center;
+.reward-amount {
+	font-size: 20px;
 	color: #49546a;
-	transition: border 0.3s ease;
-}
-#staking-overview input[type="text"]:hover,
-#staking-overview input[type="text"]:focus {
-	border: 2px solid #2ca9b7;
-	transition: border 0.2s ease;
-}
-#staking-overview #omm-stake .actions-adjust.active {
-	margin-top: 25px;
+	margin-top: 5px;
 }
 
-#staking-overview .button {
-	margin-top: 0;
-}
-.stake-omm-actions-adjust {
-	margin-top: 10px;
-}
-#message-stake-logged-out p {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-#message-stake-no-omm {
-	margin-top: 35px;
-}
-#staking-overview input[type="text"] {
-	border: 2px solid #d3d9e7;
-	max-width: 70px;
-	margin-bottom: 5px;
-	text-align: center;
-	color: #49546a;
-	padding: 6px;
-	transition: border 0.3s ease;
-}
-.stake-omm-actions-adjust {
-	margin-top: 25px;
-	max-width: 170px;
-}
 
-/* Omm stake slider */
-
-#staking-overview #omm-stake .noUi-target {
-	margin-top: 25px;
-	margin-bottom: 25px;
-}
-#staking-overview #omm-stake .noUi-horizontal .noUi-handle {
-	border: 3px solid #2ca9b7;
-}
-#staking-overview #omm-stake .noUi-connect {
-	background: -moz-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-	background: -webkit-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-	background: -ms-linear-gradient( 180deg, rgb(0,211,194) 0%, rgb(63,157,213) 100%);
-}
-
-/* Staking APY */
-
-#staking-overview #staking-apy {
-	border-left: 1px solid #d3d9e7;
-	padding-left: 35px;
-	margin-left: 35px;
-}
-#staking-overview #staking-apy #staking-apy-data {
-	font-size: 25px;
-	margin-bottom: 15px;
-}
-#staking-overview #staking-apy #staking-apy-data .metadata dd {
-	margin-bottom: 15px;
+.mobile-adjust {
+	display: none;
 }
 
 /*
@@ -2935,7 +2821,7 @@ input.input-boost {
 }
 .bomm-tooltip .tooltip-content {
 	min-width: 335px;
-	left: -153px;
+	left: -170px;
 	bottom: 35px;
 	color: #7a8294;
 }
@@ -2948,7 +2834,15 @@ input.input-boost {
 .total-bomm-tooltip-content {
 	min-width: 150px;
 	text-align: center;
-	bottom: -12px;
+	bottom: 30px;
+	left: -145px;
+}
+#vote-overview {
+	margin-top: 0;
+}
+#vote-overview .tooltip-content {
+	min-width: 160px;
+	left: -110px;
 }
 
 .threshold {
@@ -3557,6 +3451,16 @@ input.input-boost {
 		display: block;
 		float: right;
 	}
+	.mobile-adjust {
+		display: block;
+		float: right;
+	}
+	.mobile-adjust.hide {
+		display: none;
+	}
+	.mobile-adjust-options {
+		float: right;
+	}
 
 	/* Proposal cards */
 
@@ -3629,6 +3533,15 @@ input.input-boost {
 		border-bottom-right-radius: 10px;
 	}
 
+	.list.sicx-votes > thead > tr > th:nth-child(1),
+	.list.sicx-votes > tbody > tr > td:nth-child(1),
+	.list.sicx-votes > thead > tr > th:nth-child(3),
+	.list.sicx-votes > tbody > tr > td:nth-child(3),
+	.list.sicx-votes > thead > tr > th:nth-child(4),
+	.list.sicx-votes > tbody > tr > td:nth-child(4) {
+		display: none;
+	}
+
 	/*
 	*
 	* Rewards
@@ -3642,7 +3555,7 @@ input.input-boost {
 		border-right: none;
 		border-top: 1px solid #d3d9e7;
 		margin-top: 0;
-		padding-top: 25px;
+		padding-top: 15px;
 		margin-bottom: 0;
 	}
 	#staking-overview .grid.panel {

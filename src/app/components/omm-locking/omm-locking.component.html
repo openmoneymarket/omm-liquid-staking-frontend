@@ -1,0 +1,122 @@
+<!-- Voting power -->
+<section class="boosted-omm">
+    <div class="grid">
+        <div class="grid-cell">
+            <h2>Voting power <span class="bomm-tooltip tooltip">
+                <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
+                <p class="bomm-tooltip-content tooltip-content">Lock up OMM to participate in governance and delegate votes to ICON validators.<br><br>A longer lock-up time gives you more bOMM voting power. 1 bOMM = 1 OMM locked for 4 years, and the amount decreases over time.</p>
+            </span></h2>
+        </div>
+
+        <div class="grid-cell">
+
+        </div>
+    </div>
+
+    <!-- Panel -->
+    <div class="grid panel">
+        <div class="grid-cell">
+            <div class="grid">
+                <div class="grid-cell boosted-container">
+                    <!-- Header -->
+                    <div class="grid">
+                        <!-- Heading -->
+                        <div class="grid-cell">
+                            <h3>Boosted OMM <span class="label value-bomm-total" *ngIf="shouldShowbOmmBalance()">2,700 bOMM</span>
+                            </h3>
+                        </div>
+                        <!-- Button -->
+                        <div class="grid-cell">
+                            <p class="text-right {{lockAdjustActive ? 'hide' : ''}}">
+                                <a href="javascript:void(0);" class="button" id="boost-adjust" style="margin-top: 0;" (click)="onLockAdjustClick($event)">Adjust</a>
+                            </p>
+
+                            <div class="boost-adjust-actions {{lockAdjustActive ? '' : 'hide'}}">
+                                <div class="grid">
+                                    <div class="grid-cell">
+                                        <div class="grid grid-center">
+                                            <div class="grid-cell text-right">
+                                                <a href="javascript:void(0);" class="cancel boost-cancel" (click)="onCancelLockAdjustClick($event)">Cancel</a>
+                                            </div>
+                                            <div class="grid-cell">
+                                                <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 0;" data-modal="modal-boost-confirm" (click)="onConfirmLockAdjustClick($event)">Confirm</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="label intro-label {{lockAdjustActive ? 'hide' : ''}}">Lock up OMM to hold voting power on Omm.</p>
+                    <div class="threshold locked boost {{shouldHideLockedOmmThreshold() ? 'hide':''}} {{calculatePercentLocked() < 0.5 ? 'right':'left'}}" [ngStyle]="getLeftLockedThresholdPercentStyle()">
+                        <dl class="metadata">
+                            <dt>Locked</dt>
+                        </dl>
+                    </div>
+
+                    <!-- Locked OMM slider -->
+                    <app-omm-lock-slider #lockOmmSlider
+                                            style="display: contents"
+                                            [lockAdjustActive]="lockAdjustActive"
+                    ></app-omm-lock-slider>
+
+                    <div class="grid grid-center boost-data">
+                        <div class="grid-cell">
+                            <p class="label"><input id="input-boost" class="input-boost {{lockAdjustActive ? '' : 'hide'}}" type="text" name="" value="3000"><span class="omm-locked {{lockAdjustActive ? 'hide' : ''}}">3,000</span> / 4,000 OMM</p>
+                        </div>
+                        <div class="grid-cell text-right">
+                            <p class="label text-red boost-message hide">You'll need to pay a 50% fee to unlock OMM early.</p>
+                            <p class="label locked-default {{lockAdjustActive ? 'hide' : ''}}">Locked until 20 Aug 2022</p>
+                            <div class="locked-adjust {{lockAdjustActive ? '' : 'hide'}}">
+                                <p><span class="label">Locked until </span> <a class="dropdown time-selector"><span class="animation-underline locked-selector">20 Aug 2022</span></a></p>
+                                <div class="grid dropdown-content locked-selector">
+                                    <div class="grid-cell">
+                                        <ul>
+                                            <li>1 week</li>
+                                            <li>1 month</li>
+                                            <li>3 months</li>
+                                            <li>6 months</li>
+                                            <li>1 year</li>
+                                            <li>2 years</li>
+                                            <li>4 years</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="grid-cell boost-increase border-top">
+                    <div class="grid">
+                        <div class="grid-cell border-right">
+                            <dl class="metadata">
+                                <dt>Delegation ratio</dt>
+                                <dd>1 bOMM = 14 ICX</dd>
+                            </dl>
+                        </div>
+                        <div class="grid-cell border-right">
+                            <dl class="metadata">
+                                <dt>Your delegation power</dt>
+                                <dd class="value-voting-power">121,500 ICX</dd>
+                            </dl>
+                        </div>
+                        <div class="grid-cell">
+                            <dl class="metadata">
+                                <dt>Total delegation power <span class="total-bomm-tooltip tooltip">
+                                    <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
+                                    <p class="total-bomm-tooltip-content tooltip-content">36,857 bOMM</p>
+                                </span></dt>
+                                <dd class="value-voting-power-total">37,221,565 ICX</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
