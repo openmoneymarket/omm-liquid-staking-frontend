@@ -1,0 +1,148 @@
+import BigNumber from "bignumber.js";
+import {DEFAULT_ROUNDING_PRECISION} from "./constants";
+import {environment} from "../../environments/environment";
+
+export function numToUsLocaleString(num: BigNumber | string): string {
+    if (typeof num === "string") {
+        return (+num).toLocaleString('en-US', {maximumFractionDigits: DEFAULT_ROUNDING_PRECISION });
+    } else {
+        return num.toNumber().toLocaleString('en-US', {maximumFractionDigits: DEFAULT_ROUNDING_PRECISION });
+    }
+}
+
+export function toDollarUSLocaleString(num?: BigNumber | string, defaultZero = false): string {
+    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultZero ? "0" : "-"; }
+    return `$${numToUsLocaleString(num)}`;
+}
+
+export function timestampInMillisecondsToPrettyDate(timestamp: BigNumber): string {
+    const date = new Date(timestamp.toNumber());
+    return date.toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    });
+}
+
+export function roundDownTo2Decimals(value: BigNumber | number | string | undefined): string {
+    if (!value || !(new BigNumber(value).isFinite())) {
+        return "0";
+    } else if (value instanceof BigNumber) {
+        return value.toFixed(2, BigNumber.ROUND_DOWN);
+    } else {
+        return new BigNumber(value).toFixed(2, BigNumber.ROUND_DOWN);
+    }
+}
+
+export function extractTxFailureMessage(tx: any): string {
+    return tx?.failure?.message ?? "";
+}
+
+export function isHex(value: any): boolean {
+    if (isString(value)) {
+        return /^(0x)[0-9a-f]+$/g.test(value);
+    }
+
+    return false;
+}
+
+export function isString(value: any): boolean {
+    return (typeof value === 'string' || value instanceof String);
+}
+
+export function hexToBigNumber(value: string | BigNumber): BigNumber {
+    if (!value || !(new BigNumber(value).isFinite())) {
+        return new BigNumber("0");
+    } else if (typeof value === "string") {
+        return new BigNumber(value, 16);
+    } else {
+        return new BigNumber(value);
+    }
+}
+
+export function timestampNowMicroseconds(): BigNumber {
+    return new BigNumber(Date.now()).multipliedBy(new BigNumber("1000"));
+}
+
+// Returns number divided by the 10^decimals
+export function hexToNormalisedNumber(value: BigNumber | string, decimals: number = 18): BigNumber {
+    if (!value || !(new BigNumber(value).isFinite())) {
+        return new BigNumber("0");
+    } else if (typeof value === "string") {
+        return new BigNumber(value, 16).dividedBy(new BigNumber("10").pow(decimals));
+    } else {
+        return value.dividedBy(new BigNumber("10").pow(decimals));
+    }
+}
+
+export function hexToBoolean(value: any): boolean {
+    if (typeof value === "string") {
+        return value !== "0x0";
+    } else if (value instanceof BigNumber) {
+        return value.isEqualTo(1);
+    } else {
+        return value;
+    }
+}
+
+export function formatIconAddressToShort(address: string, n = 7): string {
+    const length = address.length;
+    return address.substring(0, n) + "..." + address.substring(length - n, length);
+}
+
+export function uriDecodeIfEncodedUri(uri: string): string {
+    uri = uri || '';
+
+    let isStringUriEncoded;
+    try {
+        isStringUriEncoded =  uri !== decodeURIComponent(uri);
+    } catch {
+        isStringUriEncoded = false;
+    }
+
+    if (isStringUriEncoded) {
+        return decodeURIComponent(uri);
+    } else {
+        return uri;
+    }
+}
+
+export function subtract(val1: BigNumber, val2: BigNumber): BigNumber {
+    return val1.minus(val2);
+}
+
+export function add(val1: BigNumber, val2: BigNumber): BigNumber {
+    return val1.plus(val2);
+}
+
+export function divide(val1: BigNumber, val2: BigNumber): BigNumber {
+    return val1.dividedBy(val2);
+}
+
+export function multiply(val1: BigNumber, val2: BigNumber): BigNumber {
+    return val1.multipliedBy(val2);
+}
+
+export function convertICXTosICX(value: BigNumber, todayRate: BigNumber): BigNumber {
+    if (value.isZero() || todayRate.isZero()) return new BigNumber(0);
+
+    return value.dividedBy(todayRate);
+}
+
+export function convertICXToSICXPrice(icxPrice: BigNumber, sICXRate: BigNumber): BigNumber {
+    if (icxPrice.isZero() || sICXRate.isZero()) return new BigNumber(0);
+
+    return icxPrice.multipliedBy(sICXRate);
+}
+
+export function convertSICXToICX(sICXvalue: BigNumber, sIcxToIcxRate: BigNumber): BigNumber {
+    if (sICXvalue.isZero() || sIcxToIcxRate.isZero()) return new BigNumber(0);
+
+    return sICXvalue.multipliedBy(sIcxToIcxRate);
+}
+
+export function constructTxHashLink(txhash: string): string {
+    return `${environment.trackerUrl}/transaction/${txhash}`;
+}
+
+
+
+

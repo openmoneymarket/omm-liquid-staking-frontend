@@ -1,0 +1,28 @@
+<!-- Modal: Ledger wallet -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-sign-in-ledger">
+    <div class="modal-content">
+        <!-- Title -->
+        <h3 class="text-center label">Choose a wallet from your Ledger:</h3>
+
+        <!-- Ledger wallets -->
+        <table>
+            <tbody>
+            <ng-container *ngFor="let wallet of ledgerWallets; let i = index">
+                <tr (click)="onSelectLedgerAddressClick(wallet)">
+                    <td>{{wallet.address | shortenAddress}}</td>
+                    <td class="text-right">{{ledgerIcxBalance(wallet) | usFormat: true}} ICX</td>
+                </tr>
+            </ng-container>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <ul class="pagination">
+            <li (click)="onLedgerPageBackClick()"><</li>
+            <ng-container *ngFor="let i of activeLedgerAddressPageList">
+                <li class="{{i === selectedLedgerAddressPage ? 'active' : ''}}" (click)="onLedgerAddressPageClick(i)">{{i + 1}}</li>
+            </ng-container>
+            <li (click)="onLedgerPageNextClick()">></li>
+        </ul>
+    </div>
+</div>

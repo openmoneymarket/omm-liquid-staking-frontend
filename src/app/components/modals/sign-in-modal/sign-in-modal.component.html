@@ -1,0 +1,25 @@
+<!-- Sign in modal -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-sign-in">
+    <div class="modal-content">
+        <!-- Title -->
+        <h3 class="text-center label">Sign in with:</h3>
+        <!-- Sign in options -->
+        <div class="grid sign-in-options">
+            <div class="grid-cell">
+                <a href="javascript:void(0);" class="sign-in-icon animation-underline" (click)="onSignInIconexClick()">
+                    <img src="assets/img/logo/icx.svg" alt="">
+                    <p>ICON</p>
+                </a>
+            </div>
+
+            <div class="grid-cell">
+                <a href="javascript:void(0);" class="sign-in-ledger animation-underline" (click)="onSignInLedgerClick()">
+                    <img src="assets/img/logo/ledger.png" alt="">
+                    <p>Ledger</p>
+                </a>
+            </div>
+        </div>
+        <p class="label message text-center"><span class="text-bold" style="margin-bottom: 10px;display: block;line-height: 1;"
+        >Use at your own risk.</span> Project contributors are not liable for any lost or stolen funds. <a href="https://omm.finance/disclaimer/">View disclaimer</a></p>
+    </div>
+</div>

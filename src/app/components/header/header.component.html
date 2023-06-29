@@ -34,9 +34,9 @@
         </div>
 
         <!-- Utilities -->
-        <div class="grid-cell" [ngStyle]="!userLoggedIn() | hide">
+        <div class="grid-cell" [ngStyle]="!userLoggedIn() | hide" (clickOutside)="onClickOutsideMenu()">
             <!-- Bridge wallet -->
-            <div class="grid grid-center wallet bridge" (click)="onWalletClick($event)">
+            <div class="grid grid-center wallet bridge {{dropdownOpen ? 'active' : ''}}" (click)="onWalletClick($event)">
                 <div class="grid-cell text-right">
                     <p class="text-dark">{{getWalletName()}}</p>
                     <span class="label">{{getWalletId()}}</span>
@@ -48,13 +48,10 @@
                 </div>
             </div>
 
-            <div class="grid wallet-content bridge panel">
+            <div class="grid wallet-content bridge panel {{dropdownOpen ? 'active' : ''}}">
                 <div class="grid-cell">
                     <ul>
-<!--                        <li id="menu-wallet" [ngStyle]="!this.persistenceService.bridgeWalletActive() | hide">-->
-<!--                            <a href="javascript:void(0);" (click)="onOpenBridgeClick()" class="animation-underline">Open Bridge</a>-->
-<!--                        </li>-->
-                        <li id="menu-copy"><a href="javascript:void(0);" (click)="onCopyIconAddressClick()" class="animation-underline">Copy ICON address</a></li>
+                        <li id="menu-copy"><a href="javascript:void(0);" (click)="onCopyIconAddressClick($event)" class="animation-underline">Copy ICON address</a></li>
                         <li id="menu-change" class="hide"><a href="javascript:void(0);" class="animation-underline" (click)="onSignInClick()">Change wallet</a></li>
                     </ul>
                     <p class="text-center"><a href="javascript:void(0);" class="button" (click)="onSignOutClick()">Sign out</a></p>

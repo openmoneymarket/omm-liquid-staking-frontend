@@ -21,6 +21,7 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
+              "./buffer-poly.js",
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
@@ -33,7 +34,8 @@
             ],
             "scripts": [
               "src/assets/js/vendor/lightweight-charts.standalone.production.js",
-              "src/assets/js/vendor/nouislider.min.js"
+              "src/assets/js/vendor/nouislider.min.js",
+              "src/assets/js/vendor/wnumb.min.js",
             ]
           },
           "configurations": {
@@ -91,6 +93,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": [
+              "./buffer-poly.js",
               "zone.js",
               "zone.js/testing"
             ],
@@ -102,7 +105,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/vendor/wnumb.min.js"
+            ]
           }
         }
       }

@@ -1,3 +1,12 @@
+<!-- Header -->
 <app-header></app-header>
 
+<!-- Main content -->
 <app-main></app-main>
+
+<!-- Modals -->
+<app-modal></app-modal>
+<!-- /Modals -->
+
+<!-- Modal overlay -->
+<div class="modal-overlay" [ngStyle]="overlayActive() ? {opacity: 1, visibility: 'visible'} : {opacity: 0, visibility: 'hidden'}" (click)="onOverlayClick()"></div>

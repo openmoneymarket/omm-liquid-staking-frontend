@@ -1,0 +1,24 @@
+<!-- Modal stake -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-stake-confirm">
+    <div class="modal-content">
+        <h3 class="text-center label">Stake ICX?</h3>
+        <!-- Before & after -->
+        <div class="grid before-after">
+            <div class="grid-cell text-center border-right">
+                <p class="label">Stake</p>
+                <p class="text-dark value-supplied-icx">{{getStakeIcxAmount() | usFormat}} ICX</p>
+            </div>
+
+            <div class="grid-cell text-center">
+                <p class="label">Receive</p>
+                <p class="text-dark value-supply-icx-after">{{getReceivedSIcxAmount() | usFormat}} sICX</p>
+            </div>
+        </div>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button no-margin supply-icx-commit" (click)="onStakeClick($event)">Stake</a>
+        </div>
+    </div>
+</div>
