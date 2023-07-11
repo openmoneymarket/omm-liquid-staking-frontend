@@ -12,7 +12,28 @@
 
 <app-stake-modal style="display: contents"
                  [active]="isModalActive(ModalType.STAKE_ICX)"
-                 [stakeIcxPayload]="stakeIcxPayload!"
+                 [stakeIcxPayload]="stakeIcxPayload"
 >
 
 </app-stake-modal>
+
+<app-unstake-wait-modal style="display: contents"
+                        [active]="isModalActive(ModalType.UNSTAKE_WAIT_SICX)"
+                        [unstakeWaitSicxPayload]="unstakeWaitSicxPayload"
+>
+
+</app-unstake-wait-modal>
+
+<app-unstake-instant-modal style="display: contents"
+                           [active]="isModalActive(ModalType.UNSTAKE_INSTANT_SICX)"
+                           [unstakeInstantSicxPayload]="unstakeInstantSicxPayload"
+>
+
+</app-unstake-instant-modal>
+
+<app-claim-icx-modal style="display: contents"
+                     [active]="isModalActive(ModalType.CLAIM_ICX)"
+                     [claimIcxPayload]="claimIcxPayload"
+>
+
+</app-claim-icx-modal>

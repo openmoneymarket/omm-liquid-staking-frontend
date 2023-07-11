@@ -1,0 +1,27 @@
+<!-- Modal unstake (instant) -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-unstake-confirm">
+    <div class="modal-content">
+        <h3 class="text-center label">Unstake sICX?</h3>
+        <!-- Before & after -->
+        <div class="grid before-after">
+            <div class="grid-cell text-center border-right">
+                <p class="label">Unstake</p>
+                <p class="text-dark value-supplied-icx">{{getUnstakeSicxAmount() | usFormat}} sICX</p>
+            </div>
+
+            <div class="grid-cell text-center">
+                <p class="label">Receive</p>
+                <p class="text-dark value-supply-icx-after">{{getReceivedIcxAmount() | usFormat}} ICX</p>
+            </div>
+        </div>
+
+        <!-- Message -->
+        <p class="label text-center" style="margin-top: 15px;">Includes a fee of {{getFeeAmount() | usFormat}} ICX.</p>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button purple no-margin supply-icx-commit" (click)="onUnstakeClick($event)">Unstake</a>
+        </div>
+    </div>
+</div>

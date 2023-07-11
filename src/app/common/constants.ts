@@ -15,6 +15,14 @@ export const supportedTokens = [ICX, OMM, SICX];
 
 export const DEFAULT_ROUNDING_PRECISION = 2;
 
+export const ICON_BLOCK_INTERVAL = 2; // 2 seconds
+
+export const BALANCED_DEX_FEE_PERCENTAGE_CONVERSION = 10000;
+
+export const BALANCED_SICX_POOL_ID = 1;
+
+export const SEVEN_DAYS_IN_BLOCK_HEIGHT = 302400;
+
 export const defaultPrepLogoUrl = "assets/img/icon/profile.svg";
 
 export const ommForumDomain = "forum.omm.finance";

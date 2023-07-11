@@ -2,7 +2,6 @@ import log from "loglevel";
 import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
 import {Prep, PrepList} from "../models/classes/Preps";
 import {YourPrepVote} from "../models/classes/YourPrepVote";
-import {UnstakeIcxData, UnstakeInfo} from "../models/classes/UnstakeInfo";
 import {BigNumber} from "bignumber.js";
 import {Vote, VotersCount} from "../models/classes/Vote";
 import {Proposal} from "../models/classes/Proposal";
@@ -11,8 +10,43 @@ import {ILockedOmm} from "../models/interfaces/ILockedOmm";
 import {hexToNormalisedNumber, hexToBigNumber, multiply, uriDecodeIfEncodedUri} from "./utils";
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {IScoreParameter, IScorePayloadParameter, scoreParamToPayloadParam} from "../models/interfaces/IScoreParameter";
+import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
+import {UnstakeInfoData, UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
+import {BALANCED_DEX_FEE_PERCENTAGE_CONVERSION, SICX} from "./constants";
+import {IBalancedDexFees} from "../models/interfaces/IBalnDexFees";
+import {BalancedDexFees} from "../models/classes/BalancedDexFees";
+import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 
 export abstract class Mapper {
+
+  public static mapPoolStats(poolStats: PoolStatsInterface): PoolStats {
+    const baseDecimals = hexToBigNumber(poolStats.base_decimals);
+    const quoteDecimals = hexToBigNumber(poolStats.quote_decimals);
+
+    return new PoolStats(
+        hexToNormalisedNumber(poolStats.base, baseDecimals),
+        hexToNormalisedNumber(poolStats.quote, quoteDecimals),
+        poolStats.base_token,
+        poolStats.quote_token,
+        hexToNormalisedNumber(poolStats.total_supply, PoolStats.getPoolPrecision(baseDecimals, quoteDecimals)),
+        hexToNormalisedNumber(poolStats.price, quoteDecimals),
+        poolStats.name,
+        baseDecimals,
+        quoteDecimals,
+        hexToBigNumber(poolStats.min_quote)
+    );
+  }
+
+  public static mapBalancedFees(value: IBalancedDexFees): BalancedDexFees {
+    return new BalancedDexFees(
+        hexToBigNumber(value.icx_baln_fee).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+        hexToBigNumber(value.icx_conversion_fee).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+        hexToBigNumber(value.icx_total).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+        hexToBigNumber(value.pool_baln_fee).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+        hexToBigNumber(value.pool_lp_fee).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+        hexToBigNumber(value.pool_total).dividedBy(BALANCED_DEX_FEE_PERCENTAGE_CONVERSION),
+    );
+  }
 
   public static mapScoreParamsToPayloadArray(params: IScoreParameter[], values: string[]): IScorePayloadParameter[] {
     return params.map((param, index) => {
@@ -114,10 +148,29 @@ export abstract class Mapper {
     return res;
   }
 
-  public static mapUserIcxUnstakeData(unstakeIcxData: UnstakeIcxData[]): UnstakeInfo {
-    let totalAmount = new BigNumber("0");
-    unstakeIcxData.forEach(u => totalAmount = totalAmount.plus(hexToNormalisedNumber(u.amount)));
-    return new UnstakeInfo(totalAmount, unstakeIcxData);
+  public static mapUserUnstakeInfo(userUnstakeInfo: IUserUnstakeInfo[]): UserUnstakeInfo {
+    let totalAmount = new BigNumber(0);
+    let lastUnstakeBlockHeight = new BigNumber(0);
+    const data: UnstakeInfoData[] = [];
+
+    userUnstakeInfo.forEach(u => {
+      totalAmount = totalAmount.plus(hexToNormalisedNumber(u.amount, SICX.decimals));
+
+      const unstkData = new UnstakeInfoData(
+          hexToNormalisedNumber(u.amount, SICX.decimals),
+          hexToBigNumber(u.blockHeight),
+          u.from,
+          u.sender
+      );
+
+      data.push(unstkData);
+
+      if (unstkData.blockHeight.gt(lastUnstakeBlockHeight)) {
+        lastUnstakeBlockHeight = unstkData.blockHeight
+      }
+    });
+
+    return new UserUnstakeInfo(data, totalAmount, lastUnstakeBlockHeight);
   }
 
 

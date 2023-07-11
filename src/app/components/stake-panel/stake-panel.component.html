@@ -8,12 +8,12 @@
                 <div class="grid-cell">
                     <h3>Stake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="#" class="text-green"><span class="value-wallet-icx">{{userIcxBalance.toFixed(2) | usFormat: true}}</span> ICX</a></p></div>
+                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-green"><span class="value-wallet-icx">{{userIcxBalance.toFixed(2) | usFormat: true}}</span> ICX</a></p></div>
             </div>
             <!-- Swap from -->
             <div class="grid grid-center input-asset stake">
                 <div class="grid-cell">
-                    <a href="#" class="asset icx swap-from">ICX</a>
+                    <a href="javascript:void(0);" class="asset icx swap-from">ICX</a>
                 </div>
 
                 <div class="grid-cell">
@@ -32,7 +32,7 @@
             </div>
             <div class="grid grid-center input-asset unstake">
                 <div class="grid-cell">
-                    <a href="#" class="asset sicx swap-to">sICX</a>
+                    <a href="javascript:void(0);"  class="asset sicx swap-to">sICX</a>
                 </div>
 
                 <div class="grid-cell">
@@ -95,8 +95,12 @@
     </div>
 
     <!-- Unstaking messgae -->
-    <div class="notice hide">
-        <p class="label">Your unstaking request for <span class="text-bold">7,186 sICX</span> is <span class="text-bold">27th</span> in the queue. It will be ready to claim within <span class="text-bold">2d 4h 11m</span>.</p>
-        <p class="label hide">7,185 ICX is ready to claim. <a href="#">Claim ICX.</a></p>
+    <div class="notice" *ngIf="userLoggedIn() && ((userUnstakeInfo && userUnstakeInfo.totalUnstakeAmount.gt(0)) || claimableIcx?.gt(0.01))">
+        <p *ngIf="shouldShowUnstakeInfo()" class="label">Your unstaking request for
+            <span class="text-bold">{{userUnstakeInfo!.totalUnstakeAmount.toFixed(2) | usFormat}} sICX will be ready to claim within
+                <span class="text-bold">{{untilBlockHeightTime}}</span>.
+            </span>
+        </p>
+        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx.toFixed(2) | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

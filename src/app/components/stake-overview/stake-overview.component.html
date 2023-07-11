@@ -7,7 +7,7 @@
                 <div class="grid-cell text-center border-right">
                     <dl class="metadata">
                         <dt>ICX staked</dt>
-                        <dd>2,951,867</dd>
+                        <dd>{{totalIcxStaked.toFixed(0) | usFormat}}</dd>
                     </dl>
                 </div>
 
@@ -15,7 +15,7 @@
                 <div class="grid-cell text-center border-right">
                     <dl class="metadata">
                         <dt>Total sICX</dt>
-                        <dd>58,023,459</dd>
+                        <dd>{{totalSicxAmount.toFixed(0) | usFormat}}</dd>
                     </dl>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="grid-cell text-center border-right">
                     <dl class="metadata">
                         <dt>sICX holders</dt>
-                        <dd>12,420</dd>
+                        <dd>{{sicxHolders.toFixed(0) | usFormat}}</dd>
                     </dl>
                 </div>
 
@@ -34,7 +34,7 @@
                 <div class="grid-cell text-center">
                     <dl class="metadata">
                         <dt>Fees collected (7D)</dt>
-                        <dd>80,000 <span class="label">ICX</span></dd>
+                        <dd>{{feeDistributed7D.toFixed(0) | usFormat: true}} <span class="label">ICX</span></dd>
                     </dl>
                 </div>
             </div>

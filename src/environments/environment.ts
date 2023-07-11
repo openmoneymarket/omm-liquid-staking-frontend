@@ -16,6 +16,6 @@ export const environment = {
     OMM_TOKEN: "cx1a29259a59f463a67bb2ef84398b30ca56b5830a",
     SICX_TOKEN: "cx2609b924e33ef00b648a409245c7ea394c467824",
     ADDRESS_PROVIDER_SCORE: "cx3beb2fa9b7cfa3684f6db1413897dfcf6cc1b04c",
-    trackerUrl: "https://tracker.icon.community/",
+    trackerUrl: "https://tracker.icon.community",
 };
 

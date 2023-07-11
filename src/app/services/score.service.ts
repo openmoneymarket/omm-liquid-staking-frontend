@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {IconApiService} from './icon-api.service';
 import log from "loglevel";
 import IconService from "icon-sdk-js";
-const { IconConverter } = IconService;
+const { IconConverter, IconAmount } = IconService;
 import BigNumber from "bignumber.js";
 import {PersistenceService} from "./persistence.service";
 import {CheckerService} from "./checker.service";
@@ -13,7 +13,6 @@ import {Mapper} from "../common/mapper";
 import {hexToNormalisedNumber, hexToBigNumber, timestampNowMicroseconds} from "../common/utils";
 import {Irc2Token} from "../models/classes/Irc2Token";
 import {PrepList} from "../models/classes/Preps";
-import {UnstakeInfo} from "../models/classes/UnstakeInfo";
 import {YourPrepVote} from "../models/classes/YourPrepVote";
 import {IRewardWorkingTotal} from "../models/interfaces/IRewardWorkingTotal";
 import {LockedOmm} from "../models/classes/LockedOmm";
@@ -22,6 +21,11 @@ import {Proposal} from "../models/classes/Proposal";
 import {ILockedOmm} from "../models/interfaces/ILockedOmm";
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
+import {BALANCED_SICX_POOL_ID, SICX} from "../common/constants";
+import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
+import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
+import {BalancedDexFees} from "../models/classes/BalancedDexFees";
+import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 
 
 @Injectable({
@@ -63,6 +67,91 @@ export class ScoreService {
     log.debug("buildStakeIcxTx:", tx);
 
     return tx;
+  }
+
+  /**
+   * @description Build unstake sICX tx
+   * @param amount - Amount of sICX to un-stake
+   * @return  Icon Transaction
+   */
+  public buildUnstakeSicxTx(amount: BigNumber): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const dataPayload = '{ "method": "unstake" }';
+
+    const params = {
+      _to: this.persistenceService.allAddresses!.systemContract.Staking,
+      _value: IconConverter.toHex(IconAmount.of(amount, SICX.decimals).toLoop()),
+      _data: IconConverter.fromUtf8(dataPayload)
+    }
+
+
+    const tx = this.iconApiService.buildTransaction(this.persistenceService.activeWallet!.address,
+        SICX.address!, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+
+    log.debug("buildUnstakeSicxTx:", tx);
+
+    return tx;
+  }
+
+  /**
+   * @description Build instant unstake sICX tx
+   * @param amount - Amount of sICX to un-stake
+   * @return  Icon Transaction
+   */
+  public buildInstantUnstakeSicxTx(amount: BigNumber): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const dataPayload = '{ "method": "_swap_icx" }';
+
+    const params = {
+      _to: this.persistenceService.allAddresses!.systemContract.DEX,
+      _value: IconConverter.toHex(IconAmount.of(amount, SICX.decimals).toLoop()),
+      _data: IconConverter.fromUtf8(dataPayload)
+    };
+
+    const tx = this.iconApiService.buildTransaction(this.persistenceService.activeWallet!.address,
+        SICX.address!, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+
+    log.debug("buildInstantUnstakeSicxTx:", tx);
+
+    return tx;
+  }
+
+  /**
+   * @description Get Balanced DEX fees
+   * @return BalancedDexFees
+   */
+  public async getBalancedDexFees(): Promise<BalancedDexFees> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.DEX,
+        ScoreMethodNames.GET_FEES, {}, IconTransactionType.READ);
+
+    const res = await this.iconApiService.iconService.call(tx).execute();
+
+    log.debug("getBalnDexFees: ", res);
+
+    return Mapper.mapBalancedFees(res);
+  }
+
+  /**
+   * @description Get ICX/sICX pool stats
+   * @return  PoolStats
+   */
+  public async getIcxSicxPoolStats(): Promise<PoolStats> {
+    const params = {
+      _id: IconConverter.toHex(BALANCED_SICX_POOL_ID)
+    };
+
+    const tx = this.iconApiService.buildTransaction("",  environment.BALANCED_DEX_SCORE,
+        ScoreMethodNames.GET_POOL_STATS, params, IconTransactionType.READ);
+
+    const res: PoolStatsInterface = await this.iconApiService.iconService.call(tx).execute();
+
+    // log.debug("getPoolStats for " + poolId + ":", res);
+
+    return Mapper.mapPoolStats(res);
   }
 
   /**
@@ -137,19 +226,19 @@ export class ScoreService {
    * @description Get the un-stake information for a specific user.
    * @return  list of un-staking amounts and block heights
    */
-  public async getTheUserUnstakeInfo(): Promise<UnstakeInfo> {
+  public async getUserUnstakeInfo(): Promise<UserUnstakeInfo> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
       _address: this.persistenceService.activeWallet!.address,
     };
 
-    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.LendingPoolDataProvider,
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.Staking,
       ScoreMethodNames.GET_USER_UNSTAKE_INFO, params, IconTransactionType.READ);
 
-    const res = await this.iconApiService.iconService.call(tx).execute();
+    const res: IUserUnstakeInfo[] = await this.iconApiService.iconService.call(tx).execute();
 
-    return Mapper.mapUserIcxUnstakeData(res);
+    return Mapper.mapUserUnstakeInfo(res);
   }
 
   /**
@@ -189,6 +278,23 @@ export class ScoreService {
   }
 
   /**
+   * @description Get total staked ICX
+   * @return  total staked ICX normalised number
+   */
+  public async getTotalStakedIcx(): Promise<BigNumber> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.GET_TOTAL_STAKE, {}, IconTransactionType.READ);
+
+    const res = await this.iconApiService.iconService.call(tx).execute();
+
+    log.debug("getTotalStakedIcx (not mapped): ", res);
+
+    return hexToNormalisedNumber(res);
+  }
+
+  /**
    * @description Get today sicx to icx conversion rate
    * @return today sICX to ICX conversion rate as number
    */
@@ -200,6 +306,20 @@ export class ScoreService {
     log.debug(`getTodayRate: ${todayRate}`);
 
     return todayRate;
+  }
+
+  /**
+   * @description Get total sICX amount
+   * @return total sICX amount normalised
+   */
+  public async getTotalSicxAmount(): Promise<BigNumber> {
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.collateral.sICX,
+        ScoreMethodNames.TOTAL_SUPPLY, {}, IconTransactionType.READ);
+
+    const res = hexToNormalisedNumber(await this.iconApiService.iconService.call(tx).execute());
+    log.debug(`getTotalSicxAmount: ${res}`);
+
+    return res;
   }
 
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from "bignumber.js";
-import IconService from 'icon-sdk-js';
+import IconService, {Block} from 'icon-sdk-js';
 const { IconConverter, IconAmount, IconBuilder } = IconService;
 const { CallBuilder, CallTransactionBuilder, IcxTransactionBuilder,  } = IconBuilder;
 import {environment} from "../../environments/environment";
@@ -35,6 +35,10 @@ export class IconApiService {
 
   public async getTxResult(txHash: string): Promise<any> {
     return this.iconService.getTransactionResult(txHash).execute();
+  }
+
+  public async getLastBlockHeight(): Promise<Block> {
+    return this.iconService.getLastBlock().execute();
   }
 
   public convertNumberToHex(value: BigNumber): string {

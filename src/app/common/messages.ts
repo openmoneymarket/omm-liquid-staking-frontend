@@ -32,8 +32,8 @@ export const LEDGER_NOT_DETECTED = "Couldn’t detect a Ledger device.\n Make su
  *  NOTIFICATIONS SHOWN WHEN TRANSACTION IS SUBMITTED TO THE BLOCKCHAIN
  */
 
-export const PRE_STAKE_ICX = (stakeIcxAmount: BigNumber) => `Staking ${numToUsLocaleString(stakeIcxAmount.dp(2))} ICX...`
-
+export const PRE_STAKE_ICX = (amount: BigNumber) => `Staking ${numToUsLocaleString(amount.dp(2))} ICX...`;
+export const PRE_UNSTAKE_SICX = (amount: BigNumber) => `Unstaking ${numToUsLocaleString(amount.dp(2))} sICX...`;
 export const PRE_UNSTAKE_OMM = "Starting the unstaking process...";
 export const PRE_MIGRATE_STAKED_OMM = "Locking up staked OMM...";
 export const PRE_INCREASE_LOCKED_OMM = "Locking up OMM...";
@@ -56,11 +56,13 @@ export const PRE_UNSTAKE_LP = "Unstaking LP tokens...";
  *  NOTIFICATIONS SHOWN AFTER TRANSACTION SUCCESS
  */
 
-export const SUCCESS_STAKE_ICX = (stakeIcxAmount: BigNumber) => `Successfully staked ${numToUsLocaleString(stakeIcxAmount.dp(2))} ICX.`
+export const SUCCESS_STAKE_ICX = (amount: BigNumber) => `Successfully staked ${numToUsLocaleString(amount.dp(2))} ICX.`
+export const SUCCESS_UNSTAKE_SICX = (stakeIcxAmount: BigNumber) => `Successfully unstaked ${numToUsLocaleString(stakeIcxAmount.dp(2))} sICX.`
 
-export const SUCCESS_CLAIM_ICX = (assetAction: AssetAction) => `${assetAction.amount} ICX claimed.`;
-export const SUCCESS_CLAIM_OMM = (assetAction: AssetAction) => `${assetAction.amount} OMM claimed.`;
-export const SUCCESS_WITHDRAW_LOCKED_OMM = (assetAction: AssetAction) => `Withdrew ${assetAction.amount} OMM.`;
+
+export const SUCCESS_CLAIM_ICX = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
+export const SUCCESS_CLAIM_OMM = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} OMM claimed.`;
+export const SUCCESS_WITHDRAW_LOCKED_OMM = (amount: BigNumber) => `Withdrew ${numToUsLocaleString(amount.dp(2))} OMM.`;
 
 export const SUCCESS_UPDATE_VOTES = "Votes allocated.";
 export const SUCCESS_REMOVE_VOTES = "Votes removed.";
@@ -79,7 +81,9 @@ export const SUCCESS_UNSTAKE_OMM = (stakingAction: StakingAction | ManageStakedI
  */
 
 export const FAILURE_STAKE_ICX = "Couldn't stake ICX. Please try again in a moment."
-export const FAILURE_CLAIM_ICX = (failedTxMessage: string) => `Couldn't claim ICX. ${failedTxMessage}`;
+export const FAILURE_UNSTAKE_SICX = "Couldn't unstake sICX. Please try again in a moment."
+
+export const FAILURE_CLAIM_ICX = () => `Couldn't claim ICX. Please try again in a moment.`;
 export const FAILURE_CLAIM_OMM = (failedTxMessage: string) => `Couldn't claim rewards. ${failedTxMessage}`;
 export const FAILURE_WITHDRAW_LOCKED_OMM = (failedTxMessage: string) => `Couldn't withdraw locked OMM. ${failedTxMessage}`;
 export const FAILURE_CLAIM_AND_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";

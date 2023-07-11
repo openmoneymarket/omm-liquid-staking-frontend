@@ -8,6 +8,7 @@ import {YourPrepVote} from "../models/classes/YourPrepVote";
 import {Irc2Token} from "../models/classes/Irc2Token";
 import {ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
 import {ModalAction} from "../models/classes/ModalAction";
+import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +36,11 @@ export class PersistenceService {
 
   public prepList?: PrepList;
 
+  public lastModalPayload?: ModalPayload;
+
   // USER DATA
   public yourVotesPrepList: YourPrepVote[] = [];
-
-  public lastModalPayload?: ModalPayload;
+  public userUnstakeInfo?: UserUnstakeInfo;
 
   constructor() { }
 
@@ -49,7 +51,7 @@ export class PersistenceService {
 
     // reset values
     this.yourVotesPrepList = [];
-
+    this.userUnstakeInfo = undefined;
   }
 
   public userLoggedIn(): boolean {

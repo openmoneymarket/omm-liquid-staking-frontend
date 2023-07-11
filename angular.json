@@ -35,7 +35,7 @@
             "scripts": [
               "src/assets/js/vendor/lightweight-charts.standalone.production.js",
               "src/assets/js/vendor/nouislider.min.js",
-              "src/assets/js/vendor/wnumb.min.js",
+              "src/assets/js/vendor/wnumb.min.js"
             ]
           },
           "configurations": {

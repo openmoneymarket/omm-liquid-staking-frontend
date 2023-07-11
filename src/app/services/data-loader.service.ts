@@ -6,10 +6,15 @@ import log from "loglevel";
 import {OmmService} from "./omm.service";
 import {CheckerService} from "./checker.service";
 import {ReloaderService} from "./reloader.service";
-import {ICX, OMM, supportedTokens} from "../common/constants";
+import {ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, supportedTokens} from "../common/constants";
 import BigNumber from "bignumber.js";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
 import {TokenSymbol} from "../models/Types/ModalTypes";
+import {lastValueFrom, take} from "rxjs";
+import {environment} from "../../environments/environment";
+import {HttpClient} from "@angular/common/http";
+import {IEventLog} from "../models/interfaces/IEventLog";
+import {hexToBigNumber} from "../common/utils";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +26,8 @@ export class DataLoaderService {
               private stateChangeService: StateChangeService,
               private ommService: OmmService,
               private checkerService: CheckerService,
-              private reloaderService: ReloaderService) {
+              private reloaderService: ReloaderService,
+              private http: HttpClient) {
 
   }
 
@@ -75,6 +81,99 @@ export class DataLoaderService {
           log.error("Error in loadTodaySicxRate:");
           log.error(e);
     }
+  }
+
+  public async loadUserUnstakeInfo(): Promise<void> {
+    try {
+      this.stateChangeService.userUnstakeInfoUpdate(await this.scoreService.getUserUnstakeInfo());
+    } catch (e) {
+      log.error("Error in loadUserUnstakeInfo:");
+      log.error(e);
+    }
+  }
+
+  public async loadUserClaimableIcx(): Promise<void> {
+    try {
+      this.stateChangeService.userClaimableIcxUpdate(await this.scoreService.getUserClaimableIcx());
+    } catch (e) {
+      log.error("Error in loadUserClaimableIcx:");
+      log.error(e);
+    }
+  }
+
+  public async loadBalancedDexFees(): Promise<void> {
+    try {
+      this.stateChangeService.balancedDexFeesUpdate(await this.scoreService.getBalancedDexFees());
+    } catch (e) {
+      log.error("Error in loadBalancedDexFees:");
+      log.error(e);
+    }
+  }
+
+  public async loadIcxSicxPoolStats(): Promise<void> {
+    try {
+      this.stateChangeService.icxSicxPoolStatsUpdate(await this.scoreService.getIcxSicxPoolStats());
+    } catch (e) {
+      log.error("Error in loadIcxSicxPoolStats:");
+      log.error(e);
+    }
+  }
+
+  public async loadTotalStakedIcx(): Promise<void> {
+    try {
+      this.stateChangeService.totalStakedIcxUpdate(await this.scoreService.getTotalStakedIcx());
+    } catch (e) {
+      log.error("Error in loadTotalStakedIcx:");
+      log.error(e);
+    }
+  }
+
+  public async loadlTotalSicxAmount(): Promise<void> {
+    try {
+      this.stateChangeService.totalSicxAmountUpdate(await this.scoreService.getTotalSicxAmount());
+    } catch (e) {
+      log.error("Error in loadlTotalSicxAmount:");
+      log.error(e);
+    }
+  }
+
+  public async loadSicxHoldersAmount(): Promise<void> {
+    try {
+      const sicx = this.persistenceService.allAddresses!.collateral.sICX;
+      const url = `${environment.trackerUrl}/api/v1/transactions/token-holders/token-contract/${sicx}?limit=10&skip=0`;
+      const res =  await lastValueFrom(this.http.get<any>(url, {observe: 'response'}));
+      const sicxHoldersAmount = res.headers.get("X-Total-Count");
+      this.stateChangeService.sicxHoldersUpdate(new BigNumber(sicxHoldersAmount ?? 0));
+    } catch (e) {
+      log.error("Error in loadSicxHoldersAmount:");
+      log.error(e);
+    }
+  }
+
+  public async loadFeesCollected7D(): Promise<void> {
+    this.stateChangeService.lastBlockHeightChange$.pipe(take(1)).subscribe(async (lastBlockHeight) => {
+      try {
+        const method = "FeeDistributed"
+        const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
+        const url =`${environment.trackerUrl}/api/v1/logs?block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
+        const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
+
+        let totalFees = new BigNumber(0);
+
+        res.body?.forEach(eventLog => {
+          if (eventLog.method == method) {
+            const indexed = JSON.parse(eventLog.indexed);
+            totalFees = totalFees.plus(hexToBigNumber(indexed[2]));
+          }
+        });
+
+
+        this.stateChangeService.feeDistributed7DUpdate(totalFees);
+      } catch (e) {
+        log.error("Error in loadFeesCollected7D:");
+        log.error(e);
+      }
+    })
   }
 
   // public async loadUserLockedOmm(): Promise<void> {
@@ -366,11 +465,15 @@ export class DataLoaderService {
     // TODO
 
     await Promise.all([
-        this.loadTodaySicxRate(),
-        this.loadTokenPrices(),
+      this.loadTodaySicxRate(),
+      this.loadTokenPrices(),
+      this.loadBalancedDexFees(),
+      this.loadIcxSicxPoolStats(),
+      this.loadTotalStakedIcx(),
+      this.loadlTotalSicxAmount(),
+      this.loadSicxHoldersAmount(),
       // this.loadTotalOmmSupply(),
       // this.loadVoteDuration(),
-
     ]);
 
     // emit event indicating that core data was loaded
@@ -380,6 +483,8 @@ export class DataLoaderService {
   public async loadUserSpecificData(): Promise<void> {
     await Promise.all([
       this.loadAllUserAssetsBalances(),
+      this.loadUserUnstakeInfo(),
+      this.loadUserClaimableIcx(),
       // this.loadUserDelegations(),
     ]);
 
@@ -393,6 +498,8 @@ export class DataLoaderService {
    * Load core data async without waiting
    */
   public loadCoreAsyncData(): void {
+
+    this.loadFeesCollected7D();
 
     // TODO
     // this.loadInterestHistory();

@@ -17,7 +17,7 @@ export class StakeModalComponent {
 
   @Input({ required: true }) active!: boolean;
 
-  @Input({ required: true }) stakeIcxPayload?: StakeIcxPayload;
+  @Input() stakeIcxPayload: StakeIcxPayload | undefined;
 
   constructor(private stateChangeService: StateChangeService,
               private transactionDispatcher: TransactionDispatcherService,

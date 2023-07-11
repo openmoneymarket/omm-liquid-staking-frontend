@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
-import {DEFAULT_ROUNDING_PRECISION} from "./constants";
+import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
 import {environment} from "../../environments/environment";
+import {Times} from "../models/classes/Times";
 
 export function numToUsLocaleString(num: BigNumber | string): string {
     if (typeof num === "string") {
@@ -63,7 +64,7 @@ export function timestampNowMicroseconds(): BigNumber {
 }
 
 // Returns number divided by the 10^decimals
-export function hexToNormalisedNumber(value: BigNumber | string, decimals: number = 18): BigNumber {
+export function hexToNormalisedNumber(value: BigNumber | string, decimals: number | BigNumber = 18): BigNumber {
     if (!value || !(new BigNumber(value).isFinite())) {
         return new BigNumber("0");
     } else if (typeof value === "string") {
@@ -71,6 +72,19 @@ export function hexToNormalisedNumber(value: BigNumber | string, decimals: numbe
     } else {
         return value.dividedBy(new BigNumber("10").pow(decimals));
     }
+}
+
+export function toNDecimalRoundedDownPercentString(num?: BigNumber | string, decimals = 0, defaultZero = false): string {
+    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultZero ? "0%" : "-"; }
+
+    // convert in to percentage
+    num = new BigNumber(num).multipliedBy(new BigNumber("100"));
+
+    if (num.isLessThan(1)) {
+        return defaultZero ? "0%" : "-";
+    }
+
+    return `${(numToUsLocaleString(num.toFixed(2)))}%`;
 }
 
 export function hexToBoolean(value: any): boolean {
@@ -141,6 +155,27 @@ export function convertSICXToICX(sICXvalue: BigNumber, sIcxToIcxRate: BigNumber)
 
 export function constructTxHashLink(txhash: string): string {
     return `${environment.trackerUrl}/transaction/${txhash}`;
+}
+
+export function getPrettyTimeForBlockHeightDiff(currentBlockHeight: BigNumber, targetBlockHeight: BigNumber): string | undefined {
+    const secondsUntilTargetBlock = (targetBlockHeight.minus(currentBlockHeight)).multipliedBy(ICON_BLOCK_INTERVAL);
+
+    if (secondsUntilTargetBlock.isNegative()) return undefined;
+
+    return convertSecondsToDHM(secondsUntilTargetBlock.toNumber());
+}
+
+export function convertSecondsToDHM(seconds: number): string {
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    seconds -= days * 24 * 60 * 60;
+
+    const hours = Math.floor(seconds / (60 * 60));
+    seconds -= hours * 60 * 60;
+
+    const minutes = Math.floor(seconds / 60);
+    seconds -= minutes * 60;
+
+    return `${days}d ${hours}h ${minutes}m`;
 }
 
 

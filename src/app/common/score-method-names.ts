@@ -25,7 +25,6 @@ export class ScoreMethodNames {
    */
   public static GET_USER_RESERVE_DATA = "getUserReserveData";
   public static GET_USER_ALL_RESERVE_DATA = "getUserAllReserveData";
-  public static GET_USER_UNSTAKE_INFO = "getUserUnstakeInfo";
   public static GET_USER_CLAIMABLE_ICX = "claimableICX";
   public static GET_ALL_RESERVE_DATA = "getAllReserveData";
   public static GET_SPECIFIC_RESERVE_DATA = "getReserveData";
@@ -78,6 +77,7 @@ export class ScoreMethodNames {
   public static GET_PRICE_BY_NAME = "getPriceByName";
   public static GET_POOL_STATS = "getPoolStats";
   public static GET_POOL_TOTAL: "getPoolTotal";
+  public static GET_FEES = "getFees";
 
   /**
    * Delegation SCORE
@@ -109,11 +109,15 @@ export class ScoreMethodNames {
    * Staking SCORE
    */
   public static GET_TODAY_RATE = "getTodayRate";
+  public static GET_TOTAL_STAKE = "getTotalStake";
   public static GET_PREP_TOP_LIST = "getTopPreps";
   public static CLAIM_UNSTAKED_ICX = "claimUnstakedICX";
   public static STAKE_ICX = "stakeICX";
+  public static UNSTAKE_sICX = "unstake";
+  public static GET_USER_UNSTAKE_INFO = "getUserUnstakeInfo";
 
-  /**
+
+    /**
    * Price Oracle SCORE
    */
   public static GET_REFERENCE_DATA = "get_reference_data";
