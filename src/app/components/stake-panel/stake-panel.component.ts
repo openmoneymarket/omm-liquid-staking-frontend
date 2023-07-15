@@ -7,18 +7,19 @@ import {StakeIcxPayload} from "../../models/classes/StakeIcxPayload";
 import {PersistenceService} from "../../services/persistence.service";
 import {StateChangeService} from "../../services/state-change.service";
 import {usLocale} from "../../common/formats";
-import {convertICXTosICX, convertSICXToICX, getPrettyTimeForBlockHeightDiff} from "../../common/utils";
+import {convertICXTosICX, convertSICXToICX} from "../../common/utils";
 import {BaseClass} from "../../models/classes/BaseClass";
 import {DollarUsLocalePipe} from "../../pipes/dollar-us-locale.pipe";
 import {ChartService} from "../../services/chart.service";
 import {UserUnstakeInfo} from "../../models/classes/UserUnstakeInfo";
-import {map, Observable, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
+import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
 
 @Component({
   selector: 'app-stake-panel',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, DollarUsLocalePipe],
+  imports: [CommonModule, UsFormatPipe, DollarUsLocalePipe, PrettyUntilBlockHeightTime],
   templateUrl: './stake-panel.component.html'
 })
 export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy {
@@ -34,12 +35,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   @Input({ required: true}) sicxPrice!: string;
   @Input({ required: true}) todaySicxRate!: BigNumber;
 
-  stakeInputAmount: string = "";
-  unstakeInputAmount: string = "";
+  stakeInputAmount: BigNumber = new BigNumber(0);
+  unstakeInputAmount: BigNumber = new BigNumber(0);
 
   userUnstakeInfo?: UserUnstakeInfo;
   claimableIcx?: BigNumber;
-  untilBlockHeightTime?: string;
+  currentBlockHeight?: BigNumber;
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -78,7 +79,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
   subscribeToLatestBlockHeightChange(): void {
     this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe(block => {
-      this.untilBlockHeightTime = this.getPrettyUntilBlockHeightTime(this.userUnstakeInfo, new BigNumber(block.height) ?? "");
+      this.currentBlockHeight = new BigNumber(block.height)    ;
     });
   }
   subscribeToUserUnstakeInfoChange(): void {
@@ -102,14 +103,13 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   private resetUserState(): void {
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
-    this.untilBlockHeightTime = undefined;
   }
 
   onStakeClick(e: MouseEvent) {
     e.stopPropagation();
 
     if (this.persistenceService.userLoggedIn()) {
-      if (this.stakeInputAmount && this.unstakeInputAmount) {
+      if (!this.userIcxBalanceLtInputAmount() && this.stakeInputAmount.gt(0) && this.unstakeInputAmount.gt(0)) {
         this.stateChangeService.modalUpdate(ModalType.STAKE_ICX, new StakeIcxPayload(
             new BigNumber(this.stakeInputAmount),
             new BigNumber(this.unstakeInputAmount),
@@ -138,10 +138,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     const stakeInputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
 
     if (!stakeInputAmount || stakeInputAmount <= 0) {
-      this.stakeInputAmount = "";
+      this.stakeInputAmount = new BigNumber(0);
+      this.unstakeInputAmount = new BigNumber(0);
     } else {
-      this.stakeInputAmount = usLocale.to(stakeInputAmount);
-      this.unstakeInputAmount = usLocale.to(+convertICXTosICX(new BigNumber(stakeInputAmount), this.todaySicxRate).toFixed(2));
+      this.stakeInputAmount = new BigNumber(stakeInputAmount);
+      this.unstakeInputAmount = convertICXTosICX(this.stakeInputAmount, this.todaySicxRate);
     }
   }
 
@@ -155,11 +156,16 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     const unstakeInputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
 
     if (!unstakeInputAmount || unstakeInputAmount <= 0) {
-      this.unstakeInputAmount = "";
+      this.unstakeInputAmount = new BigNumber(0);
+      this.stakeInputAmount = new BigNumber(0);
     } else {
-      this.unstakeInputAmount = usLocale.to(unstakeInputAmount);
-      this.stakeInputAmount = usLocale.to(+convertSICXToICX(new BigNumber(unstakeInputAmount), this.todaySicxRate).toFixed(2));
+      this.unstakeInputAmount = new BigNumber(unstakeInputAmount);
+      this.stakeInputAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
     }
+  }
+
+  userIcxBalanceLtInputAmount(): boolean {
+    return this.userLoggedIn() && this.userIcxBalance.lt(this.stakeInputAmount);
   }
 
   userLoggedIn(): boolean {
@@ -168,15 +174,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
   shouldShowUnstakeInfo(): boolean {
     return this.userUnstakeInfo != undefined
+        && this.userUnstakeInfo.data.length > 0
         && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
-        && this.untilBlockHeightTime != undefined;
-  }
-
-  getPrettyUntilBlockHeightTime(userUnstakeInfo: UserUnstakeInfo | undefined, currentBlockHeight: BigNumber): string | undefined {
-    if (userUnstakeInfo) {
-      return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.lastUnstakeBlockHeight);
-    } else {
-      return undefined;
-    }
+        && this.currentBlockHeight != undefined
   }
 }

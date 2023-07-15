@@ -17,6 +17,8 @@ export const DEFAULT_ROUNDING_PRECISION = 2;
 
 export const ICON_BLOCK_INTERVAL = 2; // 2 seconds
 
+export const BLOCK_POOL_INTERVAL_TIME = 10_000 // 10 seconds in milliseconds
+
 export const BALANCED_DEX_FEE_PERCENTAGE_CONVERSION = 10000;
 
 export const BALANCED_SICX_POOL_ID = 1;

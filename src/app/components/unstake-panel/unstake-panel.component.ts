@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import {ChartService} from "../../services/chart.service";
 import {PersistenceService} from "../../services/persistence.service";
 import {usLocale} from "../../common/formats";
-import {convertSICXToICX, getPrettyTimeForBlockHeightDiff} from "../../common/utils";
+import {convertSICXToICX} from "../../common/utils";
 import {BaseClass} from "../../models/classes/BaseClass";
 import {ModalType} from "../../models/enums/ModalType";
 import {StateChangeService} from "../../services/state-change.service";
@@ -17,31 +17,38 @@ import {UnstakeInstantSicxPayload} from "../../models/classes/UnstakeInstantSicx
 import {RoundDownPercentPipe} from "../../pipes/round-down-percent.pipe";
 import {PoolStats} from "../../models/classes/PoolStats";
 import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
+import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-unstake-panel',
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RoundDownPercentPipe],
+  imports: [CommonModule, UsFormatPipe, RoundDownPercentPipe, PrettyUntilBlockHeightTime, FormsModule],
   templateUrl: './unstake-panel.component.html'
 })
 export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestroy {
 
   unstakingChartEl: any;
   unstakingChart: any;
-  @ViewChild("unstkApyChart", { static: true}) set b(b: ElementRef) { this.unstakingChartEl = b.nativeElement; }
+  @ViewChild("unstkApyChart", { static: true}) set a(a: ElementRef) { this.unstakingChartEl = a.nativeElement; }
+
+  instantCheckboxEl!: HTMLInputElement;
+  @ViewChild("instantBox", { static: true}) set b(b: ElementRef) { this.instantCheckboxEl = b.nativeElement; }
+
 
   @Input({ required: true}) active!: boolean;
   @Input({ required: true}) userSicxBalance!: BigNumber;
   @Input({ required: true}) todaySicxRate!: BigNumber;
 
-  unstakeInputAmount: string = "";
-  receivedIcxAmount: string = "0";
-  instantReceivedIcxAmount: string = "0";
+  unstakeInputAmount: BigNumber = new BigNumber(0);
+
+  receivedIcxAmount: BigNumber = new BigNumber(0);
+  instantReceivedIcxAmount: BigNumber = new BigNumber(0);
   feeAmount: BigNumber = new BigNumber(0);
 
   userUnstakeInfo?: UserUnstakeInfo;
   claimableIcx?: BigNumber;
-  untilBlockHeightTime?: string;
+  currentBlockHeight?: BigNumber;
   balancedDexFees?: BalancedDexFees;
   icxSicxPoolStats?: PoolStats;
 
@@ -102,7 +109,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   subscribeToLatestBlockHeightChange(): void {
     this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe(block => {
-      this.untilBlockHeightTime = this.getPrettyUntilBlockHeightTime(this.userUnstakeInfo, new BigNumber(block.height) ?? "");
+      this.currentBlockHeight = new BigNumber(block.height)    ;
     });
   }
   subscribeToUserUnstakeInfoChange(): void {
@@ -122,7 +129,6 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   private resetUserState(): void {
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
-    this.untilBlockHeightTime = undefined;
   }
 
   subscribeToClaimableIcxChange(): void {
@@ -171,17 +177,30 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     const unstakeInputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
 
     if (!unstakeInputAmount || unstakeInputAmount <= 0) {
-      this.unstakeInputAmount = "";
+      this.unstakeInputAmount = new BigNumber(0);
+      this.receivedIcxAmount = new BigNumber(0);
+      this.instantReceivedIcxAmount= new BigNumber(0);
+      this.feeAmount= new BigNumber(0);
     } else {
-      this.unstakeInputAmount = usLocale.to(unstakeInputAmount);
-      const receivedIcxBigNumAmount = convertSICXToICX(new BigNumber(unstakeInputAmount), this.todaySicxRate);
-      this.receivedIcxAmount = usLocale.to(+receivedIcxBigNumAmount.toFixed(2));
+      this.unstakeInputAmount = new BigNumber(unstakeInputAmount);
+      const receivedIcxBigNumAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
+      this.receivedIcxAmount = receivedIcxBigNumAmount;
 
       if (this.balancedDexFees) {
         const instantFeeAmount = receivedIcxBigNumAmount.multipliedBy(this.balancedDexFees.icxTotal);
-        this.instantReceivedIcxAmount = usLocale.to(+(receivedIcxBigNumAmount.minus(instantFeeAmount)).toFixed(2));
+        this.instantReceivedIcxAmount = receivedIcxBigNumAmount.minus(instantFeeAmount);
         this.feeAmount = instantFeeAmount;
       }
+
+      this.checkForInstantLiquidityGap();
+    }
+  }
+
+  private checkForInstantLiquidityGap(): void {
+    // if instant unstake is active and there is not enough liquidity available compared to input unstake amount - reset to wait
+    if (this.unstakeInstantIsActive() && this.instantLiquidityLtUnstakeAmount()) {
+      this.unstakeWaitActive = true;
+      this.instantCheckboxEl.checked = false;
     }
   }
 
@@ -189,16 +208,28 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     return this.icxSicxPoolStats?.totalSupply ?? new BigNumber(0);
   }
 
+  instantLiquidityLtUnstakeAmount(): boolean {
+    return this.instantIcxLiquidity().lt(this.unstakeInputAmount);
+  }
+
   onUnstakeWaitClick(e: MouseEvent) {
+    e.preventDefault();
     e.stopPropagation();
 
     this.unstakeWaitActive = true;
   }
 
   onUnstakeInstantClick(e: MouseEvent) {
+    e.preventDefault();
     e.stopPropagation();
 
-    this.unstakeWaitActive = false;
+    if (this.instantLiquidityLtUnstakeAmount()) {
+      console.log("this.unstakeWaitActive = true;")
+      this.unstakeWaitActive = true;
+      this.instantCheckboxEl.checked = false;
+    } else {
+      this.unstakeWaitActive = false;
+    }
   }
 
   unstakeWaitIsActive(): boolean {
@@ -215,15 +246,9 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   shouldShowUnstakeInfo(): boolean {
     return this.userUnstakeInfo != undefined
+        && this.userUnstakeInfo.data.length > 0
         && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
-        && this.untilBlockHeightTime != undefined;
+        && this.currentBlockHeight != undefined
   }
 
-  getPrettyUntilBlockHeightTime(userUnstakeInfo: UserUnstakeInfo | undefined, currentBlockHeight: BigNumber): string | undefined {
-    if (userUnstakeInfo) {
-      return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.lastUnstakeBlockHeight);
-    } else {
-      return undefined;
-    }
-  }
 }

@@ -150,7 +150,6 @@ export abstract class Mapper {
 
   public static mapUserUnstakeInfo(userUnstakeInfo: IUserUnstakeInfo[]): UserUnstakeInfo {
     let totalAmount = new BigNumber(0);
-    let lastUnstakeBlockHeight = new BigNumber(0);
     const data: UnstakeInfoData[] = [];
 
     userUnstakeInfo.forEach(u => {
@@ -165,12 +164,10 @@ export abstract class Mapper {
 
       data.push(unstkData);
 
-      if (unstkData.blockHeight.gt(lastUnstakeBlockHeight)) {
-        lastUnstakeBlockHeight = unstkData.blockHeight
-      }
+
     });
 
-    return new UserUnstakeInfo(data, totalAmount, lastUnstakeBlockHeight);
+    return new UserUnstakeInfo(data, totalAmount);
   }
 
 

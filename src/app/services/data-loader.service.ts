@@ -14,7 +14,7 @@ import {lastValueFrom, take} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {IEventLog} from "../models/interfaces/IEventLog";
-import {hexToBigNumber} from "../common/utils";
+import {hexToNormalisedNumber} from "../common/utils";
 
 @Injectable({
   providedIn: 'root'
@@ -154,19 +154,24 @@ export class DataLoaderService {
     this.stateChangeService.lastBlockHeightChange$.pipe(take(1)).subscribe(async (lastBlockHeight) => {
       try {
         const method = "FeeDistributed"
+        const limit = 100;
+        // TODO use address from address provider and check how often FeeDistributed is emitted  !!!
+        const ommFeeDistScoreAddress = "cxd0e7ae807ad51675b10d58fdccd6b3a1e40a1d1c";
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
-        const url =`${environment.trackerUrl}/api/v1/logs?block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
+        const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
         const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
+        const totalCount = res.headers.get("X-Total-Count");
 
         let totalFees = new BigNumber(0);
+
+        console.log("response:", res);
 
         res.body?.forEach(eventLog => {
           if (eventLog.method == method) {
             const indexed = JSON.parse(eventLog.indexed);
-            totalFees = totalFees.plus(hexToBigNumber(indexed[2]));
+            totalFees = totalFees.plus(hexToNormalisedNumber(indexed[1]));
           }
         });
-
 
         this.stateChangeService.feeDistributed7DUpdate(totalFees);
       } catch (e) {

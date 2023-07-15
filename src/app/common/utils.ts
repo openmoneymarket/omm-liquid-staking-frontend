@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
 import {environment} from "../../environments/environment";
-import {Times} from "../models/classes/Times";
+import {UnstakeInfoData} from "../models/classes/UserUnstakeInfo";
 
 export function numToUsLocaleString(num: BigNumber | string): string {
     if (typeof num === "string") {
@@ -163,6 +163,14 @@ export function getPrettyTimeForBlockHeightDiff(currentBlockHeight: BigNumber, t
     if (secondsUntilTargetBlock.isNegative()) return undefined;
 
     return convertSecondsToDHM(secondsUntilTargetBlock.toNumber());
+}
+
+export function getPrettyUntilBlockHeightTime(userUnstakeInfo: UnstakeInfoData | undefined, currentBlockHeight?: BigNumber): string | undefined {
+    if (userUnstakeInfo && currentBlockHeight) {
+        return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.blockHeight);
+    } else {
+        return undefined;
+    }
 }
 
 export function convertSecondsToDHM(seconds: number): string {

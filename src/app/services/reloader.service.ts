@@ -5,6 +5,7 @@ import {Times} from "../models/classes/Times";
 import {timestampNowMicroseconds} from "../common/utils";
 import {Subscription, timer} from "rxjs";
 import {IconApiService} from "./icon-api.service";
+import {BLOCK_POOL_INTERVAL_TIME} from "../common/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,6 @@ import {IconApiService} from "./icon-api.service";
  * Service that manages reloading / refreshing of the data
  */
 export class ReloaderService implements OnDestroy {
-
-  private BLOCK_POOL_INTERVAL_TIME =  Times.secondsInMilliseconds(2);
 
   public currentTimestamp: number = Math.floor(new Date().getTime() / 1000);
   public currentTimestampMicro: BigNumber = timestampNowMicroseconds();
@@ -37,7 +36,7 @@ export class ReloaderService implements OnDestroy {
   }
 
   initBlockHeightPolling(): void {
-    this.blockPollSub = timer(0, this.BLOCK_POOL_INTERVAL_TIME).subscribe( () => {
+    this.blockPollSub = timer(0, BLOCK_POOL_INTERVAL_TIME).subscribe( () => {
       this.iconApiService.getLastBlockHeight().then(block => {
         if (this.lastBlockHeight < block.height) {
           this.lastBlockHeight = block.height;

@@ -17,7 +17,9 @@
                 </div>
 
                 <div class="grid-cell">
-                    <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0" [value]="stakeInputAmount"
+                    <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0"
+                           class="{{userIcxBalanceLtInputAmount() ? 'text-red' : ''}}"
+                           [value]="stakeInputAmount.toFixed(2) | usFormat: false : true"
                            (keyup)="onStakeInputKeyUp($event)"
                            (blur)="processStakeInput($event)"
                            (paste)="processStakeInput($event)"
@@ -36,7 +38,8 @@
                 </div>
 
                 <div class="grid-cell">
-                    <input id="swap-to" pattern="[0-9]*" type="text" name="swap-to" placeholder="0" [value]="unstakeInputAmount"
+                    <input id="swap-to" pattern="[0-9]*" type="text" name="swap-to" placeholder="0"
+                           [value]="unstakeInputAmount.toFixed(2) | usFormat: false : true"
                            (keyup)="onUnstakeInputKeyUp($event)"
                            (blur)="processUnstakeInput($event)"
                            (paste)="processUnstakeInput($event)"
@@ -55,13 +58,13 @@
                 <div class="grid-cell">
                     <h3>Staking APY
                         <span class="tooltip">
-													<span class="tooltip-item">
-                                                        <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
-                                                    </span>
-													<div class="tooltip-content" style="min-width: 320px;">
-													<p class="label">The traditional ICX staking return (6.92%), minus a 10% fee.</p>
-													</div>
-												</span>
+                            <span class="tooltip-item">
+                                <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
+                            </span>
+                            <div class="tooltip-content" style="min-width: 320px;">
+                            <p class="label">The traditional ICX staking return (6.92%), minus a 10% fee.</p>
+                            </div>
+                        </span>
                     </h3>
                 </div>
                 <div class="grid-cell text-right">
@@ -95,12 +98,16 @@
     </div>
 
     <!-- Unstaking messgae -->
-    <div class="notice" *ngIf="userLoggedIn() && ((userUnstakeInfo && userUnstakeInfo.totalUnstakeAmount.gt(0)) || claimableIcx?.gt(0.01))">
-        <p *ngIf="shouldShowUnstakeInfo()" class="label">Your unstaking request for
-            <span class="text-bold">{{userUnstakeInfo!.totalUnstakeAmount.toFixed(2) | usFormat}} sICX will be ready to claim within
-                <span class="text-bold">{{untilBlockHeightTime}}</span>.
+    <div class="notice" *ngIf="userLoggedIn() && (shouldShowUnstakeInfo() || claimableIcx?.gt(0.01))">
+        <ng-container *ngIf="shouldShowUnstakeInfo()">
+            <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
+                <p class="label">Your unstaking request for
+                    <span class="text-bold">{{unstakeInfo.amount.toFixed(2) | usFormat}} ICX will be ready to claim within
+                <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
             </span>
-        </p>
+                </p>
+            </ng-container>
+        </ng-container>
         <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx.toFixed(2) | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

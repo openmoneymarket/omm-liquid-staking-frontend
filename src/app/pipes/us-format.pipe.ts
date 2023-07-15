@@ -8,12 +8,12 @@ import {numToUsLocaleString} from "../common/utils";
 })
 export class UsFormatPipe implements PipeTransform {
 
-  transform(amount?: string | number | BigNumber, defaultZero = false): string {
-    return this.formatNumberToUSLocaleString(amount, defaultZero);
+  transform(amount?: string | number | BigNumber, defaultZero = false, defaultEmpty = false): string {
+    return this.formatNumberToUSLocaleString(amount, defaultZero, defaultEmpty);
   }
 
-  public formatNumberToUSLocaleString(num?: number | string | BigNumber, defaultZero = false): string {
-    if (!num || (+num) === 0) { return defaultZero ? "0" : "-"; }
+  public formatNumberToUSLocaleString(num?: number | string | BigNumber, defaultZero = false, defaultEmpty = false): string {
+    if (!num || (+num) === 0) { return defaultZero ? "0" : (defaultEmpty ? '' : "-"); }
     return numToUsLocaleString(new BigNumber(num));
   }
 
