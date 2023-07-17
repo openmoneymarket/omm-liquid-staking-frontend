@@ -26,6 +26,7 @@ import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
 import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
+import {Address} from "../models/Types/ModalTypes";
 
 
 @Injectable({
@@ -340,23 +341,27 @@ export class ScoreService {
     return hexToNormalisedNumber(res);
   }
 
-  public async getUserAssetBalance(token: Irc2Token): Promise<BigNumber> {
+  public async getUserTokenBalance(token: Irc2Token): Promise<BigNumber> {
+    this.checkerService.checkUserLoggedIn();
+
+    return this.getTokenBalance(token, this.persistenceService.activeWallet?.address!)
+  }
+
+  public async getTokenBalance(token: Irc2Token, address: Address): Promise<BigNumber> {
     let balance: BigNumber;
     if ("ICX" === token.symbol) {
-      balance = await this.iconApiService.getIcxBalance(this.persistenceService.activeWallet!.address);
+      balance = await this.iconApiService.getIcxBalance(address);
     } else {
-      balance = await this.getIRC2TokenBalance(token);
+      balance = await this.getIRC2TokenBalance(token, address);
     }
 
     // set asset balance
-    log.debug(`User (${this.persistenceService.activeWallet!.address}) ${token} balance: ${balance}`);
+    log.debug(`${address} ${token.symbol} balance: ${balance}`);
 
     return balance;
   }
 
-  private async getIRC2TokenBalance(token: Irc2Token): Promise<BigNumber> {
-    this.checkerService.checkUserLoggedIn();
-
+  private async getIRC2TokenBalance(token: Irc2Token, address: Address): Promise<BigNumber> {
     // make sure token address is initialised
     if (!token.addressInitialised()) {
       throw new Error(token.addressError())
@@ -366,15 +371,46 @@ export class ScoreService {
 
     const tx = this.iconApiService.buildTransaction("",  token.address!,
       method, {
-        _owner: this.persistenceService.activeWallet!.address
+        _owner: address
       }, IconTransactionType.READ);
 
     const res = await this.iconApiService.iconService.call(tx).execute();
     const balance = hexToNormalisedNumber(res, token.decimals);
 
-    log.debug(`User (${this.persistenceService.activeWallet!.address}) ${token} balance = ${balance}`);
-
     return balance;
+  }
+
+  /**
+   * @description Get total validator reward
+   * @return  Total validator reward amount in BigNumber
+   */
+  public async getTotalValidatorRewards(): Promise<BigNumber> {
+    this.checkerService.checkAllAddressesLoaded()
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses?.systemContract.FeeDistribution!,
+        ScoreMethodNames.GET_VALIDATOR_COLLECTED_FEE, {}, IconTransactionType.READ);
+
+    const amount = await this.iconApiService.iconService.call(tx).execute();
+
+    return hexToNormalisedNumber(amount);
+  }
+
+
+  /**
+   * @description Get total number of bOmm holders
+   * @return number of bOmm holders in BigNumber
+   */
+  public async getBommHoldersCount(): Promise<BigNumber> {
+    this.checkerService.checkAllAddressesLoaded()
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses?.systemContract.bOMM!,
+        ScoreMethodNames.ACTIVE_USERS_COUNT, {}, IconTransactionType.READ);
+
+    const amount = await this.iconApiService.iconService.call(tx).execute();
+
+    console.log("BommHoldersCount: ", amount);
+
+    return hexToBigNumber(amount);
   }
 
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable, ReplaySubject, Subject} from "rxjs";
+import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {Address, ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
 import {ModalAction, ModalActionsResult} from "../models/classes/ModalAction";
 import BigNumber from "bignumber.js";
@@ -14,6 +14,7 @@ import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {Block} from "icon-sdk-js";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats} from "../models/classes/PoolStats";
+import {IDaoFundBalance} from "../models/interfaces/IDaoFundBalance";
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +54,7 @@ export class StateChangeService {
   private sicxTodayRateChange = new ReplaySubject<BigNumber>(1);
   public sicxTodayRateChange$ = this.sicxTodayRateChange.asObservable();
 
-  private tokenPricesChange = new ReplaySubject<Map<TokenSymbol, BigNumber>>(1);
+  private tokenPricesChange = new BehaviorSubject<Map<TokenSymbol, BigNumber>>(new Map<Address, BigNumber>());
   public tokenPricesChange$ = this.tokenPricesChange.asObservable();
 
   private userUnstakeInfoChange = new ReplaySubject<UserUnstakeInfo>(1);
@@ -83,7 +84,28 @@ export class StateChangeService {
   private feeDistributed7DChange = new ReplaySubject<BigNumber>(1);
   public feeDistributed7DChange$ = this.feeDistributed7DChange.asObservable();
 
+  private daoFundBalanceChange = new BehaviorSubject<IDaoFundBalance>({ balances: [] });
+  public daoFundBalanceChange$ = this.daoFundBalanceChange.asObservable();
+
+  private totalValidatorSicxRewardsChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  public totalValidatorSicxRewardsChange$ = this.totalValidatorSicxRewardsChange.asObservable();
+
+  private bOmmHoldersCountChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  public bOmmHoldersCountChange$ = this.bOmmHoldersCountChange.asObservable();
+
   constructor(private persistenceService: PersistenceService) {
+  }
+
+  public bOmmHoldersCountUpdate(value: BigNumber): void {
+    this.bOmmHoldersCountChange.next(value);
+  }
+
+  public totalValidatorSicxRewardsUpdate(value: BigNumber): void {
+    this.totalValidatorSicxRewardsChange.next(value);
+  }
+
+  public daoFundBalanceUpdate(value: IDaoFundBalance): void {
+    this.daoFundBalanceChange.next(value);
   }
 
   public feeDistributed7DUpdate(value: BigNumber): void {

@@ -12,6 +12,7 @@ interface CollateralContracts {
 
 interface SystemContract {
     DEX: string;
+    DaoFund: string;
     Governance: string;
     LendingPool: string;
     LendingPoolDataProvider: string;
@@ -19,6 +20,7 @@ interface SystemContract {
     Rewards: string;
     OmmToken: string;
     Delegation: string;
+    FeeDistribution: string;
     PriceOracle: string;
     RewardWeightController: string;
     StakedLp: string;

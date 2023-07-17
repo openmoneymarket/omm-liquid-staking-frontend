@@ -1,0 +1,55 @@
+<section class="overview">
+    <!-- Vote overview -->
+    <div id="vote-overview" class="grid panel" style="margin-top: 0;">
+        <!-- Supplied -->
+        <div class="grid-cell">
+            <div class="grid">
+                <!-- You've supplied -->
+                <div class="grid-cell text-center border-right">
+                    <dl class="metadata">
+                        <dt>DAO Fund
+                            <span class="tooltip">
+                                <span class="tooltip-item">
+                                    <img src="assets/img/icon/question.svg" class="tooltip-icon">
+                                </span>
+                                <div class="tooltip-content">
+                                <p class="text-right">{{getOmmBalance().toFixed(0) | usFormat}} OMM<br>{{getsIcxBalance().toFixed(0) | usFormat}} sICX</p>
+                                </div>
+                            </span>
+                        </dt>
+                        <dd>{{daoFundUsdValue.toFixed(0) | dollarUsLocale}}</dd>
+                    </dl>
+                </div>
+
+                <!-- Your supply APY -->
+                <div class="grid-cell text-center border-right">
+                    <dl class="metadata">
+                        <dt>Staking income</dt>
+                        <dd>{{stakingIncome.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Borrowed -->
+        <div class="grid-cell">
+            <div class="grid">
+                <!-- You've borrowed -->
+                <div class="grid-cell text-center border-right">
+                    <dl class="metadata">
+                        <dt>Validator rewards</dt>
+                        <dd>{{totalValidatorIcxRewards.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                    </dl>
+                </div>
+
+                <!-- Your borrow APY -->
+                <div class="grid-cell text-center">
+                    <dl class="metadata">
+                        <dt>bOMM holders</dt>
+                        <dd>{{bOmmHoldersCount.toFixed(0) | usFormat}}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

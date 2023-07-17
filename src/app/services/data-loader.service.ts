@@ -6,7 +6,7 @@ import log from "loglevel";
 import {OmmService} from "./omm.service";
 import {CheckerService} from "./checker.service";
 import {ReloaderService} from "./reloader.service";
-import {ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, supportedTokens} from "../common/constants";
+import {ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
 import BigNumber from "bignumber.js";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
 import {TokenSymbol} from "../models/Types/ModalTypes";
@@ -43,7 +43,7 @@ export class DataLoaderService {
       await Promise.all(supportedTokens.map(
         async (token) => {
           try {
-            const balance = await this.scoreService.getUserAssetBalance(token);
+            const balance = await this.scoreService.getUserTokenBalance(token);
             // commit the change
             this.stateChangeService.updateUserAssetBalance(balance, token);
           } catch (e) {
@@ -62,13 +62,36 @@ export class DataLoaderService {
       const ommPrice = await this.scoreService.getReferenceData(OMM.symbol);
       const icxPrice = await this.scoreService.getReferenceData(ICX.symbol);
 
+      log.debug(`ommPrice = ${ommPrice.toFixed(6)}`);
+      log.debug(`icxPrice = ${icxPrice.toFixed(6)}`);
+
       const tokenPrices = new Map<TokenSymbol, BigNumber>();
       tokenPrices.set(OMM.symbol, ommPrice);
       tokenPrices.set(ICX.symbol, icxPrice);
 
       this.stateChangeService.tokenPricesUpdate(tokenPrices);
     } catch (e) {
-      log.debug("Failed to fetch OMM price");
+      log.debug("Error in loadTokenPrices");
+      log.error(e);
+    }
+  }
+
+  public async loadTotalValidatorRewards(): Promise<void> {
+    try {
+      const totalValidatorRewards: BigNumber = await this.scoreService.getTotalValidatorRewards();
+      this.stateChangeService.totalValidatorSicxRewardsUpdate(totalValidatorRewards);
+    } catch (e) {
+      log.error("Error in loadTotalValidatorRewards:");
+      log.error(e);
+    }
+  }
+
+  public async loadActiveBommUsersCount(): Promise<void> {
+    try {
+      const activeUsersCount: BigNumber = await this.scoreService.getBommHoldersCount();
+      this.stateChangeService.bOmmHoldersCountUpdate(activeUsersCount);
+    } catch (e) {
+      log.error("Error in loadTotalValidatorRewards:");
       log.error(e);
     }
   }
@@ -137,6 +160,27 @@ export class DataLoaderService {
     }
   }
 
+  public async loadlDaoFundTokens(): Promise<void> {
+    try {
+      this.checkerService.checkAllAddressesLoaded();
+
+      const [ommBalance, sIcxBalance] = await Promise.all([
+        this.scoreService.getTokenBalance(OMM, this.persistenceService.allAddresses?.systemContract.DaoFund!),
+        this.scoreService.getTokenBalance(SICX, this.persistenceService.allAddresses?.systemContract.DaoFund!)
+      ]);
+
+      this.stateChangeService.daoFundBalanceUpdate({
+        balances: [
+          { token: OMM, balance: ommBalance },
+          { token: SICX, balance: sIcxBalance }
+        ]
+      });
+    } catch (e) {
+      log.error("Error in loadlDaoFundTokens:");
+      log.error(e);
+    }
+  }
+
   public async loadSicxHoldersAmount(): Promise<void> {
     try {
       const sicx = this.persistenceService.allAddresses!.collateral.sICX;
@@ -156,7 +200,7 @@ export class DataLoaderService {
         const method = "FeeDistributed"
         const limit = 100;
         // TODO use address from address provider and check how often FeeDistributed is emitted  !!!
-        const ommFeeDistScoreAddress = "cxd0e7ae807ad51675b10d58fdccd6b3a1e40a1d1c";
+        const ommFeeDistScoreAddress = this.persistenceService.allAddresses?.systemContract.FeeDistribution;
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
         const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
         const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
@@ -441,14 +485,6 @@ export class DataLoaderService {
   //   }
   // }
 
-  private refreshBridgeBalances(): void {
-    window.dispatchEvent(new CustomEvent("bri.widget", {
-      detail: {
-        action: 'refreshBalance'
-      }
-    }));
-  }
-
 
   public async afterUserActionReload(): Promise<void> {
 
@@ -500,11 +536,14 @@ export class DataLoaderService {
   }
 
   /**
-   * Load core data async without waiting
+   * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
 
     this.loadFeesCollected7D();
+    this.loadlDaoFundTokens();
+    this.loadTotalValidatorRewards();
+    this.loadActiveBommUsersCount();
 
     // TODO
     // this.loadInterestHistory();

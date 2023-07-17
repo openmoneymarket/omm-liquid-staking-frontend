@@ -30,7 +30,6 @@ export class PersistenceService {
   public totalStakedOmm = new BigNumber("0");
   public totalSuppliedOmm = new BigNumber("0");
   public bOmmTotalSupply = new BigNumber("0");
-  public ommPriceUSD = new BigNumber("-1"); // -1 indicates that ommPriceUSD is not set
 
   public tokenUsdPrices = new Map<TokenSymbol, BigNumber>();
 
