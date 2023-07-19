@@ -6,13 +6,19 @@
 import BigNumber from "bignumber.js";
 import {numToUsLocaleString, roundDownTo2Decimals, timestampInMillisecondsToPrettyDate} from "./utils";
 import {AssetAction} from "../models/classes/AssetAction";
-import {LockingAction} from "../models/classes/LockingAction";
+import {OmmLockingPayload} from "../models/classes/OmmLockingPayload";
 import {StakingAction} from "../models/classes/StakingAction";
 import {ManageStakedIcxAction} from "../models/classes/ManageStakedIcxAction";
 
 // Copy related messages
 export const UNABLE_TO_COPY = "Couldn't copy address.";
 export const SUCCESS_COPY = "Address copied.";
+
+// OMM Locking related messages
+export const LOCKED_VALUE_NO_CHANGE = "No change in locked OMM value.";
+export const LOCKING_PERIOD_NOT_SELECTED = "Choose a lock-up period.";
+export const TOO_LOW_LOCK_AMOUNT = (minLockAmount: BigNumber) => `You must lock up more than ${minLockAmount}`;
+export const LOCK_AMOUNT_LOWER_THAN_CURRENT = "You can't lock up less OMM than you currently have locked.";
 
 // Iconex related messages
 export const ICONEX_WALLET_DOES_NOT_EXIST = "Wallet does not exist. Sign in to ICONex and try again.";
@@ -68,10 +74,10 @@ export const SUCCESS_UPDATE_VOTES = "Votes allocated.";
 export const SUCCESS_REMOVE_VOTES = "Votes removed.";
 export const SUCCESS_SUBMIT_PROPOSAL = "Proposal submitted.";
 export const SUCCESS_CAST_VOTE = "Vote cast.";
-export const SUCCESS_LOCK_OMM = (lockingAction: LockingAction) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
-export const SUCCESS_INCREASE_LOCK_TIME = (lockingAction: LockingAction) => `OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
-export const SUCCESS_INCREASE_LOCKED_OMM = (lockingAction: LockingAction) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
-export const SUCCESS_INCREASE_LOCK_TIME_AND_AMOUNT = (lockingAction: LockingAction) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
+export const SUCCESS_LOCK_OMM = (lockingAction: OmmLockingPayload) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
+export const SUCCESS_INCREASE_LOCK_TIME = (lockingAction: OmmLockingPayload) => `OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
+export const SUCCESS_INCREASE_LOCKED_OMM = (lockingAction: OmmLockingPayload) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
+export const SUCCESS_INCREASE_LOCK_TIME_AND_AMOUNT = (lockingAction: OmmLockingPayload) => `${lockingAction.amount} OMM locked until ${timestampInMillisecondsToPrettyDate(lockingAction.lockingTime)}.`;
 export const SUCCESS_CLAIM_AND_APPLY_BOMM_BOOST = (ommClaimed: BigNumber | number) => `Claimed ${numToUsLocaleString(roundDownTo2Decimals(ommClaimed))} OMM. \nbOMM boost applied.`;
 export const SUCCESS_APPLY_BOMM_BOOST = "bOMM boost applied.";
 export const SUCCESS_UNSTAKE_OMM = (stakingAction: StakingAction | ManageStakedIcxAction) => `${stakingAction.amount} OMM unstaking.`;
@@ -85,7 +91,7 @@ export const FAILURE_UNSTAKE_SICX = "Couldn't unstake sICX. Please try again in 
 
 export const FAILURE_CLAIM_ICX = () => `Couldn't claim ICX. Please try again in a moment.`;
 export const FAILURE_CLAIM_OMM = (failedTxMessage: string) => `Couldn't claim rewards. ${failedTxMessage}`;
-export const FAILURE_WITHDRAW_LOCKED_OMM = (failedTxMessage: string) => `Couldn't withdraw locked OMM. ${failedTxMessage}`;
+export const FAILURE_WITHDRAW_LOCKED_OMM = `Couldn't withdraw locked OMM.`
 export const FAILURE_CLAIM_AND_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";
 export const FAILURE_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";
 export const FAILURE_UNSTAKE_OMM = (failedTxMessage: string) => `Couldn't unstake OMM. ${failedTxMessage}`;
@@ -94,7 +100,7 @@ export const FAILURE_UPDATE_VOTES = (failedTxMessage: string) => `Couldn't alloc
 export const FAILURE_REMOVE_ALL_VOTES = (failedTxMessage: string) => `Couldn't remove votes. ${failedTxMessage}`;
 export const FAILURE_SUBMIT_PROPOSAL = (failedTxMessage: string) => `Couldn't submit proposal. ${failedTxMessage}`;
 export const FAILURE_CAST_VOTE = (failedTxMessage: string) => `Couldn't cast vote. ${failedTxMessage}`;
-export const FAILURE_LOCK_OMM = (failedTxMessage: string) => `Couldn't lock up OMM. ${failedTxMessage}`;
-export const FAILURE_INCREASE_LOCK_TIME = (failedTxMessage: string) => `Couldn't increase the lock-up period. ${failedTxMessage}`;
-export const FAILURE_INCREASE_LOCK_OMM = (failedTxMessage: string) => `Couldn't lock up OMM. ${failedTxMessage}`;
-export const FAILURE_INCREASE_LOCK_TIME_AND_AMOUNT = (failedTxMessage: string) => `Couldn't lock up OMM or increase the lock-up period. ${failedTxMessage}`;
+export const FAILURE_LOCK_OMM = `Couldn't lock up OMM.`;
+export const FAILURE_INCREASE_LOCK_TIME = `Couldn't increase the lock-up period.`;
+export const FAILURE_INCREASE_LOCK_OMM = `Couldn't lock up OMM.`;
+export const FAILURE_INCREASE_LOCK_TIME_AND_AMOUNT = `Couldn't lock up OMM or increase the lock-up period.`;

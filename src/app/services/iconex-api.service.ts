@@ -67,7 +67,7 @@ export class IconexApiService {
 
         if (payload.id === IconexId.SHOW_MESSAGE_HIDE_MODAL) {
           this.notificationService.showNotificationToShow(payload.result);
-          this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+          this.stateChangeService.hideActiveModal();
         }
 
         this.transactionResultService.processIconexTransactionResult(payload);

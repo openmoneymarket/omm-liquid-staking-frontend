@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {Address, ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
 import {ModalAction, ModalActionsResult} from "../models/classes/ModalAction";
@@ -15,6 +15,9 @@ import {Block} from "icon-sdk-js";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats} from "../models/classes/PoolStats";
 import {IDaoFundBalance} from "../models/interfaces/IDaoFundBalance";
+import {LockedOmm} from "../models/classes/LockedOmm";
+import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
+import {IModalChange} from "../models/interfaces/IModalChange";
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +42,7 @@ export class StateChangeService {
   private currentTimestampChange = new ReplaySubject<{ currentTimestamp: number, currentTimestampMicro: BigNumber }>(1);
   currentTimestampChange$ = this.currentTimestampChange.asObservable();
 
-  private modalPayloadChange = new ReplaySubject<{modalType: ModalType; payload: ModalPayload | undefined}>(1);
+  private modalPayloadChange = new ReplaySubject<IModalChange>(1);
   modalPayloadChange$= this.modalPayloadChange.asObservable();
 
   private lockedOmmActionSucceeded = new ReplaySubject<boolean>(1);
@@ -93,7 +96,49 @@ export class StateChangeService {
   private bOmmHoldersCountChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
   public bOmmHoldersCountChange$ = this.bOmmHoldersCountChange.asObservable();
 
+  private userLockedOmmChange = new ReplaySubject<LockedOmm>(1);
+  userLockedOmmChange$ = this.userLockedOmmChange.asObservable();
+
+  private userOmmTokenBalanceDetailsChange = new ReplaySubject<OmmTokenBalanceDetails>(1);
+  userOmmTokenBalanceDetailsChange$ = this.userOmmTokenBalanceDetailsChange.asObservable();
+
+  private userDelegationWorkingbOmmChange = new ReplaySubject<BigNumber>(1);
+  userDelegationWorkingbOmmChange$ = this.userDelegationWorkingbOmmChange.asObservable();
+
+  private userAccumulatedFeeChange = new ReplaySubject<BigNumber>(1);
+  userAccumulatedFeeChange$ = this.userAccumulatedFeeChange.asObservable();
+
+  private delegationbOmmTotalWorkingSupplyChange = new ReplaySubject<BigNumber>(1);
+  delegationbOmmTotalWorkingSupplyChange$ = this.delegationbOmmTotalWorkingSupplyChange.asObservable();
+
+  private bOmmTotalSupplyChange = new ReplaySubject<BigNumber>(1);
+  bOmmTotalSupplyChange$ = this.bOmmTotalSupplyChange.asObservable();
+
   constructor(private persistenceService: PersistenceService) {
+  }
+
+  public bOmmTotalSupplyUpdate(value: BigNumber): void {
+    this.bOmmTotalSupplyChange.next(value);
+  }
+
+  public delegationbOmmTotalWorkingSupplyUpdate(value: BigNumber): void {
+      this.delegationbOmmTotalWorkingSupplyChange.next(value);
+  }
+
+  public userAccumulatedFeeUpdate(balance: BigNumber): void {
+    this.userAccumulatedFeeChange.next(balance);
+  }
+
+  public userDelegationWorkingbOmmBalanceUpdate(balance: BigNumber): void {
+    this.userDelegationWorkingbOmmChange.next(balance);
+  }
+
+  public updateUserOmmTokenBalanceDetails(userOmmTokenBalanceDetails: OmmTokenBalanceDetails): void {
+    this.userOmmTokenBalanceDetailsChange.next(userOmmTokenBalanceDetails);
+  }
+
+  public userLockedOmmUpdate(lockedOmm: LockedOmm): void {
+    this.userLockedOmmChange.next(lockedOmm);
   }
 
   public bOmmHoldersCountUpdate(value: BigNumber): void {
@@ -167,11 +212,15 @@ export class StateChangeService {
     this.modalPayloadChange.next({ modalType, payload });
   }
 
+  public hideActiveModal(): void {
+    this.modalPayloadChange.next({ modalType: ModalType.UNDEFINED, payload: undefined });
+  }
+
   public updateLoginStatus(wallet: Wallet | undefined): void {
     this.loginChange.next(wallet);
   }
 
-  public updateUserAssetBalance(balance: BigNumber, token: Irc2Token): void {
+  public updateUserTokenBalance(balance: BigNumber, token: Irc2Token): void {
     this.persistenceService.activeWallet!.irc2TokenBalancesMap.set(token.symbol, balance);
     this.irc2TokenBalanceUpdate.next({ token, amount: balance })
   }

@@ -54,6 +54,7 @@ export class ScoreMethodNames {
      * FeeDistribution SCORE
      */
     public static GET_VALIDATOR_COLLECTED_FEE = "getValidatorCollectedFee";
+    public static GET_ACCUMULATED_FEE = "getAccumulatedFee";
 
     /**
     * OmmToken SCORE

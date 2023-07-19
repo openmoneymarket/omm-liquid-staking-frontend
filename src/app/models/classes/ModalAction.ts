@@ -3,7 +3,7 @@ import {AssetAction} from "./AssetAction";
 import {StakingAction} from "./StakingAction";
 import {VoteAction} from "./VoteAction";
 import {GovernanceAction} from "./GovernanceAction";
-import {LockingAction} from "./LockingAction";
+import {OmmLockingPayload} from "./OmmLockingPayload";
 import {ManageStakedIcxAction} from "./ManageStakedIcxAction";
 
 
@@ -13,11 +13,11 @@ export class ModalAction {
   stakingAction?: StakingAction;
   governanceAction?: GovernanceAction;
   voteAction?: VoteAction;
-  lockingOmmAction?: LockingAction;
+  lockingOmmAction?: OmmLockingPayload;
   manageStakedIcxAction?: ManageStakedIcxAction;
 
   constructor(modalType: ModalType, assetAction?: AssetAction, stakingAction?: StakingAction, voteAction?: VoteAction,
-              governanceAction?: GovernanceAction, lockingOmmAction?: LockingAction, manageStakedIcxAction?: ManageStakedIcxAction) {
+              governanceAction?: GovernanceAction, lockingOmmAction?: OmmLockingPayload, manageStakedIcxAction?: ManageStakedIcxAction) {
     this.modalType = modalType;
     this.assetAction = assetAction;
     this.stakingAction = stakingAction;

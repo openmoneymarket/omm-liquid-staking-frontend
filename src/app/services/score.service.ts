@@ -21,12 +21,13 @@ import {Proposal} from "../models/classes/Proposal";
 import {ILockedOmm} from "../models/interfaces/ILockedOmm";
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {BALANCED_SICX_POOL_ID, SICX} from "../common/constants";
+import {BALANCED_SICX_POOL_ID, OMM, SICX} from "../common/constants";
 import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
 import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 import {Address} from "../models/Types/ModalTypes";
+import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
 
 
 @Injectable({
@@ -37,6 +38,17 @@ export class ScoreService {
   constructor(private iconApiService: IconApiService,
               private persistenceService: PersistenceService,
               private checkerService: CheckerService) {
+  }
+
+  /**
+   * @description Build tx to withdraw unlocked OMM
+   * @return  Icon Transaction
+   */
+  public buildWithdrawLockedOmm(): any {
+    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+
+    return this.iconApiService.buildTransaction(this.persistenceService.activeWallet!!.address,
+        this.persistenceService.allAddresses!.systemContract.bOMM, ScoreMethodNames.WITHDRAW_LOCKED_OMM, {}, IconTransactionType.WRITE);
   }
 
   /**
@@ -117,6 +129,124 @@ export class ScoreService {
     log.debug("buildInstantUnstakeSicxTx:", tx);
 
     return tx;
+  }
+
+  /**
+   * @description Build increase lock OMM amount Icon transaction
+   * @param amount - Amount of OMM tokens to lock
+   * @return any lock OMM Tokens Icon transaction
+   */
+  public buildIncreaseLockAmountOmmTx(amount: number): any {
+    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+
+    log.debug(`Increase Lock Omm amount = ` + amount.toString());
+
+    const params = {
+      _to: this.persistenceService.allAddresses!.systemContract.bOMM,
+      _value: IconConverter.toHex(IconAmount.of(amount, OMM.decimals).toLoop()),
+      _data: IconConverter.fromUtf8('{ "method": "increaseAmount", "params": { "unlockTime": 0 }}')};
+
+    return this.iconApiService.buildTransaction(this.persistenceService.activeWallet!!.address,
+        this.persistenceService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build increase lock time of locked OMM tokens
+   * @param lockPeriod - New lock period
+   * @return any increase OMM Tokens lock period Icon transaction
+   */
+  public buildIncreaseLockTimeOmmTx(lockPeriod: BigNumber): any {
+    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+
+    log.debug("buildIncreaseLockTimeOmmTx lockPeriod = " + lockPeriod.toString());
+
+    // convert to microseconds
+    const unlockTimeMicro = lockPeriod.multipliedBy(1000);
+    log.debug(`Increase Lock Omm time for = ` + unlockTimeMicro.toString());
+
+    const params = {
+      unlockTime: IconConverter.toHex(unlockTimeMicro)
+    };
+
+    return this.iconApiService.buildTransaction(this.persistenceService.activeWallet!!.address,
+        this.persistenceService.allAddresses!.systemContract.bOMM, ScoreMethodNames.INCREASE_UNLOCK_TIME, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build increase lock amount and unlock period OMM Tokens Icon transaction
+   * **Note**: Lock period is timestamp in microseconds. The lock period should be an integer/long, not a string.
+   * @param amount - Amount of OMM tokens to lock
+   * @param unlockTime - lock time in milliseconds that needs to be converted to microseconds
+   * @return any lock OMM Tokens Icon transaction
+   */
+  public buildIncreaseLockPeriodAndAmountOmmTx(amount: number, unlockTime: BigNumber): any {
+    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+
+    // convert to microseconds
+    const unlockTimeMicro = unlockTime.multipliedBy(1000);
+    log.debug(`Lock Omm amount = ` + amount.toString());
+    log.debug(`unlockTime = ` + unlockTime.toString());
+    const decimals = 18;
+    const dataPayload = '{ "method": "increaseAmount", "params": { "unlockTime":' + unlockTimeMicro.toFixed() + '}}';
+    log.debug("Data payload = ", dataPayload);
+
+    const params = {
+      _to: this.persistenceService.allAddresses!.systemContract.bOMM,
+      _value: IconConverter.toHex(IconAmount.of(amount, decimals).toLoop()),
+      _data: IconConverter.fromUtf8(dataPayload)};
+
+    return this.iconApiService.buildTransaction(this.persistenceService.activeWallet!!.address,
+        this.persistenceService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build lock OMM Tokens Icon transaction
+   * **Note**: Lock period is timestamp in microseconds. The lock period should be an integer/long, not a string.
+   * @param amount - Amount of OMM tokens to lock
+   * @param unlockTime - lock time in milliseconds that needs to be converted to microseconds
+   * @return any lock OMM Tokens Icon transaction
+   */
+  public buildLockOmmTx(amount: number, unlockTime: BigNumber): any {
+    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+
+    // convert to microseconds
+    const unlockTimeMicro = unlockTime.multipliedBy(1000);
+    log.debug(`Lock Omm amount = ` + amount.toString());
+    log.debug(`unlockTime = ` + unlockTime.toString());
+    const decimals = 18;
+    const dataPayload = '{ "method": "createLock", "params": { "unlockTime":' + unlockTimeMicro.toFixed() + '}}';
+    log.debug("Data payload = ", dataPayload);
+
+    const params = {
+      _to: this.persistenceService.allAddresses!.systemContract.bOMM,
+      _value: IconConverter.toHex(IconAmount.of(amount, decimals).toLoop()),
+      _data: IconConverter.fromUtf8(dataPayload)};
+
+    return this.iconApiService.buildTransaction(this.persistenceService.activeWallet!!.address,
+        this.persistenceService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+  }
+
+
+  /**
+   * @description Get user accumulated OMM rewards amount
+   * @return BigNumber
+   */
+  public async getUserAccumulatedOmmRewards(): Promise<BigNumber> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+    log.debug("Executing getUserAccumulatedOmmRewards...");
+
+    const params = {
+      address: this.persistenceService.activeWallet!.address,
+    };
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.FeeDistribution,
+        ScoreMethodNames.GET_ACCUMULATED_FEE, params, IconTransactionType.READ);
+
+    const res = await this.iconApiService.iconService.call(tx).execute();
+
+    log.debug("getUserAccumulatedOmmRewards: ", res);
+
+    return hexToNormalisedNumber(res);
   }
 
   /**
@@ -508,25 +638,6 @@ export class ScoreService {
   }
 
   /**
-   * @description Get user rewards working bOMM supply
-   * @return BigNumber - user rewards working bOMM supply
-   */
-  public async getUserRewardsWorkingSupplyOfbOmm(): Promise<BigNumber> {
-    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
-
-    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.Rewards,
-      ScoreMethodNames.GET_WORKING_BALANCES, {
-        user: this.persistenceService.activeWallet?.address
-      }, IconTransactionType.READ);
-
-    const res: IRewardWorkingTotal = await this.iconApiService.iconService.call(tx).execute();
-
-    log.debug("getUserRewardsWorkingSupplyOfbOmm: ", res);
-
-    return hexToNormalisedNumber(res.bOMM);
-  }
-
-  /**
    * @description Get users locked OMM token amount
    * @return LockedOmm - Locked OMM tokens amount and end
    */
@@ -541,6 +652,32 @@ export class ScoreService {
     const res: ILockedOmm = await this.iconApiService.iconService.call(tx).execute();
 
     return Mapper.mapLockedOmm(res);
+  }
+
+  /**
+   * @description Get OMM token balance details
+   * @return OmmTokenBalanceDetails - Omm token balance details
+   */
+  public async getOmmTokenBalanceDetails(): Promise<OmmTokenBalanceDetails> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      _owner: this.persistenceService.activeWallet!.address,
+    };
+
+    const tx = this.iconApiService.buildTransaction("",  this.persistenceService.allAddresses!.systemContract.OmmToken,
+        ScoreMethodNames.GET_OMM_TOKEN_BALANCE_DETAILS, params, IconTransactionType.READ);
+
+    log.debug("Executing getOmmTokenBalanceDetails tx: ", tx);
+    try {
+      const res = await this.iconApiService.iconService.call(tx).execute();
+      log.debug("getOmmTokenBalanceDetails: ", res);
+
+      return Mapper.mapUserOmmTokenBalanceDetails(res);
+    } catch (e) {
+      log.error(e);
+      throw e;
+    }
   }
 
   /**

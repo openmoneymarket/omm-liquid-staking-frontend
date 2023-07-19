@@ -63,6 +63,10 @@ export function timestampNowMicroseconds(): BigNumber {
     return new BigNumber(Date.now()).multipliedBy(new BigNumber("1000"));
 }
 
+export function timestampNowMilliseconds(): BigNumber {
+    return new BigNumber(Date.now());
+}
+
 // Returns number divided by the 10^decimals
 export function hexToNormalisedNumber(value: BigNumber | string, decimals: number | BigNumber = 18): BigNumber {
     if (!value || !(new BigNumber(value).isFinite())) {

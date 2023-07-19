@@ -37,3 +37,17 @@
 >
 
 </app-claim-icx-modal>
+
+<app-withdraw-omn-modal style="display: contents"
+                        [active]="isModalActive(ModalType.WITHDRAW_LOCKED_OMM)"
+                        [payload]="withdrawLockedOmmPayload"
+>
+
+</app-withdraw-omn-modal>
+
+<app-lock-omm-modal style="display: contents"
+                    [active]="modalIsLockingType()"
+                    [payload]="ommLockingPayload"
+>
+
+</app-lock-omm-modal>

@@ -1,0 +1,29 @@
+<div class="modal {{active ? 'modal-show' : ''}}">
+    <div class="modal-content">
+        <!-- Title -->
+        <h3 class="text-center label">Withdraw Omm Tokens?</h3>
+        <p class="text-center">{{amount().toFixed(2) | usFormat}} OMM</p>
+
+        <!-- Before vs after -->
+        <div class="grid before-after">
+            <div class="grid-cell text-center border-right">
+                <p class="label">Before</p>
+                <p class="text-dark">{{before().toFixed(2) | usFormat: true}} OMM</p>
+            </div>
+            <div class="grid-cell text-center">
+                <p class="label">After</p>
+                <p class="text-dark">{{after().toFixed(2) | usFormat}} OMM</p>
+            </div>
+        </div>
+
+        <!-- Withdraw message -->
+        <p class="label text-center">You'll need to relock OMM to hold bOMM and boost your earning potential.</p>
+
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button" (click)="onWithdrawOmmClick($event)">Withdraw OMM</a>
+        </div>
+    </div>
+</div>

@@ -124,7 +124,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.claimableIcx && this.claimableIcx.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(this.claimableIcx));
+      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(this.claimableIcx, this.userIcxBalance));
     }
   }
 

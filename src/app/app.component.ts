@@ -73,6 +73,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   onOverlayClick(): void {
-    this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+    this.stateChangeService.hideActiveModal();
   }
 }

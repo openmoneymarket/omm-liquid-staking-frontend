@@ -45,7 +45,7 @@ export class DataLoaderService {
           try {
             const balance = await this.scoreService.getUserTokenBalance(token);
             // commit the change
-            this.stateChangeService.updateUserAssetBalance(balance, token);
+            this.stateChangeService.updateUserTokenBalance(balance, token);
           } catch (e) {
             log.error("Failed to fetch balance for " + token);
             log.error(e);
@@ -194,6 +194,15 @@ export class DataLoaderService {
     }
   }
 
+  public async loadDelegationbOmmWorkingTotalSupply(): Promise<void> {
+    try {
+      this.stateChangeService.delegationbOmmTotalWorkingSupplyUpdate((await this.scoreService.getDelegationWorkingTotalSupplyOfbOmm()));
+    } catch (e) {
+      log.error("Error in loadDelegationbOmmWorkingTotalSupply:");
+      log.error(e);
+    }
+  }
+
   public async loadFeesCollected7D(): Promise<void> {
     this.stateChangeService.lastBlockHeightChange$.pipe(take(1)).subscribe(async (lastBlockHeight) => {
       try {
@@ -225,17 +234,63 @@ export class DataLoaderService {
     })
   }
 
-  // public async loadUserLockedOmm(): Promise<void> {
-  //   try {
-  //     const lockedOmm = await this.scoreService.getUserLockedOmmTokens();
-  //     this.stateChangeService.userLockedOmmUpdate(lockedOmm);
-  //
-  //     log.debug("User locked OMM: ", lockedOmm);
-  //   } catch (e) {
-  //     log.error("Error in loadUserLockedOmm:");
-  //     log.error(e);
-  //   }
-  // }
+  public async loadUserLockedOmm(): Promise<void> {
+    try {
+      const lockedOmm = await this.scoreService.getUserLockedOmmTokens();
+      this.stateChangeService.userLockedOmmUpdate(lockedOmm);
+
+      log.debug("User locked OMM: ", lockedOmm);
+    } catch (e) {
+      log.error("Error in loadUserLockedOmm:");
+      log.error(e);
+    }
+  }
+
+  public async loadUserOmmTokenBalanceDetails(): Promise<void> {
+    try {
+      const res = await this.scoreService.getOmmTokenBalanceDetails();
+      log.debug("User Omm Token Balance Details: ", res);
+      this.stateChangeService.updateUserOmmTokenBalanceDetails(res);
+    } catch (e) {
+      log.error("loadUserOmmTokenBalanceDetails:");
+      log.error(e);
+    }
+  }
+
+  public async loadUserDelegationWorkingbOmmBalance(): Promise<void> {
+    try {
+      const balance = await this.scoreService.getUserDelegationWorkingSupplyOfbOmm();
+      this.stateChangeService.userDelegationWorkingbOmmBalanceUpdate(balance);
+
+      log.debug("User working bOMM balance ", balance.toString());
+    } catch (e) {
+      log.error("Error in loadUserDelegationWorkingbOmmBalance:");
+      log.error(e);
+    }
+  }
+
+  public async loadUserAccumulatedFee(): Promise<void> {
+    try {
+      const amount = await this.scoreService.getUserAccumulatedOmmRewards();
+      this.stateChangeService.userAccumulatedFeeUpdate(amount);
+    } catch (e) {
+      log.error("Error in loadUserAccumulatedFee:");
+      log.error(e);
+    }
+  }
+
+  public async loadbOmmTotalSupply(): Promise<void> {
+    try {
+      const totalSupply = await this.scoreService.getTotalbOmmSupply();
+      this.stateChangeService.bOmmTotalSupplyUpdate(totalSupply);
+
+      log.debug("bOMM total supply ", totalSupply.toString());
+    } catch (e) {
+      log.error("Error in loadbOmmTotalSupply:");
+      log.error(e);
+    }
+  }
+
   //
   // public async loadUserbOmmBalance(): Promise<void> {
   //   try {
@@ -249,17 +304,7 @@ export class DataLoaderService {
   //   }
   // }
   //
-  // public async loadUserDelegationWorkingbOmmBalance(): Promise<void> {
-  //   try {
-  //     const balance = await this.scoreService.getUserDelegationWorkingSupplyOfbOmm();
-  //     this.stateChangeService.userDelegationWorkingbOmmBalanceUpdate(balance);
-  //
-  //     log.debug("User working bOMM balance ", balance.toString());
-  //   } catch (e) {
-  //     log.error("Error in loadUserDelegationWorkingbOmmBalance:");
-  //     log.error(e);
-  //   }
-  // }
+
 
   // public async loadUserRewardsWorkingbOmmBalance(): Promise<void> {
   //   try {
@@ -273,26 +318,6 @@ export class DataLoaderService {
   //   }
   // }
 
-  // public async loadbOmmTotalSupply(): Promise<void> {
-  //   try {
-  //     const totalSupply = await this.scoreService.getTotalbOmmSupply();
-  //     this.stateChangeService.bOmmTotalSupplyUpdate(totalSupply);
-  //
-  //     log.debug("bOMM total supply ", totalSupply.toString());
-  //   } catch (e) {
-  //     log.error("Error in loadbOmmTotalSupply:");
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadDelegationbOmmWorkingTotalSupply(): Promise<void> {
-  //   try {
-  //     this.stateChangeService.delegationbOmmTotalWorkingSupplyUpdate((await this.scoreService.getDelegationWorkingTotalSupplyOfbOmm()));
-  //   } catch (e) {
-  //     log.error("Error in loadDelegationbOmmWorkingTotalSupply:");
-  //     log.error(e);
-  //   }
-  // }
   //
   // public async loadRewardsbOmmWorkingTotalSupply(): Promise<void> {
   //   try {
@@ -309,17 +334,6 @@ export class DataLoaderService {
   //     const ommDailyRewards = await this.ommService.getUserDailyOmmRewards();
   //     this.stateChangeService.userOmmDailyRewardsUpdate(ommDailyRewards);
   //   } catch (e) {
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadUserOmmTokenBalanceDetails(): Promise<void> {
-  //   try {
-  //     const res = await this.ommService.getOmmTokenBalanceDetails();
-  //     log.debug("User Omm Token Balance Details: ", res);
-  //     this.stateChangeService.updateUserOmmTokenBalanceDetails(res);
-  //   } catch (e) {
-  //     log.error("loadUserOmmTokenBalanceDetails:");
   //     log.error(e);
   //   }
   // }
@@ -513,6 +527,8 @@ export class DataLoaderService {
       this.loadTotalStakedIcx(),
       this.loadlTotalSicxAmount(),
       this.loadSicxHoldersAmount(),
+      this.loadDelegationbOmmWorkingTotalSupply(),
+      this.loadbOmmTotalSupply(),
       // this.loadTotalOmmSupply(),
       // this.loadVoteDuration(),
     ]);
@@ -526,6 +542,10 @@ export class DataLoaderService {
       this.loadAllUserAssetsBalances(),
       this.loadUserUnstakeInfo(),
       this.loadUserClaimableIcx(),
+      this.loadUserLockedOmm(),
+      this.loadUserOmmTokenBalanceDetails(),
+      this.loadUserDelegationWorkingbOmmBalance(),
+      this.loadUserAccumulatedFee(),
       // this.loadUserDelegations(),
     ]);
 

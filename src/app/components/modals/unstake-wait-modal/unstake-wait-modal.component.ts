@@ -37,7 +37,7 @@ export class UnstakeWaitModalComponent {
   onCancelClick(e: MouseEvent): void {
     e.stopPropagation();
 
-    this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+    this.stateChangeService.hideActiveModal();
   }
 
   onUnstakeClick(e: MouseEvent) {

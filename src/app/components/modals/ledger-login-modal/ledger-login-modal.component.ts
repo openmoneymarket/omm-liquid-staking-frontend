@@ -70,7 +70,7 @@ export class LedgerLoginModalComponent implements OnInit {
   }
 
   onSelectLedgerAddressClick(wallet: Wallet): void {
-    this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+    this.stateChangeService.hideActiveModal();
     this.loginService.signInUser(wallet);
   }
 
@@ -123,7 +123,7 @@ export class LedgerLoginModalComponent implements OnInit {
 
       this.stateChangeService.modalUpdate(ModalType.LEDGER_LOGIN);
     }).catch(e => {
-      this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+      this.stateChangeService.hideActiveModal();
       log.error(e);
       this.notificationService.showNewNotification(LEDGER_NOT_DETECTED);
     });

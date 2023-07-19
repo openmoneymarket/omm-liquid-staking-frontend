@@ -1,11 +1,17 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {Subscription} from "rxjs";
+import {StateChangeService} from "../../services/state-change.service";
+import {LockedOmm} from "../../models/classes/LockedOmm";
+import {OmmTokenBalanceDetails} from "../../models/classes/OmmTokenBalanceDetails";
+import {HideElementPipe} from "../../pipes/hide-element-pipe";
+import log from "loglevel";
 
 declare var noUiSlider: any;
 @Component({
   selector: 'app-omm-lock-slider',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HideElementPipe],
   templateUrl: './omm-lock-slider.component.html'
 })
 export class OmmLockSliderComponent implements OnInit, OnDestroy {
@@ -18,26 +24,107 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
 
     this.onLockAdjustActiveChange(this._lockAdjustActive);
   }
+  @Input({ required: true }) hideSlider!: boolean;
 
   @Output() sliderValueUpdate = new EventEmitter<number>();
 
-  userLockedOmmBalance = 3000;
+  userLockedOmmBalance = 0;
+  userLockedOmm?: LockedOmm;
+  userOmmTokenBalanceDetails?: OmmTokenBalanceDetails;
 
   sliderInitialised = false;
 
-  ngOnInit(): void {
-    this.sliderInitialised = false;
+  //subscriptions
+  userLockedOmmBalanceSub?: Subscription;
+  userOmmTokenBalanceDetailsSub?: Subscription;
+  afterUserDataReload?: Subscription;
 
-    this.createAndInitSlider(this.userLockedOmmBalance, this.userLockedOmmBalance, 4000);
+  constructor(private stateChangeService: StateChangeService) {
+  }
+
+  ngOnInit(): void {
+    this.resetUserValues();
+    this.sliderInitialised = false;
+    this.registerSubscriptions();
+
+    this.refreshSlider();
   }
 
   ngOnDestroy(): void {
+    this.userLockedOmmBalanceSub?.unsubscribe();
+    this.userOmmTokenBalanceDetailsSub?.unsubscribe();
+    this.afterUserDataReload?.unsubscribe();
+
     this.disableSlider();
     this.lockOmmSlider?.noUiSlider?.destroy();
     this.sliderInitialised = false;
   }
 
-  public createAndInitSlider(startingValue: number, minValue: number, max: number): void {
+  private resetUserValues(): void {
+    this.userLockedOmmBalance = 0;
+    this.userLockedOmm = undefined;
+    this.userOmmTokenBalanceDetails = undefined;
+  }
+
+  registerSubscriptions(): void {
+    this.subscribeToUserLockedOmmChange();
+    this.subscribeTouUerOmmTokenBalanceDetailsChange();
+    this.subscribeToAfterUserDataReload();
+  }
+
+  subscribeToAfterUserDataReload(): void {
+    this.afterUserDataReload = this.stateChangeService.afterUserDataReload$.subscribe(() => {
+      this.refreshSlider();
+    });
+  }
+
+  subscribeToUserLockedOmmChange(): void {
+    this.userLockedOmmBalanceSub = this.stateChangeService.userLockedOmmChange$.subscribe(lockedOmm => {
+        this.userLockedOmm = lockedOmm;
+        this.userLockedOmmBalance = lockedOmm.amount.toNumber();
+
+        this.refreshSlider();
+    });
+  }
+
+  subscribeTouUerOmmTokenBalanceDetailsChange(): void {
+    this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(value => {
+      this.userOmmTokenBalanceDetails = value;
+
+      this.refreshSlider();
+    })
+  }
+
+  public refreshSlider(): void {
+    console.log("refreshSlider this.userLockedOmmBalance && this.userOmmTokenBalanceDetails = ", this.userLockedOmmBalance && this.userOmmTokenBalanceDetails);
+    console.log("this.sliderInitialised", this.sliderInitialised);
+    if (this.userOmmTokenBalanceDetails) {
+      const max = this.userOmmTokenBalanceDetails.availableBalance.plus(this.userLockedOmmBalance).dp(0).toNumber();
+
+      // slider is not yet initialised
+      if (!this.sliderInitialised) {
+        this.createAndInitSlider(this.userLockedOmmBalance, this.userLockedOmmBalance, max);
+      } else {
+        this.updateSliderValues(max, this.userLockedOmmBalance);
+      }
+    }
+  }
+
+  public updateSliderValues(sliderMax: number, startingValue: number): void {
+    log.debug(`updateSliderValues... sliderMax: ${sliderMax}, startingValue: ${startingValue}`);
+    if (this.sliderInitialised) {
+
+      this.lockOmmSlider.noUiSlider?.updateOptions({
+        start: [startingValue],
+        range: { min: 0, max: sliderMax > 0 ? sliderMax : 1 }
+      });
+
+      this.lockOmmSlider.noUiSlider.set(startingValue);
+    }
+  }
+
+  private createAndInitSlider(startingValue: number, minValue: number, max: number): void {
+    log.debug(`createAndInitSlider... startingValue: ${startingValue}, max: ${max}`);
     this.userLockedOmmBalance = minValue;
 
     noUiSlider.create(this.lockOmmSlider, {
@@ -53,6 +140,28 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
 
     // this.initSliderUpdateHandler();
     this.sliderInitialised = true;
+    this.initSliderUpdateHandler();
+  }
+
+  private initSliderUpdateHandler(): void {
+    // On stake slider update
+    this.lockOmmSlider.noUiSlider.on('update', (values: any, handle: any) => {
+      const value = +values[handle];
+
+      // forbid slider value going below users locked Omm balance
+      if (value < this.userLockedOmmBalance) {
+        this.setSliderValue(this.userLockedOmmBalance);
+        return;
+      }
+
+      this.sliderValueUpdate.emit(value);
+    });
+  }
+
+  public setSliderValue(value: number): void {
+    if (this.sliderInitialised) {
+      this.lockOmmSlider.noUiSlider.set(value);
+    }
   }
 
   onLockAdjustActiveChange(lockAdjustActive: boolean): void {

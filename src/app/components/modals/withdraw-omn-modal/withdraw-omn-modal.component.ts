@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ClaimIcxPayload} from "../../../models/classes/ClaimIcxPayload";
+import {WithdrawLockedOmmPayload} from "../../../models/classes/WithdrawLockedOmmPayload";
 import BigNumber from "bignumber.js";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 import {ModalType} from "../../../models/enums/ModalType";
@@ -9,28 +9,31 @@ import {TransactionDispatcherService} from "../../../services/transaction-dispat
 import {ScoreService} from "../../../services/score.service";
 
 @Component({
-  selector: 'app-claim-icx-modal',
+  selector: 'app-withdraw-omn-modal',
   standalone: true,
   imports: [CommonModule, UsFormatPipe],
-  templateUrl: './claim-icx-modal.component.html'
+  templateUrl: './withdraw-omn-modal.component.html'
 })
-export class ClaimIcxModalComponent {
+export class WithdrawOmnModalComponent {
 
   @Input({ required: true }) active!: boolean;
 
-  @Input() claimIcxPayload: ClaimIcxPayload | undefined;
+  @Input() payload: WithdrawLockedOmmPayload | undefined;
 
   constructor(private stateChangeService: StateChangeService,
               private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService,
-  ) {
+              private scoreService: ScoreService) {
   }
-  getClaimableAmount(): BigNumber {
-    return this.claimIcxPayload?.claimableAmount ?? new BigNumber(0);
+  amount(): BigNumber {
+    return this.payload?.amount ?? new BigNumber(0);
   }
 
-  getAfterClaimIcxAmount(): BigNumber {
-    return this.claimIcxPayload?.afterClaimIcxAmount ?? new BigNumber(0);
+  before(): BigNumber {
+    return this.payload?.before ?? new BigNumber(0);
+  }
+
+  after(): BigNumber {
+    return this.payload?.after ?? new BigNumber(0);
   }
 
   onCancelClick(e: MouseEvent): void {
@@ -39,11 +42,12 @@ export class ClaimIcxModalComponent {
     this.stateChangeService.hideActiveModal();
   }
 
-  onClaimClick(e: MouseEvent) {
+  onWithdrawOmmClick(e: MouseEvent) {
     e.stopPropagation();
 
-    const claimIcxTx = this.scoreService.buildClaimUnstakedIcxTx();
+    const tx = this.scoreService.buildWithdrawLockedOmm();
 
-    this.transactionDispatcher.dispatchTransaction(claimIcxTx, this.claimIcxPayload!);
+    this.transactionDispatcher.dispatchTransaction(tx, this.payload!);
   }
+
 }

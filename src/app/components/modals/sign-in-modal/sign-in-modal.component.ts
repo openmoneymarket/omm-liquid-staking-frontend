@@ -20,7 +20,7 @@ export class SignInModalComponent {
   }
 
   onSignInIconexClick(): void {
-    this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+    this.stateChangeService.hideActiveModal();
 
     // if user has wallet extension request account address
     if (this.iconexApiService.hasWalletExtension) {

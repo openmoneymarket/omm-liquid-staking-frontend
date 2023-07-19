@@ -36,7 +36,7 @@ export class StakeModalComponent {
   onCancelClick(e: MouseEvent): void {
     e.stopPropagation();
 
-    this.stateChangeService.modalUpdate(ModalType.UNDEFINED);
+    this.stateChangeService.hideActiveModal();
   }
 
   onStakeClick(e: MouseEvent) {

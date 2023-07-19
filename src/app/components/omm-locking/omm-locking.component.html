@@ -22,13 +22,13 @@
                     <div class="grid">
                         <!-- Heading -->
                         <div class="grid-cell">
-                            <h3>Boosted OMM <span class="label value-bomm-total" *ngIf="shouldShowbOmmBalance()">2,700 bOMM</span>
+                            <h3>Boosted OMM <span class="label value-bomm-total" *ngIf="shouldShowbOmmBalance()">{{(lockAdjustActive ? userDynamicDelegationWorkingbOmmBalance : userDelegationWorkingbOmmBalance).dp(2) | usFormat: true}} bOMM</span>
                             </h3>
                         </div>
                         <!-- Button -->
-                        <div class="grid-cell">
+                        <div class="grid-cell" *ngIf="userLoggedIn()">
                             <p class="text-right {{lockAdjustActive ? 'hide' : ''}}">
-                                <a href="javascript:void(0);" class="button" id="boost-adjust" style="margin-top: 0;" (click)="onLockAdjustClick($event)">Adjust</a>
+                                <a href="javascript:void(0);" class="button" id="boost-adjust" style="margin-top: 0;" (click)="onLockAdjustClick($event)">{{adjustLabel()}}</a>
                             </p>
 
                             <div class="boost-adjust-actions {{lockAdjustActive ? '' : 'hide'}}">
@@ -36,10 +36,10 @@
                                     <div class="grid-cell">
                                         <div class="grid grid-center">
                                             <div class="grid-cell text-right">
-                                                <a href="javascript:void(0);" class="cancel boost-cancel" (click)="onCancelLockAdjustClick($event)">Cancel</a>
+                                                <a href="javascript:void(0);" class="cancel boost-cancel" (click)="onLockAdjustCancelClick($event)">Cancel</a>
                                             </div>
                                             <div class="grid-cell">
-                                                <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 0;" data-modal="modal-boost-confirm" (click)="onConfirmLockAdjustClick($event)">Confirm</a>
+                                                <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 0;" data-modal="modal-boost-confirm" (click)="onConfirmLockOmmClick($event)">Confirm</a>
                                             </div>
                                         </div>
                                     </div>
@@ -56,30 +56,34 @@
                     </div>
 
                     <!-- Locked OMM slider -->
-                    <app-omm-lock-slider #lockOmmSlider
+                    <app-omm-lock-slider
                                             style="display: contents"
                                             [lockAdjustActive]="lockAdjustActive"
+                                            [hideSlider]="shouldHideLockSlider()"
+                                            (sliderValueUpdate)="handleLockSliderValueUpdate($event)"
                     ></app-omm-lock-slider>
 
-                    <div class="grid grid-center boost-data">
+                    <div class="grid grid-center boost-data" [ngStyle]="shouldHideLockSlider() | hide">
                         <div class="grid-cell">
-                            <p class="label"><input id="input-boost" class="input-boost {{lockAdjustActive ? '' : 'hide'}}" type="text" name="" value="3000"><span class="omm-locked {{lockAdjustActive ? 'hide' : ''}}">3,000</span> / 4,000 OMM</p>
+                            <p class="label">
+                                <input id="input-boost" class="input-boost {{lockAdjustActive ? '' : 'hide'}}" type="text" name="" [value]="inputLockOmm | usFormat" (keyup)="onLockedOmmInputLostFocus($event)">
+                                <span class="omm-locked {{lockAdjustActive ? 'hide' : ''}}">{{(lockAdjustActive ? userDynamicLockedOmmAmount : userLockedOmmBalance) | usFormat}}</span> / {{getLockSliderMax() | usFormat}} OMM</p>
                         </div>
                         <div class="grid-cell text-right">
                             <p class="label text-red boost-message hide">You'll need to pay a 50% fee to unlock OMM early.</p>
-                            <p class="label locked-default {{lockAdjustActive ? 'hide' : ''}}">Locked until 20 Aug 2022</p>
-                            <div class="locked-adjust {{lockAdjustActive ? '' : 'hide'}}">
-                                <p><span class="label">Locked until </span> <a class="dropdown time-selector"><span class="animation-underline locked-selector">20 Aug 2022</span></a></p>
-                                <div class="grid dropdown-content locked-selector">
+                            <p class="label locked-default" [ngStyle]="(isLockAdjustActive() || userLockedOmmBalance == 0) | hide">{{userHasLockedOmm() ? unlockedOnLockedUntilLabel() : "Lock up until"}} {{timestampInMillisecondsToPrettyDate(lockDate())}}</p>
+                            <div class="locked-adjust" [ngStyle]="!isLockAdjustActive() | hide" (clickOutside)="dropdownOpen = false">
+                                <p>
+                                    <span class="label">{{unlockedOnLockedUntilLabel()}} </span> <a class="dropdown time-selector" (click)="onLockedDateDropdownClick()">
+                                    <span class="animation-underline locked-selector">{{timestampInMillisecondsToPrettyDate(lockDate())}}</span>
+                                </a>
+                                </p>
+                                <div class="grid dropdown-content locked-selector {{dropdownOpen ? 'active' : ''}}">
                                     <div class="grid-cell">
                                         <ul>
-                                            <li>1 week</li>
-                                            <li>1 month</li>
-                                            <li>3 months</li>
-                                            <li>6 months</li>
-                                            <li>1 year</li>
-                                            <li>2 years</li>
-                                            <li>4 years</li>
+                                            <ng-container *ngFor="let date of getLockedUntilDateOptions();">
+                                                <li (click)="onLockUntilDateClick(date)">{{date}}</li>
+                                            </ng-container>
                                         </ul>
                                     </div>
                                 </div>
@@ -89,34 +93,13 @@
                 </div>
             </div>
 
-            <div class="grid">
-                <div class="grid-cell boost-increase border-top">
-                    <div class="grid">
-                        <div class="grid-cell border-right">
-                            <dl class="metadata">
-                                <dt>Delegation ratio</dt>
-                                <dd>1 bOMM = 14 ICX</dd>
-                            </dl>
-                        </div>
-                        <div class="grid-cell border-right">
-                            <dl class="metadata">
-                                <dt>Your delegation power</dt>
-                                <dd class="value-voting-power">121,500 ICX</dd>
-                            </dl>
-                        </div>
-                        <div class="grid-cell">
-                            <dl class="metadata">
-                                <dt>Total delegation power <span class="total-bomm-tooltip tooltip">
-                                    <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
-                                    <p class="total-bomm-tooltip-content tooltip-content">36,857 bOMM</p>
-                                </span></dt>
-                                <dd class="value-voting-power-total">37,221,565 ICX</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <app-voting-power-overview style="display: contents"
+                                       [userDelegationWorkingbOmmBalance]="userDelegationWorkingbOmmBalance"
+                                       [userDynamicDelegationWorkingbOmmBalance]="userDynamicDelegationWorkingbOmmBalance"
+                                       [lockAdjustActive]="lockAdjustActive"
+            >
 
+            </app-voting-power-overview>
         </div>
     </div>
 </section>

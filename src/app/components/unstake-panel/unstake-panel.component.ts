@@ -38,6 +38,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   @Input({ required: true}) active!: boolean;
   @Input({ required: true}) userSicxBalance!: BigNumber;
+  @Input({ required: true}) userIcxBalance!: BigNumber;
   @Input({ required: true}) todaySicxRate!: BigNumber;
 
   unstakeInputAmount: BigNumber = new BigNumber(0);
@@ -150,7 +151,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_INSTANT_SICX, new UnstakeInstantSicxPayload(
               new BigNumber(this.unstakeInputAmount),
               new BigNumber(this.instantReceivedIcxAmount),
-              new BigNumber(this.feeAmount)
+              new BigNumber(this.feeAmount),
           ));
         }
       }
@@ -163,7 +164,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.claimableIcx && this.claimableIcx.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(this.claimableIcx));
+      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(this.claimableIcx, this.userIcxBalance));
     }
   }
 

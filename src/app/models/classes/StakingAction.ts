@@ -4,12 +4,10 @@ export class StakingAction{
   before: BigNumber;
   after: BigNumber;
   amount: BigNumber;
-  payload: any;
 
-  constructor(before: BigNumber, after: BigNumber, amount: BigNumber, payload?: any) {
+  constructor(before: BigNumber, after: BigNumber, amount: BigNumber) {
     this.before = before;
     this.after = after;
     this.amount = amount;
-    this.payload = payload;
   }
 }
