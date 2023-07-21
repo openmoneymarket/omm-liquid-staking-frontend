@@ -194,7 +194,7 @@ export abstract class Mapper {
         hexToBigNumber(proposal["end day"]),
         hexToNormalisedNumber(proposal.for),
         hexToBigNumber(proposal.for_voter_count),
-        hexToBigNumber(proposal.id),
+        hexToBigNumber(proposal.id).toString(),
         hexToNormalisedNumber(proposal.majority),
         proposal.name,
         proposal.proposer,

@@ -5,7 +5,7 @@ import log from "loglevel";
 import {Icx} from "../libs/hw-app-icx/Icx";
 import {NotificationService} from "./notification.service";
 import {environment} from "../../environments/environment";
-import {PersistenceService} from "./persistence.service";
+import {StoreService} from "./store.service";
 import {IconApiService} from "./icon-api.service";
 import {
   LEDGER_ERROR,
@@ -32,7 +32,7 @@ export class LedgerService {
 
   constructor(
     private notificationService: NotificationService,
-    private persistenceService: PersistenceService,
+    private storeService: StoreService,
     private iconApiService: IconApiService
     ) { }
 
@@ -84,7 +84,7 @@ export class LedgerService {
 
   // sign raw transaction and return signed transaction object
   async signTransaction(rawTransaction: any): Promise<any> {
-    if (this.persistenceService.activeWallet?.type != WalletType.LEDGER) {
+    if (this.storeService.activeWallet?.type != WalletType.LEDGER) {
       throw new Error("Can not sign transaction with Ledger because Ledger wallet is not active!");
     }
     try {
@@ -96,7 +96,7 @@ export class LedgerService {
       const phraseToSign = this._generateHashKey(rawTx);
       log.debug("phraseToSign: ", phraseToSign);
 
-      const signedData = await this.icx.signTransaction(this.persistenceService.activeWallet.ledgerPath, phraseToSign);
+      const signedData = await this.icx.signTransaction(this.storeService.activeWallet.ledgerPath, phraseToSign);
       const { signedRawTxBase64 } = signedData;
       log.info("Ledger signTransaction result: ", signedData);
 

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {OmmLockSliderComponent} from "../omm-lock-slider/omm-lock-slider.component";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 import {Subscription} from "rxjs";
 import {StateChangeService} from "../../services/state-change.service";
 import {LockedOmm} from "../../models/classes/LockedOmm";
@@ -75,7 +75,7 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   userDelegationWorkingbOmmSub?: Subscription;
   modalChangeSub?: Subscription;
 
-  constructor(private persistenceService: PersistenceService,
+  constructor(private storeService: StoreService,
               private stateChangeService: StateChangeService,
               private notificationService: NotificationService) {
     super();
@@ -180,8 +180,8 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
     log.debug("unlockPeriod:", unlockPeriod);
 
     if (diff > 0 || unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
-      if (this.persistenceService.minOmmLockAmount.isGreaterThan(diff) && !unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
-        this.notificationService.showNewNotification(TOO_LOW_LOCK_AMOUNT(this.persistenceService.minOmmLockAmount));
+      if (this.storeService.minOmmLockAmount.isGreaterThan(diff) && !unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
+        this.notificationService.showNewNotification(TOO_LOW_LOCK_AMOUNT(this.storeService.minOmmLockAmount));
       }
       else if (before > 0 && after > before) {
         if (unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
@@ -408,7 +408,7 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   public userLoggedIn(): boolean {
-    return this.persistenceService.userLoggedIn();
+    return this.storeService.userLoggedIn();
   }
 
 }

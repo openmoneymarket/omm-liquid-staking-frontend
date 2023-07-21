@@ -38,7 +38,7 @@ import {
 import {IconApiService} from "./icon-api.service";
 import {IconJsonRpcResponse} from "../models/interfaces/icon-json-rpc-response";
 import {NotificationService} from "./notification.service";
-import {PersistenceService} from "./persistence.service";
+import {StoreService} from "./store.service";
 import {extractTxFailureMessage} from "../common/utils";
 import {ModalPayload} from "../models/Types/ModalTypes";
 
@@ -52,13 +52,13 @@ export class TransactionResultService {
               private notificationService: NotificationService,
               // private localStorageService: LocalStorageService,
               private stateChangeService: StateChangeService,
-              private persistenceService: PersistenceService,
+              private storeService: StoreService,
               private router: Router) {
   }
 
   public processIconexTransactionResult(payload: IconJsonRpcResponse, maxRetry: number = 5): void {
     // get last modal action from localstorage
-    const modalPayload: ModalPayload | undefined = this.persistenceService.getLastModalAction();
+    const modalPayload: ModalPayload | undefined = this.storeService.getLastModalAction();
 
     if (payload.result) {
       this.iconApiService.getTxResult(payload.result).then(res => {

@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import {IProposalTransactions} from "../interfaces/IProposalTransactions";
 import {Times} from "./Times";
 import {ReloaderService} from "../../services/reloader.service";
+import {timestampNowMicroseconds} from "../../common/utils";
 
 export class Proposal {
   against: BigNumber;
@@ -10,7 +11,7 @@ export class Proposal {
   endDay: BigNumber;
   forVotes: BigNumber;
   forVoterCount: BigNumber;
-  id: BigNumber;
+  id: string;
   majority: BigNumber;
   name: string;
   proposer: string;
@@ -22,7 +23,7 @@ export class Proposal {
   transactions?: IProposalTransactions[];
 
   constructor(against: BigNumber, againstVoterCount: BigNumber, description: string, endDay: BigNumber, forVotes: BigNumber,
-              forVoterCount: BigNumber, id: BigNumber, majority: BigNumber, name: string, proposer: string, quorum: BigNumber,
+              forVoterCount: BigNumber, id: string, majority: BigNumber, name: string, proposer: string, quorum: BigNumber,
               startDay: BigNumber, status: ProposalStatus, voteSnapshot: BigNumber, forumLink: string, transactions?: IProposalTransactions[]) {
     this.against = against;
     this.againstVoterCount = againstVoterCount;
@@ -40,6 +41,10 @@ export class Proposal {
     this.voteSnapshot = voteSnapshot;
     this.forumLink = forumLink;
     this.transactions = transactions ? transactions : undefined;
+  }
+
+  public isProposalContractType(): boolean {
+    return this.transactions !== undefined && this.transactions.length > 0;
   }
 
   public toString(): string {
@@ -68,8 +73,8 @@ export class Proposal {
     return this.description;
   }
 
-  public proposalIsOver(reloaderService: ReloaderService): boolean {
-    return this.endDay < reloaderService.currentTimestampMicro;
+  public proposalIsOver(): boolean {
+    return this.endDay.lt(timestampNowMicroseconds());
   }
 
   public getTotalVotePercentage(): BigNumber {

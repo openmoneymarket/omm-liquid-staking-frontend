@@ -1,0 +1,40 @@
+<!-- Content -->
+<main>
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs vote">
+        <ol>
+            <li><a routerLink="/vote" class="animation-underline">Vote</a> <span class="label"> &gt; </span> </li>
+            <li>All proposals</li>
+        </ol>
+    </div>
+    <section id="proposal-list" class="">
+        <div class="grid">
+            <div class="grid-cell">
+                <h2>Proposals</h2>
+            </div>
+            <div class="grid-cell text-right">
+                <a *ngIf="userLoggedIn()" href="javascript:void(0);" routerLink="/vote/new-proposal" class="button">New proposal</a>
+            </div>
+        </div>
+
+        <ng-container *ngFor="let proposal of proposalList; last as isLast;">
+            <a href="javascript:void(0);" routerLink="/vote/proposal" class="grid proposal panel {{proposal.proposalIsOver() ? '' : 'active-vote'}}" (click)="onProposalClick(proposal)">
+                <div class="grid-cell">
+                    <h3>{{proposal.name}}</h3>
+                    <p>{{proposal.description}}</p>
+
+                    <div class="grid proposal-metadata border-top">
+                        <div class="grid-cell">
+                            <span class="label"><img [src]="proposal.getStatusImgSrc()">{{proposal.getProposalState(currentTimestampMicro)}}</span>
+                            <span class="label"><img src="assets/img/icon/chart.svg">{{proposal.getTotalVotePercentage() | rndDwnNPerc: 2 :  true}} voted</span>
+                            <span class="label"><img src="assets/img/icon/users.svg">{{proposal.forVoterCount.plus(proposal.againstVoterCount) | usFormat}} voters</span>
+                            <div class="green-square"></div><span class="label">{{proposal.getApprovedPercentage() | rndDwnNPerc: 2 :  true}}</span>
+                            <div class="purple-square"></div><span class="label">{{proposal.getRejectedPercentage() | rndDwnNPerc: 2 :  true}}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </ng-container>
+    </section>
+</main>
+

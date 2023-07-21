@@ -64,8 +64,6 @@ export const PRE_UNSTAKE_LP = "Unstaking LP tokens...";
 
 export const SUCCESS_STAKE_ICX = (amount: BigNumber) => `Successfully staked ${numToUsLocaleString(amount.dp(2))} ICX.`
 export const SUCCESS_UNSTAKE_SICX = (stakeIcxAmount: BigNumber) => `Successfully unstaked ${numToUsLocaleString(stakeIcxAmount.dp(2))} sICX.`
-
-
 export const SUCCESS_CLAIM_ICX = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
 export const SUCCESS_CLAIM_OMM = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} OMM claimed.`;
 export const SUCCESS_WITHDRAW_LOCKED_OMM = (amount: BigNumber) => `Withdrew ${numToUsLocaleString(amount.dp(2))} OMM.`;
@@ -99,7 +97,7 @@ export const FAILURE_UNSTAKE_OMM = (failedTxMessage: string) => `Couldn't unstak
 export const FAILURE_UPDATE_VOTES = (failedTxMessage: string) => `Couldn't allocate votes. ${failedTxMessage}`;
 export const FAILURE_REMOVE_ALL_VOTES = (failedTxMessage: string) => `Couldn't remove votes. ${failedTxMessage}`;
 export const FAILURE_SUBMIT_PROPOSAL = (failedTxMessage: string) => `Couldn't submit proposal. ${failedTxMessage}`;
-export const FAILURE_CAST_VOTE = (failedTxMessage: string) => `Couldn't cast vote. ${failedTxMessage}`;
+export const FAILURE_CAST_VOTE = `Couldn't cast vote.`;
 export const FAILURE_LOCK_OMM = `Couldn't lock up OMM.`;
 export const FAILURE_INCREASE_LOCK_TIME = `Couldn't increase the lock-up period.`;
 export const FAILURE_INCREASE_LOCK_OMM = `Couldn't lock up OMM.`;

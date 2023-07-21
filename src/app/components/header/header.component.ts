@@ -5,7 +5,7 @@ import {environment} from "../../../environments/environment";
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
 import {ModalType} from "../../models/enums/ModalType";
 import {StateChangeService} from "../../services/state-change.service";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 import {LoginService} from "../../services/login.service";
 import {WalletType} from "../../models/enums/WalletType";
 import {formatIconAddressToShort} from "../../common/utils";
@@ -26,7 +26,7 @@ export class HeaderComponent {
   dropdownOpen = false;
   constructor(private router: Router,
               private stateChangeService: StateChangeService,
-              private persistenceService: PersistenceService,
+              private storeService: StoreService,
               private loginService: LoginService,
               private notificationService: NotificationService) {
     router.events.subscribe( (event) => ( event instanceof NavigationEnd ) && this.handleRouteChange() );
@@ -71,7 +71,7 @@ export class HeaderComponent {
 
     // Avoid flash of white box if rendered for any reason.
     textArea.style.background = 'transparent';
-    textArea.value = this.persistenceService.activeWallet?.address ?? "";
+    textArea.value = this.storeService.activeWallet?.address ?? "";
 
     document.body.appendChild(textArea);
     textArea.focus();
@@ -95,7 +95,7 @@ export class HeaderComponent {
   }
 
   userLoggedIn(): boolean {
-    return this.persistenceService.userLoggedIn();
+    return this.storeService.userLoggedIn();
   }
 
   isProduction(): boolean {
@@ -117,11 +117,11 @@ export class HeaderComponent {
   }
 
   getWalletId(): string {
-    if (this.persistenceService.activeWallet?.type == WalletType.ICON) {
-      return formatIconAddressToShort(this.persistenceService.activeWallet.address);
+    if (this.storeService.activeWallet?.type == WalletType.ICON) {
+      return formatIconAddressToShort(this.storeService.activeWallet.address);
     }
-    else if (this.persistenceService.activeWallet?.type == WalletType.LEDGER) {
-      return formatIconAddressToShort(this.persistenceService.activeWallet.address);
+    else if (this.storeService.activeWallet?.type == WalletType.LEDGER) {
+      return formatIconAddressToShort(this.storeService.activeWallet.address);
     }
     else {
       return "";
@@ -129,10 +129,10 @@ export class HeaderComponent {
   }
 
   getWalletName(): string {
-    if (this.persistenceService.activeWallet?.type == WalletType.ICON) {
+    if (this.storeService.activeWallet?.type == WalletType.ICON) {
       return "ICON wallet";
     }
-    else if (this.persistenceService.activeWallet?.type == WalletType.LEDGER) {
+    else if (this.storeService.activeWallet?.type == WalletType.LEDGER) {
       return "Ledger wallet";
     }
     else {

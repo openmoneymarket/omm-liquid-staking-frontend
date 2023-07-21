@@ -5,7 +5,7 @@ import {StateChangeService} from "../../services/state-change.service";
 import {Subscription} from "rxjs";
 import {Calculations} from "../../common/calculations";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 
 @Component({
   selector: 'app-voting-power-overview',
@@ -41,7 +41,7 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
   afterUserDataReload?: Subscription;
 
   constructor(private stateChangeService: StateChangeService,
-              private persistenceService: PersistenceService) {
+              private scoreService: StoreService) {
   }
 
   ngOnInit(): void {
@@ -106,7 +106,7 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
   }
 
   private calculateYourVotingPower(): void {
-    if (this.persistenceService.userLoggedIn() && this.votingPower.gt(0)) {
+    if (this.scoreService.userLoggedIn() && this.votingPower.gt(0)) {
       this.yourVotingPower = Calculations.usersVotingPower(this.ommVotingPower, this.delegationbOmmWorkingTotalSupply,
           this.userDelegationWorkingbOmmBalance, this.userDynamicDelegationWorkingbOmmBalance);
     }

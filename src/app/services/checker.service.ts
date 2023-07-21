@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import {PersistenceService} from "./persistence.service";
+import {StoreService} from "./store.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CheckerService {
 
-  constructor(private persistenceService: PersistenceService) {
+  constructor(private storeService: StoreService) {
 
   }
 
   public checkUserLoggedIn(): any {
-    if (!this.persistenceService.activeWallet) {
+    if (!this.storeService.activeWallet) {
       throw new Error("User not logged in.", );
     }
   }
 
   public checkAllAddressesLoaded(): void {
-    if (!this.persistenceService.allAddresses) {
+    if (!this.storeService.allAddresses) {
       throw new Error("All score addresses not loaded.");
     }
   }

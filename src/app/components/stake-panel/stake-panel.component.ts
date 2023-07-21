@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {ModalType} from "../../models/enums/ModalType";
 import {StakeIcxPayload} from "../../models/classes/StakeIcxPayload";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 import {StateChangeService} from "../../services/state-change.service";
 import {usLocale} from "../../common/formats";
 import {convertICXTosICX, convertSICXToICX} from "../../common/utils";
@@ -48,7 +48,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   userLoginSub?: Subscription;
   latestBlockHeightSub?: Subscription;
 
-  constructor(private persistenceService: PersistenceService,
+  constructor(private storeService: StoreService,
               public stateChangeService: StateChangeService,
               private chartService: ChartService) {
     super();
@@ -108,7 +108,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   onStakeClick(e: MouseEvent) {
     e.stopPropagation();
 
-    if (this.persistenceService.userLoggedIn()) {
+    if (this.storeService.userLoggedIn()) {
       if (!this.userIcxBalanceLtInputAmount() && this.stakeInputAmount.gt(0) && this.unstakeInputAmount.gt(0)) {
         this.stateChangeService.modalUpdate(ModalType.STAKE_ICX, new StakeIcxPayload(
             new BigNumber(this.stakeInputAmount),
@@ -169,7 +169,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   userLoggedIn(): boolean {
-    return this.persistenceService.userLoggedIn();
+    return this.storeService.userLoggedIn();
   }
 
   shouldShowUnstakeInfo(): boolean {

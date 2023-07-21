@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
 import {ChartService} from "../../services/chart.service";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 import {usLocale} from "../../common/formats";
 import {convertSICXToICX} from "../../common/utils";
 import {BaseClass} from "../../models/classes/BaseClass";
@@ -14,7 +14,7 @@ import {Subscription} from "rxjs";
 import {UserUnstakeInfo} from "../../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../../models/classes/BalancedDexFees";
 import {UnstakeInstantSicxPayload} from "../../models/classes/UnstakeInstantSicxPayload";
-import {RoundDownPercentPipe} from "../../pipes/round-down-percent.pipe";
+import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {PoolStats} from "../../models/classes/PoolStats";
 import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
 import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
@@ -23,7 +23,7 @@ import {FormsModule} from "@angular/forms";
 @Component({
   selector: 'app-unstake-panel',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, RoundDownPercentPipe, PrettyUntilBlockHeightTime, FormsModule],
+  imports: [CommonModule, UsFormatPipe, RndDwnNPercPipe, PrettyUntilBlockHeightTime, FormsModule],
   templateUrl: './unstake-panel.component.html'
 })
 export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestroy {
@@ -62,7 +62,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   icxSicxPoolStatsSub?: Subscription;
 
   constructor(private chartService: ChartService,
-              private persistenceService: PersistenceService,
+              private storeService: StoreService,
               public stateChangeService: StateChangeService) {
     super();
   }
@@ -139,7 +139,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   onUnstakeClick(e: MouseEvent) {
     e.stopPropagation();
 
-    if (this.persistenceService.userLoggedIn()) {
+    if (this.storeService.userLoggedIn()) {
       if (this.unstakeInputAmount && this.receivedIcxAmount) {
         if (this.unstakeWaitActive) {
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_WAIT_SICX, new UnstakeWaitSicxPayload(
@@ -242,7 +242,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   userLoggedIn(): boolean {
-    return this.persistenceService.userLoggedIn();
+    return this.storeService.userLoggedIn();
   }
 
   shouldShowUnstakeInfo(): boolean {

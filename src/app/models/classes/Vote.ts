@@ -8,6 +8,10 @@ export class Vote {
     this.against = against;
     this.for = forVote;
   }
+
+  public voteIsEmpty(): boolean {
+    return !(this.against.isGreaterThan(0) || this.for.isGreaterThan(0));
+  }
 }
 
 export class VotersCount {

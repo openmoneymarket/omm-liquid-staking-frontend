@@ -9,27 +9,23 @@ import {Irc2Token} from "../models/classes/Irc2Token";
 import {ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
 import {ModalAction} from "../models/classes/ModalAction";
 import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
+import {Vote} from "../models/classes/Vote";
+import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
 
 @Injectable({
   providedIn: 'root'
 })
-export class PersistenceService {
+export class StoreService {
 
   activeWallet?: Wallet;
 
   public allAddresses?: AllAddresses;
 
-  public voteDefinitionFee = new BigNumber("0");
-  public voteDefinitionCriterion = new BigNumber("0");
-  public proposalList: Proposal[] = [];
-  public voteDuration = new BigNumber("-1");
+  public proposalScoreDetailsMap = new Map<string, IProposalScoreDetails[]>();
 
   public sicxTodayRate = new BigNumber(0);
 
   public minOmmLockAmount = new BigNumber("1");
-  public totalStakedOmm = new BigNumber("0");
-  public totalSuppliedOmm = new BigNumber("0");
-  public bOmmTotalSupply = new BigNumber("0");
 
   public tokenUsdPrices = new Map<TokenSymbol, BigNumber>();
 
@@ -40,7 +36,8 @@ export class PersistenceService {
   // USER DATA
   public yourVotesPrepList: YourPrepVote[] = [];
   public userUnstakeInfo?: UserUnstakeInfo;
-
+  public userVotingWeightForProposal = new Map<string, BigNumber>(); // proposalId to voting weight
+  public userProposalVotes = new Map<string, Vote>();
   constructor() { }
 
   public logoutUser(): void {
@@ -51,6 +48,8 @@ export class PersistenceService {
     // reset values
     this.yourVotesPrepList = [];
     this.userUnstakeInfo = undefined;
+    this.userVotingWeightForProposal = new Map<string, BigNumber>();
+    this.userProposalVotes = new Map<string, Vote>();
   }
 
   public userLoggedIn(): boolean {

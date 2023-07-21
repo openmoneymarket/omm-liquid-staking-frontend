@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ScoreService} from './score.service';
-import {PersistenceService} from './persistence.service';
+import {StoreService} from './store.service';
 import {StateChangeService} from "./state-change.service";
 import log from "loglevel";
-import {OmmService} from "./omm.service";
 import {CheckerService} from "./checker.service";
 import {ReloaderService} from "./reloader.service";
 import {ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
@@ -15,6 +14,11 @@ import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {IEventLog} from "../models/interfaces/IEventLog";
 import {hexToNormalisedNumber} from "../common/utils";
+import {Vote} from "../models/classes/Vote";
+import {Proposal} from "../models/classes/Proposal";
+import {IScoreParameter, IScoreParameterValue} from "../models/interfaces/IScoreParameter";
+import {IconApiService} from "./icon-api.service";
+import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +26,11 @@ import {hexToNormalisedNumber} from "../common/utils";
 export class DataLoaderService {
 
   constructor(private scoreService: ScoreService,
-              private persistenceService: PersistenceService,
+              private storeService: StoreService,
               private stateChangeService: StateChangeService,
-              private ommService: OmmService,
               private checkerService: CheckerService,
               private reloaderService: ReloaderService,
+              private iconApi: IconApiService,
               private http: HttpClient) {
 
   }
@@ -82,6 +86,16 @@ export class DataLoaderService {
       this.stateChangeService.totalValidatorSicxRewardsUpdate(totalValidatorRewards);
     } catch (e) {
       log.error("Error in loadTotalValidatorRewards:");
+      log.error(e);
+    }
+  }
+
+  public async loadProposalList(): Promise<void> {
+    try {
+      const res = await this.scoreService.getProposalList();
+      this.stateChangeService.updateProposalsList(res);
+    } catch (e) {
+      log.error("Error in loadProposalList:");
       log.error(e);
     }
   }
@@ -165,8 +179,8 @@ export class DataLoaderService {
       this.checkerService.checkAllAddressesLoaded();
 
       const [ommBalance, sIcxBalance] = await Promise.all([
-        this.scoreService.getTokenBalance(OMM, this.persistenceService.allAddresses?.systemContract.DaoFund!),
-        this.scoreService.getTokenBalance(SICX, this.persistenceService.allAddresses?.systemContract.DaoFund!)
+        this.scoreService.getTokenBalance(OMM, this.storeService.allAddresses?.systemContract.DaoFund!),
+        this.scoreService.getTokenBalance(SICX, this.storeService.allAddresses?.systemContract.DaoFund!)
       ]);
 
       this.stateChangeService.daoFundBalanceUpdate({
@@ -183,7 +197,7 @@ export class DataLoaderService {
 
   public async loadSicxHoldersAmount(): Promise<void> {
     try {
-      const sicx = this.persistenceService.allAddresses!.collateral.sICX;
+      const sicx = this.storeService.allAddresses!.collateral.sICX;
       const url = `${environment.trackerUrl}/api/v1/transactions/token-holders/token-contract/${sicx}?limit=10&skip=0`;
       const res =  await lastValueFrom(this.http.get<any>(url, {observe: 'response'}));
       const sicxHoldersAmount = res.headers.get("X-Total-Count");
@@ -209,7 +223,7 @@ export class DataLoaderService {
         const method = "FeeDistributed"
         const limit = 100;
         // TODO use address from address provider and check how often FeeDistributed is emitted  !!!
-        const ommFeeDistScoreAddress = this.persistenceService.allAddresses?.systemContract.FeeDistribution;
+        const ommFeeDistScoreAddress = this.storeService.allAddresses?.systemContract.FeeDistribution;
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
         const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
         const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
@@ -289,6 +303,71 @@ export class DataLoaderService {
       log.error("Error in loadbOmmTotalSupply:");
       log.error(e);
     }
+  }
+
+  public async loadUserProposalVotes(): Promise<void> {
+    if (this.storeService.userLoggedIn()) {
+      // when proposal list is loaded, load all user votes for proposals which have not yet passed
+      this.stateChangeService.proposalListChange$.pipe(take(1)).subscribe(async (proposalList) => {
+        await Promise.all(proposalList.map( async (proposal) => {
+          try {
+            // make sure proposal is not over
+            if (!proposal.proposalIsOver()) {
+              try {
+                // fetch user voting weight for proposal
+                const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
+                this.stateChangeService.userVotingWeightForProposalUpdate(proposal.id, votingWeight);
+              } catch (e) {
+                log.error(e);
+              }
+            }
+
+            const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
+
+            if (!vote.voteIsEmpty()) {
+              this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
+            }
+          } catch (e) {
+            log.error("Failed to get user vote for proposal ", proposal);
+            log.error(e);
+          }
+        }));
+      })
+    }
+  }
+
+  public async loadAsyncContractOptions(proposal: Proposal): Promise<void> {
+    log.debug("loadAsyncContractOptions...");
+    try {
+      // only load contract options if proposal have transactions
+      if (proposal.transactions && proposal.transactions.length > 0) {
+        const proposalScoreDetails: IProposalScoreDetails[] = [];
+
+        // fetch transactions contract name, methods and api
+        Promise.all(proposal.transactions.map(async (transaction) => {
+          const name = await this.scoreService.getContractName(transaction.address);
+          const method = transaction.method;
+          const scoreApi = await this.iconApi.getScoreApi(transaction.address);
+          const methodParams: IScoreParameter[] = scoreApi.getMethod(method).inputs;
+          const parameters: IScoreParameterValue[] = new Array<IScoreParameterValue>();
+          // combine method params and value in single object
+          transaction.parameters.forEach((param, index) => parameters.push({ value: param.value, ...methodParams[index] }));
+
+          proposalScoreDetails.push({
+            address: transaction.address,
+            name,
+            method,
+            parameters
+          });
+        }));
+
+        this.stateChangeService.proposalScoreDetailsUpdate(proposal.id, proposalScoreDetails);
+      }
+    } catch (e) {
+      log.error("Failed to loadAsyncContractOptions...");
+      console.error(e);
+    }
+
   }
 
   //
@@ -441,40 +520,6 @@ export class DataLoaderService {
   //   }
   // }
 
-  // public async loadProposalList(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getProposalList();
-  //     this.stateChangeService.updateProposalsList(res);
-  //   } catch (e) {
-  //     log.error("Error in loadProposalList:");
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadUserProposalVotes(): Promise<void> {
-  //   await Promise.all(this.persistenceService.proposalList.map( async (proposal) => {
-  //     try {
-  //       if (!proposal.proposalIsOver(this.reloaderService)) {
-  //         try {
-  //           const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
-  //           this.persistenceService.userVotingWeightForProposal.set(proposal.id, votingWeight);
-  //         } catch (e) {
-  //           log.error(e);
-  //         }
-  //       }
-  //
-  //       const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
-  //
-  //       if (vote.against.isGreaterThan(Utils.ZERO) || vote.for.isGreaterThan(Utils.ZERO)) {
-  //         this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
-  //       }
-  //     } catch (e) {
-  //       log.error("Failed to get user vote for proposal ", proposal);
-  //       log.error(e);
-  //     }
-  //   }));
-  // }
-
 
   // public async loadPrepList(start: number = 1, end: number = 100): Promise<void> {
   //   try {
@@ -559,11 +604,12 @@ export class DataLoaderService {
    * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
-
+    this.loadUserProposalVotes();
     this.loadFeesCollected7D();
     this.loadlDaoFundTokens();
     this.loadTotalValidatorRewards();
     this.loadActiveBommUsersCount();
+    this.loadProposalList();
 
     // TODO
     // this.loadInterestHistory();

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from "bignumber.js";
-import IconService, {Block} from 'icon-sdk-js';
+import IconService, {Block, ScoreApiList} from 'icon-sdk-js';
 const { IconConverter, IconAmount, IconBuilder } = IconService;
 const { CallBuilder, CallTransactionBuilder, IcxTransactionBuilder,  } = IconBuilder;
 import {environment} from "../../environments/environment";
@@ -9,6 +9,7 @@ import {hexToBigNumber, hexToNormalisedNumber, isHex} from "../common/utils";
 import {IconTransactionType} from "../models/enums/IconTransactionType";
 import log from "loglevel";
 import {lastValueFrom} from "rxjs";
+import {Hash} from "icon-sdk-js/build/types/hash";
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,10 @@ export class IconApiService {
       throw new Error("getIcxBalance -> address empty or null!");
     }
     return hexToNormalisedNumber(await this.iconService.getBalance(address).execute());
+  }
+
+  async getScoreApi(address: string, height?: Hash): Promise<ScoreApiList> {
+    return this.iconService.getScoreApi(address, height).execute();
   }
 
   public async getTxResult(txHash: string): Promise<any> {

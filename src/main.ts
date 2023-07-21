@@ -1,6 +1,6 @@
 import {bootstrapApplication} from "@angular/platform-browser";
 import {AppComponent} from "./app/app.component";
-import {provideRouter} from "@angular/router";
+import {provideRouter, withComponentInputBinding, withHashLocation} from "@angular/router";
 import {APP_ROUTES} from "./app/app-routing";
 import {environment} from "./environments/environment";
 import {enableProdMode, importProvidersFrom} from "@angular/core";
@@ -24,7 +24,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent,{
     providers:[
-        provideRouter(APP_ROUTES),
+        provideRouter(APP_ROUTES, withHashLocation(), withComponentInputBinding()),
         importProvidersFrom(HttpClientModule),
         DeviceDetectorService,
         provideAnimations(), // required animations providers

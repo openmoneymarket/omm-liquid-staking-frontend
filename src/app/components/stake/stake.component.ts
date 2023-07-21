@@ -8,7 +8,7 @@ import {StateChangeService} from "../../services/state-change.service";
 import {Subscription} from "rxjs";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {convertICXToSICXPrice} from "../../common/utils";
-import {PersistenceService} from "../../services/persistence.service";
+import {StoreService} from "../../services/store.service";
 import {ICX, SICX} from "../../common/constants";
 import {DollarUsLocalePipe} from "../../pipes/dollar-us-locale.pipe";
 import {StakePanelComponent} from "../stake-panel/stake-panel.component";
@@ -37,7 +37,7 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
 
   constructor(private chartService: ChartService,
               private stateChangeService: StateChangeService,
-              private persistenceService: PersistenceService) {
+              private storeService: StoreService) {
     super();
   }
 
@@ -75,18 +75,18 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
   }
 
   getUserIcxBalance(): BigNumber {
-    return this.persistenceService.getUserTokenBalance(ICX);
+    return this.storeService.getUserTokenBalance(ICX);
   }
 
   getUsersIcxBalance(): BigNumber {
-    return this.persistenceService.getUserTokenBalance(SICX);
+    return this.storeService.getUserTokenBalance(SICX);
   }
 
   getIcxPrice(): string {
-    return this.persistenceService.getTokenUsdPrice(ICX)?.toFixed(4) ?? "0";
+    return this.storeService.getTokenUsdPrice(ICX)?.toFixed(4) ?? "0";
   }
 
   getSicxPrice(): string {
-    return convertICXToSICXPrice(this.persistenceService.getTokenUsdPrice(ICX), this.todaySicxRate).toFixed(4) ?? "0";
+    return convertICXToSICXPrice(this.storeService.getTokenUsdPrice(ICX), this.todaySicxRate).toFixed(4) ?? "0";
   }
 }

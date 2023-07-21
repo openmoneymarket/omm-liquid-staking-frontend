@@ -5,7 +5,7 @@ import {Times} from "../models/classes/Times";
 import {timestampNowMicroseconds} from "../common/utils";
 import {Subscription, timer} from "rxjs";
 import {IconApiService} from "./icon-api.service";
-import {BLOCK_POOL_INTERVAL_TIME} from "../common/constants";
+import {BLOCK_POOL_INTERVAL_TIME, CURRENT_TIMESTAMP_INTERVAL} from "../common/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -21,18 +21,26 @@ export class ReloaderService implements OnDestroy {
   public lastBlockHeight = 0;
 
   blockPollSub?: Subscription;
+  currentTimestampSub?: Subscription;
 
   constructor(private stateChangeService: StateChangeService,
               private iconApiService: IconApiService) {
     // refresh current timestamp every 10 second
     this.refreshCurrentTimestamp();
-    setInterval(() => this.refreshCurrentTimestamp() , Times.secondsInMilliseconds(10));
+    this.initCurrentTimeStampInterval();
 
     this.initBlockHeightPolling();
   }
 
   ngOnDestroy(): void {
     this.blockPollSub?.unsubscribe();
+    this.currentTimestampSub?.unsubscribe();
+  }
+
+  initCurrentTimeStampInterval(): void {
+    this.currentTimestampSub = timer(0, CURRENT_TIMESTAMP_INTERVAL).subscribe(() => {
+      this.refreshCurrentTimestamp();
+    })
   }
 
   initBlockHeightPolling(): void {

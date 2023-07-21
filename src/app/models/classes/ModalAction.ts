@@ -2,7 +2,7 @@ import {ModalType} from "../enums/ModalType";
 import {AssetAction} from "./AssetAction";
 import {StakingAction} from "./StakingAction";
 import {VoteAction} from "./VoteAction";
-import {GovernanceAction} from "./GovernanceAction";
+import {GovernanceVotePayload} from "./GovernanceVotePayload";
 import {OmmLockingPayload} from "./OmmLockingPayload";
 import {ManageStakedIcxAction} from "./ManageStakedIcxAction";
 
@@ -11,13 +11,13 @@ export class ModalAction {
   modalType: ModalType;
   assetAction?: AssetAction;
   stakingAction?: StakingAction;
-  governanceAction?: GovernanceAction;
+  governanceAction?: GovernanceVotePayload;
   voteAction?: VoteAction;
   lockingOmmAction?: OmmLockingPayload;
   manageStakedIcxAction?: ManageStakedIcxAction;
 
   constructor(modalType: ModalType, assetAction?: AssetAction, stakingAction?: StakingAction, voteAction?: VoteAction,
-              governanceAction?: GovernanceAction, lockingOmmAction?: OmmLockingPayload, manageStakedIcxAction?: ManageStakedIcxAction) {
+              governanceAction?: GovernanceVotePayload, lockingOmmAction?: OmmLockingPayload, manageStakedIcxAction?: ManageStakedIcxAction) {
     this.modalType = modalType;
     this.assetAction = assetAction;
     this.stakingAction = stakingAction;

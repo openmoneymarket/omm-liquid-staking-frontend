@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import IconService from "icon-sdk-js";
 import BigNumber from "bignumber.js";
-import {PersistenceService} from "./persistence.service";
+import {StoreService} from "./store.service";
 import {IconexApiService} from "./iconex-api.service";
 import {LedgerService} from "./ledger.service";
 import {NotificationService} from "./notification.service";
@@ -23,7 +23,7 @@ export class TransactionDispatcherService {
    */
 
   constructor(
-    private persistenceService: PersistenceService,
+    private storeService: StoreService,
     private iconexApiService: IconexApiService,
     private ledgerService: LedgerService,
     private notificationService: NotificationService,
@@ -47,15 +47,15 @@ export class TransactionDispatcherService {
       }
 
       // save modal payload
-      this.persistenceService.lastModalPayload = modalPayload;
+      this.storeService.lastModalPayload = modalPayload;
 
-      if (this.persistenceService.activeWallet?.type == WalletType.ICON) {
+      if (this.storeService.activeWallet?.type == WalletType.ICON) {
 
         // save notification to be shown when Iconex sends tx
         this.notificationService.setNotificationToShow(modalPayload.sendTxMessage())
 
         this.iconexApiService.dispatchSendTransactionEvent(tx, iconexId);
-      } else if (this.persistenceService.activeWallet?.type == WalletType.LEDGER) {
+      } else if (this.storeService.activeWallet?.type == WalletType.LEDGER) {
         const signedRawTx = await this.ledgerService.signTransaction(IconConverter.toRawTransaction(tx));
 
         const txHash = await this.iconApiService.sendTransaction({
