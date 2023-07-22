@@ -9,6 +9,8 @@ import {AssetAction} from "../models/classes/AssetAction";
 import {OmmLockingPayload} from "../models/classes/OmmLockingPayload";
 import {StakingAction} from "../models/classes/StakingAction";
 import {ManageStakedIcxAction} from "../models/classes/ManageStakedIcxAction";
+import {ommForumDomain} from "./constants";
+import {ScoreParamType} from "../models/classes/ScoreParamType";
 
 // Copy related messages
 export const UNABLE_TO_COPY = "Couldn't copy address.";
@@ -96,9 +98,40 @@ export const FAILURE_UNSTAKE_OMM = (failedTxMessage: string) => `Couldn't unstak
 
 export const FAILURE_UPDATE_VOTES = (failedTxMessage: string) => `Couldn't allocate votes. ${failedTxMessage}`;
 export const FAILURE_REMOVE_ALL_VOTES = (failedTxMessage: string) => `Couldn't remove votes. ${failedTxMessage}`;
-export const FAILURE_SUBMIT_PROPOSAL = (failedTxMessage: string) => `Couldn't submit proposal. ${failedTxMessage}`;
+export const FAILURE_SUBMIT_PROPOSAL = "Couldn't submit proposal.";
 export const FAILURE_CAST_VOTE = `Couldn't cast vote.`;
 export const FAILURE_LOCK_OMM = `Couldn't lock up OMM.`;
 export const FAILURE_INCREASE_LOCK_TIME = `Couldn't increase the lock-up period.`;
 export const FAILURE_INCREASE_LOCK_OMM = `Couldn't lock up OMM.`;
 export const FAILURE_INCREASE_LOCK_TIME_AND_AMOUNT = `Couldn't lock up OMM or increase the lock-up period.`;
+
+/*
+ * NEWLY ADDED MESSAGES
+ */
+
+// New proposal related messages
+export const NEW_PROPOSAL_EMPTY_TITLE = "Add a title.";
+export const NEW_PROPOSAL_EMPTY_DESCRIPTION = "Add a description.";
+export const NEW_PROPOSAL_EMPTY_LINK = "Add a link to the proposal on the Omm forum.";
+export const NEW_PROPOSAL_INVALID_LINK_DOMAIN = `Must link to a discussion on ${ommForumDomain}.`;
+export const NEW_PROPOSAL_MIN_BOMM_REQUIRED = (minBommRequired: BigNumber) => `You need at least ${numToUsLocaleString(roundDownTo2Decimals(minBommRequired))} bOMM to propose a change.`;
+export const NEW_PROPOSAL_EMPTY_CONTRACT = "Select a contract.";
+export const NEW_PROPOSAL_EMPTY_METHOD = "Select a method.";
+export const NEW_PROPOSAL_PARAMETERS = "Input a parameters.";
+export const NEW_PROPOSAL_MISSING_PARAMETERS = "Missing required parameters.";
+export const NEW_PROPOSAL_INVALID_PARAMETER = (requiredType: ScoreParamType) => `Invalid parameter type. Should be of type: ${requiredType}!`;
+
+// Placeholder messages
+export const ADDRESS_PARAM_INPUT_PLACEHOLDER = "Wallet (hx000...) or smart contract (cx000...)"
+export const ADDITIONAL_PARAM_INPUT_PLACEHOLDER = "Enter additional parameters (optional)";
+
+export function getPlaceholderForParam(param: string): string {
+    switch (param) {
+        case "_address":
+            return ADDRESS_PARAM_INPUT_PLACEHOLDER;
+        case "_data":
+            return ADDITIONAL_PARAM_INPUT_PLACEHOLDER
+        default:
+            return "";
+    }
+}

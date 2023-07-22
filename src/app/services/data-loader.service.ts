@@ -370,19 +370,53 @@ export class DataLoaderService {
 
   }
 
-  //
-  // public async loadUserbOmmBalance(): Promise<void> {
-  //   try {
-  //     const balance = await this.scoreService.getUsersbOmmBalance();
-  //     this.stateChangeService.userbOmmBalanceUpdate(balance);
-  //
-  //     log.debug("User bOMM balance ", balance.toString());
-  //   } catch (e) {
-  //     log.error("Error in loadUserbOmmBalance:");
-  //     log.error(e);
-  //   }
-  // }
-  //
+  public async loadUserbOmmBalance(): Promise<void> {
+    try {
+      const balance = await this.scoreService.getUsersbOmmBalance();
+      this.stateChangeService.userbOmmBalanceUpdate(balance);
+
+      log.debug("User bOMM balance ", balance.toString());
+    } catch (e) {
+      log.error("Error in loadUserbOmmBalance:");
+      log.error(e);
+    }
+  }
+
+  public async loadVoteDefinitionFee(): Promise<void> {
+    try {
+      const res = await this.scoreService.getVoteDefinitionFee();
+      log.debug("getVoteDefinitionFee (mapped): ", res);
+
+      this.stateChangeService.voteDefinitionFeeUpdate(res);
+    } catch (e) {
+      log.error("Error in loadVoteDefinitionFee:");
+      log.error(e);
+    }
+  }
+
+  public async loadVoteDefinitionCriterion(): Promise<void> {
+    try {
+      const res = await this.scoreService.getBoostedOmmVoteDefinitionCriteria();
+      log.debug("loadVoteDefinitionCriterion (mapped): ", res);
+
+      this.stateChangeService.voteDefinitionCriterionUpdate(res);
+    } catch (e) {
+      log.error("Error in loadVoteDefinitionCriterion:");
+      log.error(e);
+    }
+  }
+
+  public async loadVoteDuration(): Promise<void> {
+    try {
+      const res = await this.scoreService.getVoteDuration();
+      log.debug("loadVoteDuration (mapped): ", res);
+
+      this.stateChangeService.voteDurationUpdate(res);
+    } catch (e) {
+      log.error("Error in loadVoteDuration:");
+      log.error(e);
+    }
+  }
 
 
   // public async loadUserRewardsWorkingbOmmBalance(): Promise<void> {
@@ -472,29 +506,7 @@ export class DataLoaderService {
   //   }
   // }
 
-  // public async loadVoteDefinitionFee(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getVoteDefinitionFee();
-  //     log.debug("getVoteDefinitionFee (mapped): ", res);
-  //
-  //     this.stateChangeService.updateVoteDefinitionFee(res);
-  //   } catch (e) {
-  //     log.error("Error in loadVoteDefinitionFee:");
-  //     log.error(e);
-  //   }
-  // }
 
-  // public async loadVoteDefinitionCriterion(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getBoostedOmmVoteDefinitionCriteria();
-  //     log.debug("loadVoteDefinitionCriterion (mapped): ", res);
-  //
-  //     this.stateChangeService.updateVoteDefinitionCriterion(res);
-  //   } catch (e) {
-  //     log.error("Error in loadVoteDefinitionCriterion:");
-  //     log.error(e);
-  //   }
-  // }
 
   // public async loadTotalOmmSupply(): Promise<void> {
   //   try {
@@ -504,18 +516,6 @@ export class DataLoaderService {
   //     this.persistenceService.totalSuppliedOmm = res;
   //   } catch (e) {
   //     log.error("Error in loadTotalOmmSupply:");
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadVoteDuration(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getVoteDuration();
-  //     log.debug("loadVoteDuration (mapped): ", res);
-  //
-  //     this.persistenceService.voteDuration = res;
-  //   } catch (e) {
-  //     log.error("Error in loadVoteDuration:");
   //     log.error(e);
   //   }
   // }
@@ -591,6 +591,7 @@ export class DataLoaderService {
       this.loadUserOmmTokenBalanceDetails(),
       this.loadUserDelegationWorkingbOmmBalance(),
       this.loadUserAccumulatedFee(),
+      this.loadUserbOmmBalance(),
       // this.loadUserDelegations(),
     ]);
 
@@ -610,6 +611,9 @@ export class DataLoaderService {
     this.loadTotalValidatorRewards();
     this.loadActiveBommUsersCount();
     this.loadProposalList();
+    this.loadVoteDefinitionFee();
+    this.loadVoteDefinitionCriterion();
+    this.loadVoteDuration();
 
     // TODO
     // this.loadInterestHistory();

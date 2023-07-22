@@ -17,11 +17,24 @@ import {WithdrawLockedOmmPayload} from "../../models/classes/WithdrawLockedOmmPa
 import {WithdrawOmnModalComponent} from "../modals/withdraw-omn-modal/withdraw-omn-modal.component";
 import {LockOmmModalComponent} from "../modals/lock-omm-modal/lock-omm-modal.component";
 import {OmmLockingPayload} from "../../models/classes/OmmLockingPayload";
+import {SubmitProposalPayload} from "../../models/classes/SubmitProposalPayload";
+import {SubmitProposalModalComponent} from "../modals/submit-proposal-modal/submit-proposal-modal.component";
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-    imports: [CommonModule, SignInModalComponent, LedgerLoginModalComponent, StakeModalComponent, UnstakeWaitModalComponent, UnstakeInstantModalComponent, ClaimIcxModalComponent, WithdrawOmnModalComponent, LockOmmModalComponent],
+  imports: [
+    CommonModule,
+    SignInModalComponent,
+    LedgerLoginModalComponent,
+    StakeModalComponent,
+    UnstakeWaitModalComponent,
+    UnstakeInstantModalComponent,
+    ClaimIcxModalComponent,
+    WithdrawOmnModalComponent,
+    LockOmmModalComponent,
+    SubmitProposalModalComponent
+  ],
   templateUrl: './modal-container.component.html',
 })
 export class ModalContainerComponent implements OnInit, OnDestroy {
@@ -34,6 +47,7 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
   claimIcxPayload? : ClaimIcxPayload;
   withdrawLockedOmmPayload?: WithdrawLockedOmmPayload;
   ommLockingPayload?: OmmLockingPayload;
+  submitProposalPayload?: SubmitProposalPayload;
 
   // Subscriptions
   payloadSub?: Subscription;
@@ -65,6 +79,8 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
         this.withdrawLockedOmmPayload = payload;
       } else if (payload instanceof OmmLockingPayload) {
         this.ommLockingPayload = payload;
+      } else if (payload instanceof SubmitProposalPayload) {
+        this.submitProposalPayload = payload;
       }
 
       this.activeModal = modalType;

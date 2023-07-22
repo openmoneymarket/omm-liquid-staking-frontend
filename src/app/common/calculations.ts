@@ -95,4 +95,24 @@ export abstract class Calculations {
         return ((totalLiquiditySicx).multipliedBy(sIcxIcxRatio)).dp(2);
     }
 
+    public static getVoteDurationTime(voteDurationMicro?: BigNumber): string {
+        if (!voteDurationMicro) return "";
+
+        const secondsUntilStart = (voteDurationMicro).dividedBy(new BigNumber("1000000"))
+            .dp(2);
+        const daysUntilStart = secondsUntilStart.dividedBy(Times.DAY_IN_SECONDS).dp(0);
+
+        if (daysUntilStart.isZero()) {
+            const hoursUntilStart = secondsUntilStart.dividedBy(Times.HOUR_IN_SECONDS).dp(0);
+            if (hoursUntilStart.isZero()) {
+                const minutesUntilStart = secondsUntilStart.dividedBy(Times.MINUTE_IN_SECONDS).dp(0);
+                return minutesUntilStart.isEqualTo(1) ? `${minutesUntilStart} minute` : `${minutesUntilStart} minutes`;
+            } else {
+                return hoursUntilStart.isEqualTo(1) ? `${hoursUntilStart} hour` : `${hoursUntilStart} hours`;
+            }
+        } else {
+            return daysUntilStart.isEqualTo(1) ? `${daysUntilStart} day` : `${daysUntilStart} days`;
+        }
+    }
+
 }

@@ -129,7 +129,36 @@ export class StateChangeService {
   private proposalScoreDetailsChange = new ReplaySubject<IProposalScoreDetailsChange>(1);
   proposalScoreDetailsChange$ = this.proposalScoreDetailsChange.asObservable();
 
+  private voteDefinitionFeeChange = new ReplaySubject<BigNumber>(1);
+  voteDefinitionFeeChange$ = this.voteDefinitionFeeChange.asObservable();
+
+  private userbOmmBalanceChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  userbOmmBalanceChange$ = this.userbOmmBalanceChange.asObservable();
+
+  private voteDefinitionCriterionChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  voteDefinitionCriterionChange$ = this.voteDefinitionCriterionChange.asObservable();
+
+  private voteDurationChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  voteDurationChange$ = this.voteDurationChange.asObservable();
+
+
   constructor(private storeService: StoreService) {
+  }
+
+  public voteDurationUpdate(value: BigNumber): void {
+    this.voteDurationChange.next(value);
+  }
+
+  voteDefinitionCriterionUpdate(value: BigNumber): void {
+    this.voteDefinitionCriterionChange.next(value);
+  }
+
+  userbOmmBalanceUpdate(value: BigNumber): void {
+    this.userbOmmBalanceChange.next(value);
+  }
+
+  public voteDefinitionFeeUpdate(value: BigNumber): void {
+    this.voteDefinitionFeeChange.next(value);
   }
 
   public proposalScoreDetailsUpdate(proposalId: string, proposalScoreDetails: IProposalScoreDetails[]): void {

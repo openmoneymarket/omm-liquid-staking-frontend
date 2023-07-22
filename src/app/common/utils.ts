@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
 import {environment} from "../../environments/environment";
 import {UnstakeInfoData} from "../models/classes/UserUnstakeInfo";
+import IconService from "icon-sdk-js";
 
 export function numToUsLocaleString(num: BigNumber | string): string {
     if (typeof num === "string") {
@@ -23,6 +24,15 @@ export function timestampInMillisecondsToPrettyDate(timestamp: BigNumber): strin
     });
 }
 
+export function addSecondsToTimestamp(timestamp: BigNumber, seconds: number): BigNumber {
+    const microSecond = new BigNumber("1000000");
+    return timestamp.plus(microSecond.multipliedBy(seconds));
+}
+
+export function normalisedAmountToBaseAmountString(amount: BigNumber, decimals = 18): string {
+    return amount.multipliedBy(new BigNumber("10").pow(decimals)).toFixed();
+}
+
 export function roundDownTo2Decimals(value: BigNumber | number | string | undefined): string {
     if (!value || !(new BigNumber(value).isFinite())) {
         return "0";
@@ -31,6 +41,21 @@ export function roundDownTo2Decimals(value: BigNumber | number | string | undefi
     } else {
         return new BigNumber(value).toFixed(2, BigNumber.ROUND_DOWN);
     }
+}
+
+export function isAddress(address: string): boolean {
+    if (!address) { return false; }
+    return IconService.IconValidator.isAddress(address);
+}
+
+export function textContainsDomain(domain: string, text: string): boolean {
+    const regExp = new RegExp('^(?:https?:\\/\\/)?(?:[^@\\/\\n]+@)?(?:www\\.)?([^:\\/?\\n]+)');
+    const res = regExp.exec(text);
+    return res ? res[0].includes(domain) : false;
+}
+
+export function isPositiveNumeric(value: string) {
+    return /^\d+$/.test(value);
 }
 
 export function extractTxFailureMessage(tx: any): string {

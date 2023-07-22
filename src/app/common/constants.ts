@@ -15,6 +15,8 @@ export const supportedTokens = [ICX, OMM, SICX];
 
 export const DEFAULT_ROUNDING_PRECISION = 2;
 
+export const MAX_PROPOSAL_DESCRIPTION_LENGTH = 500;
+
 export const ICON_BLOCK_INTERVAL = 2; // 2 seconds
 
 export const BLOCK_POOL_INTERVAL_TIME = 10_000 // 10 seconds in milliseconds

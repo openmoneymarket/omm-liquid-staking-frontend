@@ -25,4 +25,8 @@ export class Irc2Token {
     addressError(): string {
         return `${this.symbol} address not initialised!`;
     }
+
+    className(): string {
+        return this.symbol.toLowerCase();
+    }
 }

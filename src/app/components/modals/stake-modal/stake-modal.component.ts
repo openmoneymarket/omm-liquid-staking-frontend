@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {StakeIcxPayload} from "../../../models/classes/StakeIcxPayload";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 import {StateChangeService} from "../../../services/state-change.service";
-import {ModalType} from "../../../models/enums/ModalType";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
 
