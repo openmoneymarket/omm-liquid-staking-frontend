@@ -39,7 +39,6 @@ export class ScoreMethodNames {
     /**
     * Rewards SCORE
     */
-    public static CLAIM_OMM_REWARDS = "claimRewards";
     public static GET_OMM_REWARDS_PER_USER = "getRewards";
     public static GET_USER_DAILY_OMM_REWARDS = "getUserDailyReward";
     public static GET_OMM_TOKEN_BALANCE_DETAILS = "details_balanceOf";
@@ -55,6 +54,7 @@ export class ScoreMethodNames {
      */
     public static GET_VALIDATOR_COLLECTED_FEE = "getValidatorCollectedFee";
     public static GET_ACCUMULATED_FEE = "getAccumulatedFee";
+    public static CLAIM_REWARDS = "claimRewards";
 
     /**
     * OmmToken SCORE
@@ -93,6 +93,7 @@ export class ScoreMethodNames {
     public static CLEAR_PREVIOUS_DELEGATIONS = "clearPrevious";
     public static GET_WORKING_TOTAL_SUPPLY = "getWorkingTotalSupply";
     public static GET_USER_WORKING_BALANCE = "getWorkingBalance";
+    public static PREP_VOTES = "prepVotes";
 
     /**
     * Governance SCORE
@@ -121,6 +122,7 @@ export class ScoreMethodNames {
     public static STAKE_ICX = "stakeICX";
     public static UNSTAKE_sICX = "unstake";
     public static GET_USER_UNSTAKE_INFO = "getUserUnstakeInfo";
+    public static GET_ACTUAL_PREP_DELEGATIONS = "getActualPrepDelegations";
 
 
     /**

@@ -26,10 +26,4 @@ export class CheckerService {
     this.checkUserLoggedIn();
     this.checkAllAddressesLoaded();
   }
-
-  public checkUserLoggedInAllAddressesAndReservesLoaded(): any {
-    this.checkUserLoggedIn();
-    this.checkAllAddressesLoaded();
-  }
-
 }

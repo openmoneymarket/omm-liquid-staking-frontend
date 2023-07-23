@@ -293,6 +293,16 @@ export class DataLoaderService {
     }
   }
 
+  public async loadUserValidatorBommDelegation(): Promise<void> {
+    try {
+      const amount = await this.scoreService.getPrepBommDelegation();
+      this.stateChangeService.prepBommDelegationUpdate(amount);
+    } catch (e) {
+      log.error("Error in loadUserValidatorBommDelegation:");
+      log.error(e);
+    }
+  }
+
   public async loadbOmmTotalSupply(): Promise<void> {
     try {
       const totalSupply = await this.scoreService.getTotalbOmmSupply();
@@ -414,6 +424,16 @@ export class DataLoaderService {
       this.stateChangeService.voteDurationUpdate(res);
     } catch (e) {
       log.error("Error in loadVoteDuration:");
+      log.error(e);
+    }
+  }
+
+  public async loadActualPrepDelegations(): Promise<void> {
+    try {
+      const res = await this.scoreService.getActualPrepDelegations();
+      this.stateChangeService.actualPrepDelegationsUpdate(res);
+    } catch (e) {
+      log.error("Error in loadActualPrepDelegations:");
       log.error(e);
     }
   }
@@ -592,6 +612,7 @@ export class DataLoaderService {
       this.loadUserDelegationWorkingbOmmBalance(),
       this.loadUserAccumulatedFee(),
       this.loadUserbOmmBalance(),
+      this.loadUserValidatorBommDelegation(),
       // this.loadUserDelegations(),
     ]);
 
@@ -614,6 +635,7 @@ export class DataLoaderService {
     this.loadVoteDefinitionFee();
     this.loadVoteDefinitionCriterion();
     this.loadVoteDuration();
+    this.loadActualPrepDelegations();
 
     // TODO
     // this.loadInterestHistory();

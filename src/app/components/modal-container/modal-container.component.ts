@@ -19,6 +19,8 @@ import {LockOmmModalComponent} from "../modals/lock-omm-modal/lock-omm-modal.com
 import {OmmLockingPayload} from "../../models/classes/OmmLockingPayload";
 import {SubmitProposalPayload} from "../../models/classes/SubmitProposalPayload";
 import {SubmitProposalModalComponent} from "../modals/submit-proposal-modal/submit-proposal-modal.component";
+import {ClaimRewardsPayload} from "../../models/classes/ClaimRewardsPayload";
+import {ClaimRewardsModalComponent} from "../modals/claim-rewards-modal/claim-rewards-modal.component";
 
 @Component({
   selector: 'app-modal',
@@ -33,7 +35,8 @@ import {SubmitProposalModalComponent} from "../modals/submit-proposal-modal/subm
     ClaimIcxModalComponent,
     WithdrawOmnModalComponent,
     LockOmmModalComponent,
-    SubmitProposalModalComponent
+    SubmitProposalModalComponent,
+    ClaimRewardsModalComponent
   ],
   templateUrl: './modal-container.component.html',
 })
@@ -48,6 +51,7 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
   withdrawLockedOmmPayload?: WithdrawLockedOmmPayload;
   ommLockingPayload?: OmmLockingPayload;
   submitProposalPayload?: SubmitProposalPayload;
+  claimRewardsPayload?: ClaimRewardsPayload;
 
   // Subscriptions
   payloadSub?: Subscription;
@@ -81,10 +85,25 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
         this.ommLockingPayload = payload;
       } else if (payload instanceof SubmitProposalPayload) {
         this.submitProposalPayload = payload;
+      } else if (payload instanceof  ClaimRewardsPayload) {
+        this.claimRewardsPayload = payload;
+      } else {
+        this.resetModalPayloads();
       }
 
       this.activeModal = modalType;
     });
+  }
+
+  private resetModalPayloads(): void {
+    this.stakeIcxPayload = undefined;
+    this.unstakeWaitSicxPayload = undefined;
+    this.unstakeInstantSicxPayload = undefined;
+    this.claimIcxPayload = undefined;
+    this.withdrawLockedOmmPayload = undefined;
+    this.ommLockingPayload = undefined;
+    this.submitProposalPayload = undefined;
+    this.claimRewardsPayload = undefined;
   }
 
   isModalActive(type: ModalType): boolean {

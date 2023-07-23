@@ -50,7 +50,7 @@ export const PRE_INCREASE_LOCK_AMOUNT_AND_PERIOD = "Locking up OMM...";
 export const PRE_LOCK_OMM = "Locking up OMM...";
 export const PRE_WITHDRAW_LOCKED_OMM = "Withdrawing OMM...";
 export const PRE_CLAIM_AND_APPLY_BOOST = "Claiming OMM...\nApplying boost...";
-export const PRE_CLAIM_OMM = "Claiming rewards...";
+export const PRE_CLAIM_REWARDS = "Claiming rewards...";
 export const PRE_APPLY_BOOST = "Applying boost...";
 export const PRE_SUBMIT_PROPOSAL = "Submitting proposal...";
 export const PRE_CLAIM_ICX = "Claiming ICX...";
@@ -67,7 +67,7 @@ export const PRE_UNSTAKE_LP = "Unstaking LP tokens...";
 export const SUCCESS_STAKE_ICX = (amount: BigNumber) => `Successfully staked ${numToUsLocaleString(amount.dp(2))} ICX.`
 export const SUCCESS_UNSTAKE_SICX = (stakeIcxAmount: BigNumber) => `Successfully unstaked ${numToUsLocaleString(stakeIcxAmount.dp(2))} sICX.`
 export const SUCCESS_CLAIM_ICX = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
-export const SUCCESS_CLAIM_OMM = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} OMM claimed.`;
+export const SUCCESS_CLAIM_REWARDS = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
 export const SUCCESS_WITHDRAW_LOCKED_OMM = (amount: BigNumber) => `Withdrew ${numToUsLocaleString(amount.dp(2))} OMM.`;
 
 export const SUCCESS_UPDATE_VOTES = "Votes allocated.";
@@ -90,7 +90,7 @@ export const FAILURE_STAKE_ICX = "Couldn't stake ICX. Please try again in a mome
 export const FAILURE_UNSTAKE_SICX = "Couldn't unstake sICX. Please try again in a moment."
 
 export const FAILURE_CLAIM_ICX = () => `Couldn't claim ICX. Please try again in a moment.`;
-export const FAILURE_CLAIM_OMM = (failedTxMessage: string) => `Couldn't claim rewards. ${failedTxMessage}`;
+export const FAILURE_CLAIM_REWARDS = `Couldn't claim rewards.`;
 export const FAILURE_WITHDRAW_LOCKED_OMM = `Couldn't withdraw locked OMM.`
 export const FAILURE_CLAIM_AND_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";
 export const FAILURE_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";

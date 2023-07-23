@@ -1,0 +1,25 @@
+<!-- Modal claim ICX (validators) -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-unstake-confirm">
+    <div class="modal-content">
+        <h3 class="text-center label">Claim rewards?</h3>
+        <p class="text-bold text-center value-supply-icx-difference">{{getClaimableAmount().toFixed(2) | usFormat}} ICX</p>
+        <!-- Before & after -->
+        <div class="grid before-after">
+            <div class="grid-cell text-center border-right">
+                <p class="label">Before</p>
+                <p class="text-dark value-supplied-icx">{{getClaimableAmount().toFixed(2) | usFormat: true}} ICX</p>
+            </div>
+
+            <div class="grid-cell text-center">
+                <p class="label">After</p>
+                <p class="text-dark value-supply-icx-after">{{getAfterClaimIcxAmount().toFixed(2) | usFormat}} ICX</p>
+            </div>
+        </div>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Not now</a>
+            <a href="javascript:void(0);" class="button green no-margin supply-icx-commit" (click)="onClaimClick($event)">Claim rewards</a>
+        </div>
+    </div>
+</div>

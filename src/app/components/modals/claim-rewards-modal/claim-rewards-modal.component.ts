@@ -1,35 +1,36 @@
 import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ClaimIcxPayload} from "../../../models/classes/ClaimIcxPayload";
-import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
+import BigNumber from "bignumber.js";
+import {ClaimRewardsPayload} from "../../../models/classes/ClaimRewardsPayload";
+import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 
 @Component({
-  selector: 'app-claim-icx-modal',
+  selector: 'app-claim-rewards-modal',
   standalone: true,
   imports: [CommonModule, UsFormatPipe],
-  templateUrl: './claim-icx-modal.component.html'
+  templateUrl: './claim-rewards-modal.component.html'
 })
-export class ClaimIcxModalComponent {
+export class ClaimRewardsModalComponent {
 
   @Input({ required: true }) active!: boolean;
 
-  @Input() claimIcxPayload: ClaimIcxPayload | undefined;
+  @Input() payload: ClaimRewardsPayload | undefined;
 
   constructor(private stateChangeService: StateChangeService,
               private transactionDispatcher: TransactionDispatcherService,
               private scoreService: ScoreService,
   ) {
   }
+
   getClaimableAmount(): BigNumber {
-    return this.claimIcxPayload?.claimableAmount ?? new BigNumber(0);
+    return this.payload?.claimableAmount ?? new BigNumber(0);
   }
 
   getAfterClaimIcxAmount(): BigNumber {
-    return this.claimIcxPayload?.afterClaimIcxAmount ?? new BigNumber(0);
+    return this.payload?.afterClaimIcxAmount ?? new BigNumber(0);
   }
 
   onCancelClick(e: MouseEvent): void {
@@ -41,12 +42,12 @@ export class ClaimIcxModalComponent {
   onClaimClick(e: MouseEvent) {
     e.stopPropagation();
 
-    if (this.claimIcxPayload) {
-      const claimIcxTx = this.scoreService.buildClaimUnstakedIcxTx();
+    if (this.payload) {
+      const tx = this.scoreService.buildClaimRewardsTx();
 
-      this.transactionDispatcher.dispatchTransaction(claimIcxTx, this.claimIcxPayload);
+      this.transactionDispatcher.dispatchTransaction(tx, this.payload);
     } else {
-      throw new Error("[ClaimIcxModalComponent.onClaimClick()] claimIcxPayload undefined!");
+      throw new Error("[onClaimClick] claimRewardsPayload undefined!");
     }
   }
 }

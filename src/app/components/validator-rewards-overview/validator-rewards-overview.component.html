@@ -1,0 +1,50 @@
+<!-- Validator rewards -->
+<section class="overview" [ngStyle]="!userLoggedIn() | hide">
+    <div class="grid">
+        <div class="grid-cell">
+            <h2>Validator rewards</h2>
+        </div>
+    </div>
+
+    <!-- Your liquidity -->
+    <div id="your-liquidity" class="grid panel">
+        <!-- Claim rewards -->
+        <div class="grid-cell text-center border-right" [ngStyle]="!userAccumulatedFee.gt(0) | hide">
+            <p class="reward-amount">{{userAccumulatedFee.toFixed(2) | usFormat}} ICX</p>
+            <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 5px;" data-modal="modal-claim-rewards"
+               (click)="onClaimRewardsClick($event)">Claim rewards</a>
+        </div>
+
+        <div class="grid-cell text-center border-right" [ngStyle]="userAccumulatedFee.gt(0) | hide">
+            <p style="margin-top: 25px;" class="label">No rewards to claim</p>
+        </div>
+
+        <!-- Past earnings -->
+        <div class="grid-cell text-center">
+            <dl class="metadata">
+                <dt>Earned past 7D</dt>
+                <dd class="value-rewards-total">??? <span class="label">ICX</span><br><span class="label">$50</span></dd>
+                <dd class="hide" style="opacity: 0.5;">—</dd>
+
+            </dl>
+        </div>
+
+        <!-- bOMM delegation -->
+        <div class="grid-cell text-center">
+            <dl class="metadata">
+                <dt>bOMM delegation</dt>
+                <dd *ngIf="userValidatorPrepBommDelegation.gt(0)">{{userValidatorPrepBommDelegation.toFixed(2) | usFormat}} <span class="label">bOMM</span><br><span class="label">{{bOMMdelegationIcx.toFixed(2) | usFormat}} ICX</span></dd>
+                <dd *ngIf="!userValidatorPrepBommDelegation.gt(0)">-</dd>
+            </dl>
+        </div>
+
+        <!-- sICX delegation -->
+        <div class="grid-cell text-center">
+            <dl class="metadata">
+                <dt>sICX delegation</dt>
+                <dd *ngIf="icxDelegation.gt(0)" class="">{{sicxDelegation.toFixed(2) | usFormat}} <span class="label">sICX</span><br><span class="label">{{icxDelegation.toFixed(2) | usFormat}} ICX</span></dd>
+                <dd *ngIf="!icxDelegation.gt(0)">-</dd>
+            </dl>
+        </div>
+    </div>
+</section>

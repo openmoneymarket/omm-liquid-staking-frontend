@@ -16,8 +16,19 @@ import {BALANCED_DEX_FEE_PERCENTAGE_CONVERSION, SICX} from "./constants";
 import {IBalancedDexFees} from "../models/interfaces/IBalnDexFees";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
+import {HexString, PrepAddress} from "../models/Types/ModalTypes";
 
 export abstract class Mapper {
+
+  public static mapActualPrepDelegations(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
+    const res = new Map<PrepAddress, BigNumber>();
+
+    for (const prepAddress in actualPrepDelegations) {
+      res.set(prepAddress, hexToNormalisedNumber(actualPrepDelegations[prepAddress]));
+    }
+
+    return res;
+  }
 
   public static mapPoolStats(poolStats: PoolStatsInterface): PoolStats {
     const baseDecimals = hexToBigNumber(poolStats.base_decimals);

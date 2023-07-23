@@ -22,7 +22,7 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
     this._userDynamicDelegationWorkingbOmmBalance = value;
     this.refreshValues();
   }
-  get userDynamicDelegationWorkingbOmmBalance(): BigNumber { return this._userDynamicDelegationWorkingbOmmBalance};
+  get userDynamicDelegationWorkingbOmmBalance(): BigNumber { return this._userDynamicDelegationWorkingbOmmBalance }
   @Input({ required: true }) lockAdjustActive!: boolean;
 
   yourVotingPower = new BigNumber(0);

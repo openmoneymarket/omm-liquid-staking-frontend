@@ -26,7 +26,7 @@ import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
 import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
-import {Address} from "../models/Types/ModalTypes";
+import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
 import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
 
 
@@ -45,9 +45,9 @@ export class ScoreService {
    * @return  Icon Transaction
    */
   public buildWithdrawLockedOmm(): any {
-    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
-    return this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.bOMM, ScoreMethodNames.WITHDRAW_LOCKED_OMM, {}, IconTransactionType.WRITE);
   }
 
@@ -58,10 +58,25 @@ export class ScoreService {
   public buildClaimUnstakedIcxTx(): any {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
-    const tx = this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    const tx = this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.Staking, ScoreMethodNames.CLAIM_UNSTAKED_ICX, {}, IconTransactionType.WRITE);
 
     log.debug("buildClaimUnstakedIcxTx:", tx);
+
+    return tx;
+  }
+
+  /**
+   * @description Build tx to claim rewards
+   * @return  Icon Transaction
+   */
+  public buildClaimRewardsTx(): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.FeeDistribution, ScoreMethodNames.CLAIM_REWARDS, {}, IconTransactionType.WRITE);
+
+    log.debug("buildClaimRewardsTx:", tx);
 
     return tx;
   }
@@ -74,7 +89,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const stakingScore = this.storeService.allAddresses!.systemContract.Staking;
-    const tx = this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    const tx = this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         stakingScore, ScoreMethodNames.STAKE_ICX, {}, IconTransactionType.WRITE, amount);
 
     log.debug("buildStakeIcxTx:", tx);
@@ -99,7 +114,7 @@ export class ScoreService {
     }
 
 
-    const tx = this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    const tx = this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         SICX.address!, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
 
     log.debug("buildUnstakeSicxTx:", tx);
@@ -123,7 +138,7 @@ export class ScoreService {
       _data: IconConverter.fromUtf8(dataPayload)
     };
 
-    const tx = this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    const tx = this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         SICX.address!, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
 
     log.debug("buildInstantUnstakeSicxTx:", tx);
@@ -137,7 +152,7 @@ export class ScoreService {
    * @return any lock OMM Tokens Icon transaction
    */
   public buildIncreaseLockAmountOmmTx(amount: number): any {
-    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     log.debug(`Increase Lock Omm amount = ` + amount.toString());
 
@@ -146,7 +161,7 @@ export class ScoreService {
       _value: IconConverter.toHex(IconAmount.of(amount, OMM.decimals).toLoop()),
       _data: IconConverter.fromUtf8('{ "method": "increaseAmount", "params": { "unlockTime": 0 }}')};
 
-    return this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
   }
 
@@ -156,7 +171,7 @@ export class ScoreService {
    * @return any increase OMM Tokens lock period Icon transaction
    */
   public buildIncreaseLockTimeOmmTx(lockPeriod: BigNumber): any {
-    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     log.debug("buildIncreaseLockTimeOmmTx lockPeriod = " + lockPeriod.toString());
 
@@ -168,7 +183,7 @@ export class ScoreService {
       unlockTime: IconConverter.toHex(unlockTimeMicro)
     };
 
-    return this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.bOMM, ScoreMethodNames.INCREASE_UNLOCK_TIME, params, IconTransactionType.WRITE);
   }
 
@@ -180,7 +195,7 @@ export class ScoreService {
    * @return any lock OMM Tokens Icon transaction
    */
   public buildIncreaseLockPeriodAndAmountOmmTx(amount: number, unlockTime: BigNumber): any {
-    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     // convert to microseconds
     const unlockTimeMicro = unlockTime.multipliedBy(1000);
@@ -195,7 +210,7 @@ export class ScoreService {
       _value: IconConverter.toHex(IconAmount.of(amount, decimals).toLoop()),
       _data: IconConverter.fromUtf8(dataPayload)};
 
-    return this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
   }
 
@@ -207,7 +222,7 @@ export class ScoreService {
    * @return any lock OMM Tokens Icon transaction
    */
   public buildLockOmmTx(amount: number, unlockTime: BigNumber): any {
-    this.checkerService.checkUserLoggedInAllAddressesAndReservesLoaded();
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     // convert to microseconds
     const unlockTimeMicro = unlockTime.multipliedBy(1000);
@@ -222,7 +237,7 @@ export class ScoreService {
       _value: IconConverter.toHex(IconAmount.of(amount, decimals).toLoop()),
       _data: IconConverter.fromUtf8(dataPayload)};
 
-    return this.iconApiService.buildTransaction(this.storeService.activeWallet!.address,
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.OmmToken, ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
   }
 
@@ -236,7 +251,7 @@ export class ScoreService {
     log.debug("Executing getUserAccumulatedOmmRewards...");
 
     const params = {
-      address: this.storeService.activeWallet!.address,
+      address: this.storeService.userWalletAddress(),
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
@@ -361,7 +376,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
-      _address: this.storeService.activeWallet!.address,
+      _address: this.storeService.userWalletAddress(),
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Staking,
@@ -380,7 +395,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
-      _address: this.storeService.activeWallet!.address,
+      _address: this.storeService.userWalletAddress(),
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Staking,
@@ -474,7 +489,7 @@ export class ScoreService {
   public async getUserTokenBalance(token: Irc2Token): Promise<BigNumber> {
     this.checkerService.checkUserLoggedIn();
 
-    return this.getTokenBalance(token, this.storeService.activeWallet?.address!)
+    return this.getTokenBalance(token, this.storeService.userWalletAddress())
   }
 
   public async getTokenBalance(token: Irc2Token, address: Address): Promise<BigNumber> {
@@ -543,6 +558,44 @@ export class ScoreService {
     return hexToBigNumber(amount);
   }
 
+  /**
+   * @description Get actual prep delegations
+   * @return Map of prep address to the votes in ICX
+   */
+  public async getActualPrepDelegations(): Promise<Map<PrepAddress, BigNumber>> {
+    this.checkerService.checkAllAddressesLoaded()
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses?.systemContract.Staking!,
+        ScoreMethodNames.GET_ACTUAL_PREP_DELEGATIONS, {}, IconTransactionType.READ);
+
+    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+
+    console.log("actualPrepDelegations: ", res);
+
+    return Mapper.mapActualPrepDelegations(res);
+  }
+
+  /**
+   * @description Get bOmm votes delegated to validator address
+   * @return BigNumber
+   */
+  public async getPrepBommDelegation(): Promise<BigNumber> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      _prep: this.storeService.userWalletAddress()
+    };
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses?.systemContract.Delegation!,
+        ScoreMethodNames.PREP_VOTES, params, IconTransactionType.READ);
+
+    const amount = await this.iconApiService.iconService.call(tx).execute();
+
+    console.log("PrepBommDelegation: ", amount);
+
+    return hexToNormalisedNumber(amount);
+  }
+
 
   /**
    * @description Get list of PReps
@@ -571,7 +624,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
-      _user: this.storeService.activeWallet!.address
+      _user: this.storeService.userWalletAddress()
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Delegation,
@@ -627,7 +680,7 @@ export class ScoreService {
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Delegation,
       ScoreMethodNames.GET_USER_WORKING_BALANCE, {
-       user: this.storeService.activeWallet?.address
+       user: this.storeService.userWalletAddress()
       }, IconTransactionType.READ);
 
     const res: string = await this.iconApiService.iconService.call(tx).execute();
@@ -644,7 +697,9 @@ export class ScoreService {
   public async getUserLockedOmmTokens(): Promise<LockedOmm> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
-    const params = { _owner: this.storeService.activeWallet!.address};
+    const params = {
+      _owner: this.storeService.userWalletAddress()
+    };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.bOMM,
       ScoreMethodNames.GET_LOCKED_OMM, params, IconTransactionType.READ);
@@ -662,7 +717,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
-      _owner: this.storeService.activeWallet!.address,
+      _owner: this.storeService.userWalletAddress(),
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.OmmToken,
@@ -687,7 +742,9 @@ export class ScoreService {
   public async getUsersbOmmBalance(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
-    const params = { _owner: this.storeService.activeWallet!.address};
+    const params = {
+      _owner: this.storeService.userWalletAddress() }
+    ;
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.bOMM,
       ScoreMethodNames.BALANCE_OF, params, IconTransactionType.READ);
@@ -782,7 +839,7 @@ export class ScoreService {
 
     const params = {
       vote_index: IconConverter.toHex(proposalId ?? 0),
-      user: this.storeService.activeWallet!.address
+      user: this.storeService.userWalletAddress()
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Governance,
@@ -801,7 +858,7 @@ export class ScoreService {
     // for day provide timestamp in microseconds
     const params = {
       day: IconConverter.toHex(day),
-      address: this.storeService.activeWallet!.address
+      address: this.storeService.userWalletAddress()
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Governance,
@@ -867,7 +924,7 @@ export class ScoreService {
 
     const params = {
       _block: proposalBlockHeight,
-      _address: this.storeService.activeWallet?.address
+      _address: this.storeService.userWalletAddress()
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Governance,

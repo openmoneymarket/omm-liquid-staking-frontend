@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
-import {Address, ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
+import {Address, ModalPayload, PrepAddress, TokenSymbol} from "../models/Types/ModalTypes";
 import {ModalAction, ModalActionsResult} from "../models/classes/ModalAction";
 import BigNumber from "bignumber.js";
 import {Irc2Token} from "../models/classes/Irc2Token";
@@ -141,8 +141,21 @@ export class StateChangeService {
   private voteDurationChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
   voteDurationChange$ = this.voteDurationChange.asObservable();
 
+  private prepBommDelegationChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  prepBommDelegationChange$ = this.prepBommDelegationChange.asObservable();
+
+  private actualPrepDelegationsChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
+  actualPrepDelegationsChange$ = this.actualPrepDelegationsChange.asObservable();
 
   constructor(private storeService: StoreService) {
+  }
+
+  public actualPrepDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {
+    this.actualPrepDelegationsChange.next(value);
+  }
+
+  public prepBommDelegationUpdate(value: BigNumber): void {
+    this.prepBommDelegationChange.next(value);
   }
 
   public voteDurationUpdate(value: BigNumber): void {

@@ -6,9 +6,12 @@ import {WithdrawLockedOmmPayload} from "../classes/WithdrawLockedOmmPayload";
 import {OmmLockingPayload} from "../classes/OmmLockingPayload";
 import {GovernanceVotePayload} from "../classes/GovernanceVotePayload";
 import {SubmitProposalPayload} from "../classes/SubmitProposalPayload";
+import {ClaimRewardsPayload} from "../classes/ClaimRewardsPayload";
 
 // TODO add all payloads under this type
 export type ModalPayload = StakeIcxPayload | UnstakeWaitSicxPayload | UnstakeInstantSicxPayload | ClaimIcxPayload |
-    WithdrawLockedOmmPayload | OmmLockingPayload | GovernanceVotePayload | SubmitProposalPayload;
+    WithdrawLockedOmmPayload | OmmLockingPayload | GovernanceVotePayload | SubmitProposalPayload | ClaimRewardsPayload;
 export type Address = string;
+export type PrepAddress = string;
+export type HexString = string;
 export type TokenSymbol = string;

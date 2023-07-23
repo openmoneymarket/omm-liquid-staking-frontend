@@ -56,6 +56,10 @@ export class StoreService {
     return this.activeWallet != null;
   }
 
+  public userWalletAddress(): string {
+    return this.activeWallet?.address ?? "";
+  }
+
   public getUserTokenBalance(token: Irc2Token): BigNumber {
     return this.activeWallet?.irc2TokenBalancesMap.get(token.symbol) ?? new BigNumber(0);
   }
