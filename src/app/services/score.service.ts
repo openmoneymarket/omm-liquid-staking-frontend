@@ -41,6 +41,70 @@ export class ScoreService {
   }
 
   /**
+   * @description Build Icon transaction to update user delegation preferences
+   * @return  Icon tx
+   */
+  public buildUpdateBommDelegationsTx(userDelegations: YourPrepVote[]): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const delegations: {_address: string, _votes_in_per: string}[] = userDelegations.map(vote => {
+      return {
+        _address: vote.address,
+        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage, 18).toLoop())
+      }
+    });
+    log.debug("delegations:", delegations);
+
+    const params = {
+      _delegations: delegations
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Delegation,
+        ScoreMethodNames.UPDATE_DELEGATIONS, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build Icon transaction to update user delegation preferences
+   * @return  Icon tx
+   */
+  public buildUpdateSicxDelegationsTx(userDelegations: YourPrepVote[]): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const delegations: {_address: string, _votes_in_per: string}[] = userDelegations.map(vote => {
+      return {
+        _address: vote.address,
+        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage.multipliedBy(100), 16).toLoop())
+      }
+    });
+    log.debug("delegations:", delegations);
+
+    const params = {
+      _delegations: delegations
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.UPDATE_DELEGATIONS, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build Icon transaction to remove all of the users votes
+   * @return Icon tx
+   */
+  public buildRemoveAllVotes(): Promise<any> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      _user: this.storeService.userWalletAddress()
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Delegation,
+        ScoreMethodNames.CLEAR_PREVIOUS_DELEGATIONS, params, IconTransactionType.WRITE);
+  }
+
+  /**
    * @description Build tx to withdraw unlocked OMM
    * @return  Icon Transaction
    */
@@ -570,9 +634,41 @@ export class ScoreService {
 
     const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
 
-    console.log("actualPrepDelegations: ", res);
+    return Mapper.mapPrepDelegationsRecordToMap(res);
+  }
 
-    return Mapper.mapActualPrepDelegations(res);
+  /**
+   * @description Get actual user prep delegations
+   * @return Map of user prep address to the votes in ICX
+   */
+  public async getActualUserDelegationPercentage(): Promise<Map<PrepAddress, BigNumber>> {
+    this.checkerService.checkAllAddressesLoaded()
+
+    const params = {
+      user: this.storeService.userWalletAddress()
+    }
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses?.systemContract.Staking!,
+        ScoreMethodNames.GET_ACTUAL_USER_PREP_DELEGATIONS, params, IconTransactionType.READ);
+
+    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+
+    return Mapper.mapPrepDelegationsRecordToMap(res);
+  }
+
+  /**
+   * @description Get prep bOmm delegations
+   * @return Map of user prep address to the votes in ICX
+   */
+  public async getAllPrepsBommDelegations(): Promise<Map<PrepAddress, BigNumber>> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses?.systemContract.Staking!,
+        ScoreMethodNames.GET_BOMM_DELEGATIONS, {}, IconTransactionType.READ);
+
+    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+
+    return Mapper.mapPrepDelegationsRecordToMap(res);
   }
 
   /**
@@ -595,6 +691,8 @@ export class ScoreService {
 
     return hexToNormalisedNumber(amount);
   }
+
+
 
 
   /**

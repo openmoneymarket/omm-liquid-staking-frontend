@@ -24,6 +24,8 @@ import {Vote} from "../models/classes/Vote";
 import {IUserVotingWeightForProposalChange} from "../models/interfaces/IUserVotingWeightForProposalChange";
 import {IProposalScoreDetailsChange} from "../models/interfaces/IProposalScoreDetailsChange";
 import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
+import {YourPrepVote} from "../models/classes/YourPrepVote";
+import {PrepList} from "../models/classes/Preps";
 
 @Injectable({
   providedIn: 'root'
@@ -147,7 +149,36 @@ export class StateChangeService {
   private actualPrepDelegationsChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
   actualPrepDelegationsChange$ = this.actualPrepDelegationsChange.asObservable();
 
+  private actualUserDelegationPercentageChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
+  actualUserDelegationPercentageChange$ = this.actualUserDelegationPercentageChange.asObservable();
+
+  private userDelegationDetailsChange = new BehaviorSubject<YourPrepVote[]>([]);
+  userDelegationDetailsChange$ = this.userDelegationDetailsChange.asObservable();
+
+  private prepListChange = new ReplaySubject<PrepList>(1);
+  prepListChange$ = this.prepListChange.asObservable();
+
+  private prepsBommDelegationsChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
+  prepsBommDelegationsChange$ = this.prepsBommDelegationsChange.asObservable();
+
+
   constructor(private storeService: StoreService) {
+  }
+
+  public prepListUpdate(value: PrepList): void {
+    this.prepListChange.next(value);
+  }
+
+  public userDelegationDetailsUpdate(value: YourPrepVote[]): void {
+    this.userDelegationDetailsChange.next(value);
+  }
+
+  public prepsBommDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {
+    this.prepsBommDelegationsChange.next(value);
+  }
+
+  public actualUserPrepDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {
+    this.actualUserDelegationPercentageChange.next(value);
   }
 
   public actualPrepDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {

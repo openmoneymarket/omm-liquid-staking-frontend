@@ -96,8 +96,8 @@ export const FAILURE_CLAIM_AND_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim r
 export const FAILURE_APPLY_BOMM_BOOST = "Couldn't apply boost. Claim rewards to try again.";
 export const FAILURE_UNSTAKE_OMM = (failedTxMessage: string) => `Couldn't unstake OMM. ${failedTxMessage}`;
 
-export const FAILURE_UPDATE_VOTES = (failedTxMessage: string) => `Couldn't allocate votes. ${failedTxMessage}`;
-export const FAILURE_REMOVE_ALL_VOTES = (failedTxMessage: string) => `Couldn't remove votes. ${failedTxMessage}`;
+export const FAILURE_UPDATE_VOTES = "Couldn't allocate votes";
+export const FAILURE_REMOVE_ALL_VOTES = "Couldn't remove votes.";
 export const FAILURE_SUBMIT_PROPOSAL = "Couldn't submit proposal.";
 export const FAILURE_CAST_VOTE = `Couldn't cast vote.`;
 export const FAILURE_LOCK_OMM = `Couldn't lock up OMM.`;

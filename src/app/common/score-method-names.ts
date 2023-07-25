@@ -123,6 +123,8 @@ export class ScoreMethodNames {
     public static UNSTAKE_sICX = "unstake";
     public static GET_USER_UNSTAKE_INFO = "getUserUnstakeInfo";
     public static GET_ACTUAL_PREP_DELEGATIONS = "getActualPrepDelegations";
+    public static GET_ACTUAL_USER_PREP_DELEGATIONS = "getActualUserDelegationPercentage";
+    public static GET_BOMM_DELEGATIONS = "getbOMMDelegations";
 
 
     /**

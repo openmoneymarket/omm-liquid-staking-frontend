@@ -438,6 +438,47 @@ export class DataLoaderService {
     }
   }
 
+  public async loadActualUserPrepDelegations(): Promise<void> {
+    try {
+      const res = await this.scoreService.getActualUserDelegationPercentage();
+      this.stateChangeService.actualUserPrepDelegationsUpdate(res);
+    } catch (e) {
+      log.error("Error in loadActualUserPrepDelegations:");
+      log.error(e);
+    }
+  }
+
+  public async loadAllPrepsBommDelegations(): Promise<void> {
+    try {
+      const res = await this.scoreService.getAllPrepsBommDelegations();
+
+      this.stateChangeService.prepsBommDelegationsUpdate(res);
+    } catch (e) {
+      log.error("Error in loadAllPrepsBommDelegations:");
+      log.error(e);
+    }
+  }
+
+  public async loadUserDelegations(): Promise<void> {
+    try {
+      const userDelegationDetails = await this.scoreService.getUserDelegationDetails();
+      this.stateChangeService.userDelegationDetailsUpdate(userDelegationDetails);
+    } catch (e) {
+      log.error("Error occurred in loadUserDelegations:");
+      log.error(e);
+    }
+  }
+
+  public async loadPrepCollectedFees(): Promise<void> {
+    try {
+      const userDelegationDetails = await this.scoreService.getUserDelegationDetails();
+      this.stateChangeService.userDelegationDetailsUpdate(userDelegationDetails);
+    } catch (e) {
+      log.error("Error occurred in loadUserDelegations:");
+      log.error(e);
+    }
+  }
+
 
   // public async loadUserRewardsWorkingbOmmBalance(): Promise<void> {
   //   try {
@@ -467,15 +508,6 @@ export class DataLoaderService {
   //     const ommDailyRewards = await this.ommService.getUserDailyOmmRewards();
   //     this.stateChangeService.userOmmDailyRewardsUpdate(ommDailyRewards);
   //   } catch (e) {
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadUserDelegations(): Promise<void> {
-  //   try {
-  //     this.persistenceService.yourVotesPrepList = await this.scoreService.getUserDelegationDetails();
-  //   } catch (e) {
-  //     log.error("Error occurred in loadUserDelegations:");
   //     log.error(e);
   //   }
   // }
@@ -541,28 +573,28 @@ export class DataLoaderService {
   // }
 
 
-  // public async loadPrepList(start: number = 1, end: number = 100): Promise<void> {
-  //   try {
-  //     const prepList = await this.scoreService.getListOfPreps(start, end);
-  //
-  //     // set logos
-  //     try {
-  //       let logoUrl;
-  //       prepList.preps?.forEach(prep => {
-  //         logoUrl = environment.production ? `https://iconwat.ch/logos/${prep.address}.png` : "assets/img/logo/icx.svg";
-  //         prepList.prepAddressToLogoUrlMap.set(prep.address, logoUrl);
-  //         prep.setLogoUrl(logoUrl);
-  //       });
-  //     } catch (e) {
-  //       log.debug("Failed to fetch all logos");
-  //     }
-  //
-  //     this.persistenceService.prepList = prepList;
-  //   } catch (e) {
-  //     log.error("Failed to load prep list... Details:");
-  //     log.error(e);
-  //   }
-  // }
+  public async loadPrepList(start = 1, end = 100): Promise<void> {
+    try {
+      const prepList = await this.scoreService.getListOfPreps(start, end);
+
+      // set logos
+      try {
+        let logoUrl;
+        prepList.preps?.forEach(prep => {
+          logoUrl = environment.production ? `https://iconwat.ch/logos/${prep.address}.png` : "assets/img/logo/icx.svg";
+          prepList.prepAddressToLogoUrlMap.set(prep.address, logoUrl);
+          prep.setLogoUrl(logoUrl);
+        });
+      } catch (e) {
+        log.debug("Failed to fetch all logos");
+      }
+
+      this.stateChangeService.prepListUpdate(prepList);
+    } catch (e) {
+      log.error("Failed to load prep list... Details:");
+      log.error(e);
+    }
+  }
 
 
   public async afterUserActionReload(): Promise<void> {
@@ -613,7 +645,8 @@ export class DataLoaderService {
       this.loadUserAccumulatedFee(),
       this.loadUserbOmmBalance(),
       this.loadUserValidatorBommDelegation(),
-      // this.loadUserDelegations(),
+      this.loadActualUserPrepDelegations(),
+      this.loadUserDelegations(),
     ]);
 
     // TODO
@@ -636,6 +669,8 @@ export class DataLoaderService {
     this.loadVoteDefinitionCriterion();
     this.loadVoteDuration();
     this.loadActualPrepDelegations();
+    this.loadPrepList();
+    this.loadAllPrepsBommDelegations();
 
     // TODO
     // this.loadInterestHistory();

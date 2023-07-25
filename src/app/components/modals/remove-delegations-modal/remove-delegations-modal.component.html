@@ -1,0 +1,16 @@
+<!-- Modal: Remove all P-Rep selection -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-remove-preps">
+    <div class="modal-content">
+        <!-- Title -->
+        <h3 class="text-center label">Remove votes from all validators?</h3>
+
+        <!-- Message -->
+        <p class="text-center" style="font-size: 16px;">Your votes will be spread across the top 100 validators.</p>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button" (click)="onRemoveVotesClick($event)">Remove votes</a>
+        </div>
+    </div>
+</div>

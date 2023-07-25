@@ -21,6 +21,10 @@ import {SubmitProposalPayload} from "../../models/classes/SubmitProposalPayload"
 import {SubmitProposalModalComponent} from "../modals/submit-proposal-modal/submit-proposal-modal.component";
 import {ClaimRewardsPayload} from "../../models/classes/ClaimRewardsPayload";
 import {ClaimRewardsModalComponent} from "../modals/claim-rewards-modal/claim-rewards-modal.component";
+import {UpdateDelegationPayload} from "../../models/classes/updateDelegationPayload";
+import {RemoveDelegationsPayload} from "../../models/classes/removeDelegationsPayload";
+import {UpdateDelegationsModalComponent} from "../modals/update-delegations-modal/update-delegations-modal.component";
+import {RemoveDelegationsModalComponent} from "../modals/remove-delegations-modal/remove-delegations-modal.component";
 
 @Component({
   selector: 'app-modal',
@@ -36,7 +40,9 @@ import {ClaimRewardsModalComponent} from "../modals/claim-rewards-modal/claim-re
     WithdrawOmnModalComponent,
     LockOmmModalComponent,
     SubmitProposalModalComponent,
-    ClaimRewardsModalComponent
+    ClaimRewardsModalComponent,
+    UpdateDelegationsModalComponent,
+    RemoveDelegationsModalComponent
   ],
   templateUrl: './modal-container.component.html',
 })
@@ -52,6 +58,8 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
   ommLockingPayload?: OmmLockingPayload;
   submitProposalPayload?: SubmitProposalPayload;
   claimRewardsPayload?: ClaimRewardsPayload;
+  updateDelegationPayload?: UpdateDelegationPayload;
+  removeDelegationsPayload?: RemoveDelegationsPayload;
 
   // Subscriptions
   payloadSub?: Subscription;
@@ -87,6 +95,10 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
         this.submitProposalPayload = payload;
       } else if (payload instanceof  ClaimRewardsPayload) {
         this.claimRewardsPayload = payload;
+      } else if (payload instanceof UpdateDelegationPayload) {
+        this.updateDelegationPayload = payload;
+      } else if (payload instanceof RemoveDelegationsPayload) {
+        this.removeDelegationsPayload = payload;
       } else {
         this.resetModalPayloads();
       }
@@ -104,6 +116,8 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
     this.ommLockingPayload = undefined;
     this.submitProposalPayload = undefined;
     this.claimRewardsPayload = undefined;
+    this.updateDelegationPayload = undefined;
+    this.removeDelegationsPayload = undefined;
   }
 
   isModalActive(type: ModalType): boolean {

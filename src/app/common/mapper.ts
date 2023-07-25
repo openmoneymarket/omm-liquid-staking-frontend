@@ -20,7 +20,7 @@ import {HexString, PrepAddress} from "../models/Types/ModalTypes";
 
 export abstract class Mapper {
 
-  public static mapActualPrepDelegations(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
+  public static mapPrepDelegationsRecordToMap(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
     const res = new Map<PrepAddress, BigNumber>();
 
     for (const prepAddress in actualPrepDelegations) {
@@ -152,8 +152,8 @@ export abstract class Mapper {
     delegations.forEach(delegation => {
       res.push(new YourPrepVote(
         delegation._address,
-        prepAddressToNameMap?.get(delegation._address) ?? "Unknown",
-        multiply(hexToNormalisedNumber(delegation._votes_in_per), new BigNumber("100"))));
+  prepAddressToNameMap?.get(delegation._address) ?? "Unknown",
+        hexToNormalisedNumber(delegation._votes_in_per)));
     });
 
     return res;

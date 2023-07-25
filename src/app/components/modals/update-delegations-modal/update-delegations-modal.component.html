@@ -1,0 +1,23 @@
+<!-- Modal confirm votes -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-add-preps">
+    <div class="modal-content">
+        <!-- Title -->
+        <h3 class="text-center label">Vote for these validators?</h3>
+
+        <!-- Validator list -->
+        <ul>
+            <ng-container *ngFor="let vote of _payload?.userDelegations">
+                <li>{{vote.name}}: {{vote.percentage | rndDwnNPerc: 2}}</li>
+            </ng-container>
+        </ul>
+
+        <!-- Checkbox (bOMM holders only) -->
+        <input type="checkbox" style="" [(ngModel)]="useDelegationForBommAndSicx"><label style="padding-top:10px;padding-left: 5px;" class="label text-center">Use this delegation for bOMM and sICX.</label>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button" (click)="onUpdateVotesClick($event)">Vote</a>
+        </div>
+    </div>
+</div>
