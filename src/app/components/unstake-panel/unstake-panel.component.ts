@@ -147,7 +147,6 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
               new BigNumber(this.receivedIcxAmount),
           ));
         } else {
-          console.log("fee:", this.feeAmount.toNumber());
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_INSTANT_SICX, new UnstakeInstantSicxPayload(
               new BigNumber(this.unstakeInputAmount),
               new BigNumber(this.instantReceivedIcxAmount),
@@ -225,7 +224,6 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     e.stopPropagation();
 
     if (this.instantLiquidityLtUnstakeAmount()) {
-      console.log("this.unstakeWaitActive = true;")
       this.unstakeWaitActive = true;
       this.instantCheckboxEl.checked = false;
     } else {

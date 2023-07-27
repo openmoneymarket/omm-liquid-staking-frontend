@@ -633,8 +633,6 @@ export class ScoreService {
 
     const amount = await this.iconApiService.iconService.call(tx).execute();
 
-    console.log("BommHoldersCount: ", amount);
-
     return hexToBigNumber(amount);
   }
 
@@ -702,8 +700,6 @@ export class ScoreService {
         ScoreMethodNames.PREP_VOTES, params, IconTransactionType.READ);
 
     const amount = await this.iconApiService.iconService.call(tx).execute();
-
-    console.log("PrepBommDelegation: ", amount);
 
     return hexToNormalisedNumber(amount);
   }

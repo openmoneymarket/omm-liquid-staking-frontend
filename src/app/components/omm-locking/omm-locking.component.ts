@@ -144,7 +144,6 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
 
   subscribeTouUerOmmTokenBalanceDetailsChange(): void {
     this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(value => {
-      console.log("User OMM balance: ", value.totalBalance.toNumber());
       this.userOmmTokenBalanceDetails = value;
     })
   }

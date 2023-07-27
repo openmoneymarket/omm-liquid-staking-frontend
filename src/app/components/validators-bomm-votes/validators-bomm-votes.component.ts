@@ -149,7 +149,6 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
       if (searchString == undefined || searchString == "") {
         this.preps = this.prepList?.preps ?? [];
       } else {
-        console.log("searchString: ", searchString);
         this.preps = this.prepList?.preps.filter(prep => prep.name.toLowerCase().includes(searchString.toLowerCase())) ?? [];
       }
 

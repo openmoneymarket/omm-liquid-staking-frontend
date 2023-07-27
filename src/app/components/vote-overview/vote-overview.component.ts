@@ -105,9 +105,6 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
     // make sure both relevant objects are defined
     if (!this.daoFundBalances || !this.tokenToUsdPriceMap) return new BigNumber(0);
 
-    console.log("calculateDaoFundUsdValue..");
-    this.daoFundBalances.balances.forEach(value => console.log(`${value.token.symbol} = $${this.getTokenUsdPrice(value.token).toFixed(6)}`));
-
     return this.daoFundBalances.balances.reduce(
         (totalUsdValue, currentBalance) => totalUsdValue.plus(this.getTokenUsdPrice(currentBalance.token).multipliedBy(currentBalance.balance))
         , new BigNumber(0)

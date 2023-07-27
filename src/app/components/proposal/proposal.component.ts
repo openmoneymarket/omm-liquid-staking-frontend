@@ -107,11 +107,9 @@ export class ProposalComponent implements OnInit, OnDestroy {
   async loadProposalScoreDetails(): Promise<void> {
     log.debug("loadProposalScoreDetails...");
     if (!this.proposalScoreDetails) {
-      console.log("proposalScoreDetailsMap: ", this.storeService.proposalScoreDetailsMap);
       const proposalScoreDetails = this.storeService.proposalScoreDetailsMap.get(this.proposalId);
 
       if (proposalScoreDetails) {
-        console.log("Assigned this.proposalScoreDetails = proposalScoreDetails;")
         this.proposalScoreDetails = proposalScoreDetails;
       } else if (this.activeProposal) {
         this.dataLoaderService.loadAsyncContractOptions(this.activeProposal);

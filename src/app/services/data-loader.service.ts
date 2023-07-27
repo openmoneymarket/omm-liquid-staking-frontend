@@ -235,7 +235,6 @@ export class DataLoaderService {
 
           if (totalCount == undefined) {
             totalCount = parseInt(res.headers.get("X-Total-Count") ?? "0");
-            console.log("totalCount == undefined) Assigned totalCount = ", totalCount);
           }
 
 

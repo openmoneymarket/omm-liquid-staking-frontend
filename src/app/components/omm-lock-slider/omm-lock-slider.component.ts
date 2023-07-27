@@ -96,8 +96,6 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
   }
 
   public refreshSlider(): void {
-    console.log("refreshSlider this.userLockedOmmBalance && this.userOmmTokenBalanceDetails = ", this.userLockedOmmBalance && this.userOmmTokenBalanceDetails);
-    console.log("this.sliderInitialised", this.sliderInitialised);
     if (this.userOmmTokenBalanceDetails) {
       const max = this.userOmmTokenBalanceDetails.availableBalance.plus(this.userLockedOmmBalance).dp(0).toNumber();
 

@@ -207,7 +207,6 @@ export class StateChangeService {
 
   public proposalScoreDetailsUpdate(proposalId: string, proposalScoreDetails: IProposalScoreDetails[]): void {
     this.storeService.proposalScoreDetailsMap.set(proposalId, proposalScoreDetails);
-    console.log(`Loaded proposalId=${proposalId} proposalScoreDetails..`);
     this.proposalScoreDetailsChange.next({proposalId, proposalScoreDetails});
   }
 
@@ -294,7 +293,6 @@ export class StateChangeService {
   }
 
   public userUnstakeInfoUpdate(value: UserUnstakeInfo): void {
-    console.log("UserUnstakeInfo: ", value);
     this.storeService.userUnstakeInfo = value;
     this.userUnstakeInfoChange.next(value);
   }

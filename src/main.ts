@@ -36,4 +36,4 @@ bootstrapApplication(AppComponent,{
             progressBar: true,
         }), // Toastr providers
     ]
-}).catch(e => console.log("Error occurred in bootstrapApplication:", e));
+}).catch(e => console.error("Error occurred in bootstrapApplication:", e));

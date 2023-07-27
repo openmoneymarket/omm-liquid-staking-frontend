@@ -63,7 +63,6 @@ export abstract class Calculations {
         userDelegationWorkingbOmmBalance: BigNumber,
         userDynamicDelegationWorkingbOmmBalance: BigNumber
     ): BigNumber {
-        console.log("usersVotingPower...");
         const userWorkingbOmmBalance = userDynamicDelegationWorkingbOmmBalance.gt(userDelegationWorkingbOmmBalance) ? userDynamicDelegationWorkingbOmmBalance : userDelegationWorkingbOmmBalance;
         const userbOmmDiff = userDynamicDelegationWorkingbOmmBalance.lte(userDelegationWorkingbOmmBalance) ? new BigNumber(0) : userDynamicDelegationWorkingbOmmBalance.minus(
             userDelegationWorkingbOmmBalance);
