@@ -599,23 +599,13 @@ export class DataLoaderService {
 
 
   public async afterUserActionReload(): Promise<void> {
-
-    // TODO
-
-    // reload all reserves and user asset-user reserve data
-    await Promise.all([
-
-    ]);
-
-    this.stateChangeService.coreDataReloadUpdate();
-
-    await this.loadUserSpecificData();
+    // reload core and user data
+    this.loadCoreData();
+    this.loadUserSpecificData();
   }
 
   public async loadCoreData(): Promise<void> {
     this.loadCoreAsyncData();
-
-    // TODO
 
     await Promise.all([
       this.loadTodaySicxRate(),
@@ -627,8 +617,6 @@ export class DataLoaderService {
       this.loadSicxHoldersAmount(),
       this.loadDelegationbOmmWorkingTotalSupply(),
       this.loadbOmmTotalSupply(),
-      // this.loadTotalOmmSupply(),
-      // this.loadVoteDuration(),
     ]);
 
     // emit event indicating that core data was loaded
@@ -650,8 +638,6 @@ export class DataLoaderService {
       this.loadUserDelegations(),
     ]);
 
-    // TODO
-
     // emit event that user data load has been completed
     this.stateChangeService.userDataReloadUpdate();
   }
@@ -672,8 +658,5 @@ export class DataLoaderService {
     this.loadActualPrepDelegations();
     this.loadPrepList();
     this.loadAllPrepsBommDelegations();
-
-    // TODO
-    // this.loadInterestHistory();
   }
 }
