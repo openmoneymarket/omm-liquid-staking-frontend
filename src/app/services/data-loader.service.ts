@@ -222,23 +222,37 @@ export class DataLoaderService {
       try {
         const method = "FeeDistributed"
         const limit = 100;
+        let skip = 0
+        let totalFees = new BigNumber(0);
         // TODO use address from address provider and check how often FeeDistributed is emitted  !!!
         const ommFeeDistScoreAddress = this.storeService.allAddresses?.systemContract.FeeDistribution;
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
-        const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
-        const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
-        const totalCount = res.headers.get("X-Total-Count");
+        let totalCount = undefined;
 
-        let totalFees = new BigNumber(0);
+        do {
+          const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&skip=${skip}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
+          const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
 
-        console.log("response:", res);
-
-        res.body?.forEach(eventLog => {
-          if (eventLog.method == method) {
-            const indexed = JSON.parse(eventLog.indexed);
-            totalFees = totalFees.plus(hexToNormalisedNumber(indexed[1]));
+          if (totalCount == undefined) {
+            totalCount = parseInt(res.headers.get("X-Total-Count") ?? "0");
+            console.log("totalCount == undefined) Assigned totalCount = ", totalCount);
           }
-        });
+
+
+          res.body?.forEach(eventLog => {
+            if (eventLog.method == method) {
+              const indexed = JSON.parse(eventLog.indexed);
+              totalFees = totalFees.plus(hexToNormalisedNumber(indexed[1]));
+            }
+          });
+
+          // skip "limit" number of records
+          skip += limit;
+          // reduce total count by queried limit
+          totalCount -= limit;
+        } while (totalCount > limit);
+
+        log.debug("loadFeesCollected7D: ", totalFees.toString());
 
         this.stateChangeService.feeDistributed7DUpdate(totalFees);
       } catch (e) {
