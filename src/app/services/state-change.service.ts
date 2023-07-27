@@ -53,8 +53,8 @@ export class StateChangeService {
   private lockedOmmActionSucceeded = new ReplaySubject<boolean>(1);
   lockedOmmActionSucceeded$: Observable<boolean> = this.lockedOmmActionSucceeded.asObservable();
 
-  private irc2TokenBalanceUpdate = new ReplaySubject<ITokenBalanceUpdate>(1);
-  irc2TokenBalanceUpdate$ = this.irc2TokenBalanceUpdate.asObservable();
+  private userTokenBalanceUpdate = new ReplaySubject<ITokenBalanceUpdate>(1);
+  userTokenBalanceUpdate$ = this.userTokenBalanceUpdate.asObservable();
 
   private loginChange = new ReplaySubject<Wallet | undefined>(1);
   public loginChange$ = this.loginChange.asObservable();
@@ -330,7 +330,7 @@ export class StateChangeService {
 
   public updateUserTokenBalance(balance: BigNumber, token: Irc2Token): void {
     this.storeService.activeWallet!.irc2TokenBalancesMap.set(token.symbol, balance);
-    this.irc2TokenBalanceUpdate.next({ token, amount: balance })
+    this.userTokenBalanceUpdate.next({ token, amount: balance })
   }
 
   public userDataReloadUpdate(): void {

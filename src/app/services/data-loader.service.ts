@@ -471,8 +471,9 @@ export class DataLoaderService {
 
   public async loadPrepCollectedFees(): Promise<void> {
     try {
-      const userDelegationDetails = await this.scoreService.getUserDelegationDetails();
-      this.stateChangeService.userDelegationDetailsUpdate(userDelegationDetails);
+      // TODO
+      // const userDelegationDetails = await this.scoreService.getUserDelegationDetails();
+      // this.stateChangeService.userDelegationDetailsUpdate(userDelegationDetails);
     } catch (e) {
       log.error("Error occurred in loadUserDelegations:");
       log.error(e);

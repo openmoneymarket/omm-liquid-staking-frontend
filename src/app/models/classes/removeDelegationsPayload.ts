@@ -10,6 +10,12 @@ export class RemoveDelegationsPayload implements IActionPayload {
 
     modalType = ModalType.REMOVE_ALL_DELEGATIONS;
 
+    isBommDelegation: boolean
+
+    constructor(isBommDelegation: boolean) {
+        this.isBommDelegation = isBommDelegation;
+    }
+
     sendTxMessage(): string {
         return PRE_REMOVE_ALL_VOTES;
     }

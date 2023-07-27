@@ -6,13 +6,13 @@
 
         <!-- Validator list -->
         <ul>
-            <ng-container *ngFor="let vote of _payload?.userDelegations">
+            <ng-container *ngFor="let vote of payload?.userDelegations">
                 <li>{{vote.name}}: {{vote.percentage | rndDwnNPerc: 2}}</li>
             </ng-container>
         </ul>
 
         <!-- Checkbox (bOMM holders only) -->
-        <input type="checkbox" style="" [(ngModel)]="useDelegationForBommAndSicx"><label style="padding-top:10px;padding-left: 5px;" class="label text-center">Use this delegation for bOMM and sICX.</label>
+<!--        <input type="checkbox" style="" [(ngModel)]="useDelegationForBommAndSicx"><label style="padding-top:10px;padding-left: 5px;" class="label text-center">Use this delegation for bOMM and sICX.</label>-->
 
         <!-- Modal actions -->
         <div class="modal-actions">

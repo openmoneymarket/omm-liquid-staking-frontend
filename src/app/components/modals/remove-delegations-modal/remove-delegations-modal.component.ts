@@ -32,7 +32,13 @@ export class RemoveDelegationsModalComponent {
     e.stopPropagation();
 
     if (this.payload) {
-      const tx = this.scoreService.buildRemoveAllVotes();
+      let tx;
+
+      if (this.payload.isBommDelegation) {
+        tx = this.scoreService.buildRemoveAllBommVotes();
+      } else {
+        tx = this.scoreService.buildRemoveAllSicxVotes();
+      }
 
       this.transactionDispatcher.dispatchTransaction(tx, this.payload);
     } else {

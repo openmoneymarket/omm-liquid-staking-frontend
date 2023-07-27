@@ -78,7 +78,7 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
     return this.storeService.getUserTokenBalance(ICX);
   }
 
-  getUsersIcxBalance(): BigNumber {
+  getUserSicxBalance(): BigNumber {
     return this.storeService.getUserTokenBalance(SICX);
   }
 

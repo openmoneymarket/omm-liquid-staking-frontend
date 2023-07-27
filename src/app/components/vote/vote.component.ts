@@ -9,7 +9,14 @@ import {ValidatorRewardsOverviewComponent} from "../validator-rewards-overview/v
 @Component({
   selector: 'app-vote',
   standalone: true,
-    imports: [CommonModule, ValidatorsComponent, OmmLockingComponent, VoteOverviewComponent, LatestProposalsComponent, ValidatorRewardsOverviewComponent],
+    imports: [
+        CommonModule,
+      ValidatorsComponent,
+      OmmLockingComponent,
+      VoteOverviewComponent,
+      LatestProposalsComponent,
+      ValidatorRewardsOverviewComponent
+    ],
   templateUrl: './vote.component.html'
 })
 export class VoteComponent {

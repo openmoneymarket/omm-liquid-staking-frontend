@@ -2,58 +2,121 @@
     <thead>
     <tr>
         <th>Rank</th>
-        <th>Name<a href="javascript:void(0);" class="mobile-adjust {{adjustVotesActiveMobile ? 'hide' : ''}}" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
-        </a><span class="mobile-adjust-options {{adjustVotesActiveMobile ? '' : 'hide'}}">
-                <a href="javascript:void(0);" class="text-red mobile-adjust-cancel" (click)="onAdjustVotesClick($event, true)">Cancel</a> <span class="label"> | </span>
-                <a href="javascript:void(0);" class="adjust-confirm">Confirm</a></span></th>
+        <th>Name<a href="javascript:void(0);" class="mobile-adjust" [ngStyle]="(adjustVotesActiveMobile || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
+        </a><span class="mobile-adjust-options" [ngStyle]="!adjustVotesActiveMobile | hide">
+                <a href="javascript:void(0);" class="text-red mobile-adjust-cancel" (click)="onCancelAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
+                    <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm" (click)="onConfirmClick($event)">
+                        <ng-container *ngIf="userAllocatedVotesPercent().eq(1) || userAllocatedVotesPercent().eq(0)">Confirm</ng-container>
+                        <span class="tooltip active" *ngIf="!userAllocatedVotesPercent().eq(1) && !userAllocatedVotesPercent().eq(0)">
+                            <span class="tooltip-item">Confirm</span>
+                            <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().lte(1) | hide">
+                                <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
+                            </div>
+                            <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().gte(1) || userAllocatedVotesPercent().eq(0) | hide">
+                                <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
+                            </div>
+                        </span>
+                </a></span></th>
         <th class="text-right">
-            <a href="javascript:void(0);" class="adjust-votes {{adjustVotesActive ? 'hide' : ''}}" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
-            </a><span class="adjust-options {{adjustVotesActive ? '' : 'hide'}}">
-                <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
-                <a href="javascript:void(0);" class="adjust-confirm">Confirm</a></span><br>Your delegation</th>
+            <a href="javascript:void(0);" class="adjust-votes" [ngStyle]="(adjustVotesActive  || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
+            </a><span class="adjust-options" [ngStyle]="!adjustVotesActive | hide">
+                <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onCancelAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
+                <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm" (click)="onConfirmClick($event)">
+                    <ng-container *ngIf="userAllocatedVotesPercent().eq(1) || userAllocatedVotesPercent().eq(0)">Confirm</ng-container>
+                    <span class="tooltip active" *ngIf="!userAllocatedVotesPercent().eq(1) && !userAllocatedVotesPercent().eq(0)">
+                        <span class="tooltip-item">Confirm</span>
+                        <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().lte(1) | hide">
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
+                        </div>
+                        <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().gte(1) || userAllocatedVotesPercent().eq(0) | hide">
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
+                        </div>
+                    </span>
+                </a>
+        </span><br>Your delegation</th>
         <th class="text-right">sICX delegation</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>1</td>
-        <td>
-            <!-- Desktop -->
-            <div class="desktop-vote">
-                <div class="grid grid-center">
-                    <div class="grid-cell">
-                        <img src="assets/img/icon/profile.svg" alt="">
-                    </div>
-                    <div class="grid-cell">
-                        ICON Foundation<br><span class="label contributor">Omm contributor</span>
+    <ng-container *ngFor="let prep of preps; let i = index; trackBy: prepAddress">
+        <tr>
+            <td>1</td>
+            <td>
+                <!-- Desktop -->
+                <div class="desktop-vote" [ngStyle]="isMobile() | hide">
+                    <div class="grid grid-center">
+                        <div class="grid-cell">
+                            <img [src]="prep.logoUrl" (error)="errorHandlerPrepLogo($event)" alt="">
+                        </div>
+                        <div class="grid-cell">
+                            {{prep.name}}
+                            <ng-container *ngIf="isPrepOmmContributor(prep.address)">
+                                <br><span class="label contributor">Omm contributor</span>
+                            </ng-container>
+                            <ng-container *ngIf="isPrepOfferingIncentive(prep.address)">
+                                <br><span class="label rewards"><a href="https://docs.omm.finance/user-guide/vote-validators" target="_blank">Offers incentives</a></span>
+                            </ng-container>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Mobile -->
-            <div class="mobile-vote hide">
-                <div class="grid metadata-group notice">
-                    <div class="grid-cell">
-                        <div class="grid supply-group">
-                            <div class="grid-cell">
-                                <dl class="metadata">
-                                    <dt>Your delegation</dt>
-                                    <dd><span class="input-amount">15%</span><input type="text" name="" placeholder="15%" class="input-edit hide"><br><span class="label"></span></dd>
-                                </dl>
-                            </div>
-                            <div class="grid-cell">
-                                <dl class="metadata">
-                                    <dt>sICX delegation</dt>
-                                    <dd>2,186 sICX</dd>
-                                </dl>
+                <!-- Mobile -->
+                <div class="mobile-vote" [ngStyle]="!isMobile() | hide">
+                    <div class="grid metadata-group notice">
+                        <div class="grid-cell">
+                            <div class="grid supply-group">
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>Your delegation</dt>
+                                        <dd>
+                                            <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userSicxDelegation(prep.address).toFixed(2) | usFormat}} sICX</span>
+                                            <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">-</span>
+
+                                            <input type="text" name="" placeholder="15%" class="input-edit"
+                                                   [ngStyle]="!adjustVotesActive | hide"
+                                                   [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
+                                                   (keyup)="onDelegationInputKeyUp($event, prep.address)"
+                                                   (blur)="processDelegationInput($event, prep.address)"
+                                                   (paste)="processDelegationInput($event, prep.address)"
+                                            >
+                                            <br><span class="label"></span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="grid-cell">
+                                    <dl class="metadata">
+                                        <dt>sICX delegation</dt>
+                                        <dd *ngIf="prepSicxDelegation(prep.address).gt(0)">{{prepSicxDelegation(prep.address).toFixed(2) | usFormat}} sICX</dd>
+                                        <dd *ngIf="!prepSicxDelegation(prep.address).gt(0)">{{prepSicxDelegation(prep.address).toFixed(2) | usFormat}} sICX</dd>
+                                    </dl>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </td>
-        <td><span class="input-amount">15%</span><input type="text" name="" placeholder="15%" class="input-edit hide"><br><span class="label">317 bOMM</span></td>
-        <td>14.85%<br><span class="label">2,186 sICX</span></td>
-    </tr>
+            </td>
+
+            <ng-container *ngIf="!isMobile()">
+                <td>
+                    <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
+                    <input type="text" name="" class="input-edit"
+                           [ngStyle]="!adjustVotesActive | hide"
+                           placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}"
+                           [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
+                           (keyup)="onDelegationInputKeyUp($event, prep.address)"
+                           (blur)="processDelegationInput($event, prep.address)"
+                           (paste)="processDelegationInput($event, prep.address)"
+                    >
+                    <br>
+                    <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="label">{{userSicxDelegation(prep.address).toFixed(2) | usFormat}} sICX</span>
+                    <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="label">-</span>
+                </td>
+                <td>{{prepSicxDelegationPercent(prep.address) | rndDwnNPerc: 2}}<br>
+                    <span *ngIf="prepSicxDelegation(prep.address).gt(0)" class="label">{{prepSicxDelegation(prep.address).toFixed(2) | usFormat}} sICX</span>
+                    <span *ngIf="!prepSicxDelegation(prep.address).gt(0)" class="label">-</span>
+                </td>
+            </ng-container>
+        </tr>
+    </ng-container>
     </tbody>
 </table>

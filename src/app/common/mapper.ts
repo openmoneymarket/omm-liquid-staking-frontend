@@ -30,6 +30,16 @@ export abstract class Mapper {
     return res;
   }
 
+  public static mapUserSicxDelegationsRecordToMap(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
+    const res = new Map<PrepAddress, BigNumber>();
+
+    for (const prepAddress in actualPrepDelegations) {
+      res.set(prepAddress, hexToNormalisedNumber(actualPrepDelegations[prepAddress]).dividedBy(100));
+    }
+
+    return res;
+  }
+
   public static mapPoolStats(poolStats: PoolStatsInterface): PoolStats {
     const baseDecimals = hexToBigNumber(poolStats.base_decimals);
     const quoteDecimals = hexToBigNumber(poolStats.quote_decimals);

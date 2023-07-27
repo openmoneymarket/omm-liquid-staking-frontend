@@ -36,7 +36,14 @@ import {VotingPowerOverviewComponent} from "../voting-power-overview/voting-powe
 @Component({
   selector: 'app-omm-locking',
   standalone: true,
-  imports: [CommonModule, OmmLockSliderComponent, UsFormatPipe, HideElementPipe, ClickOutsideDirective, VotingPowerOverviewComponent],
+  imports: [
+      CommonModule,
+    OmmLockSliderComponent,
+    UsFormatPipe,
+    HideElementPipe,
+    ClickOutsideDirective,
+    VotingPowerOverviewComponent
+  ],
   templateUrl: './omm-locking.component.html'
 })
 export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy {

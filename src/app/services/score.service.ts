@@ -50,7 +50,7 @@ export class ScoreService {
     const delegations: {_address: string, _votes_in_per: string}[] = userDelegations.map(vote => {
       return {
         _address: vote.address,
-        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage, 18).toLoop())
+        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage, 18).toLoop()) // note 1EXA is 100%
       }
     });
     log.debug("delegations:", delegations);
@@ -74,25 +74,25 @@ export class ScoreService {
     const delegations: {_address: string, _votes_in_per: string}[] = userDelegations.map(vote => {
       return {
         _address: vote.address,
-        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage.multipliedBy(100), 16).toLoop())
+        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage.multipliedBy(100), 18).toLoop()) // note 1EXA is 1%
       }
     });
     log.debug("delegations:", delegations);
 
     const params = {
-      _delegations: delegations
+      _user_delegations: delegations
     };
 
     return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.Staking,
-        ScoreMethodNames.UPDATE_DELEGATIONS, params, IconTransactionType.WRITE);
+        ScoreMethodNames.DELEGATE, params, IconTransactionType.WRITE);
   }
 
   /**
-   * @description Build Icon transaction to remove all of the users votes
+   * @description Build Icon transaction to remove all of the users bOmm delegation votes
    * @return Icon tx
    */
-  public buildRemoveAllVotes(): Promise<any> {
+  public buildRemoveAllBommVotes(): Promise<any> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
@@ -102,6 +102,22 @@ export class ScoreService {
     return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.Delegation,
         ScoreMethodNames.CLEAR_PREVIOUS_DELEGATIONS, params, IconTransactionType.WRITE);
+  }
+
+  /**
+   * @description Build Icon transaction to remove all of the users votes
+   * @return Icon tx
+   */
+  public buildRemoveAllSicxVotes(): Promise<any> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      _user_delegations: []
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.DELEGATE, params, IconTransactionType.WRITE);
   }
 
   /**
@@ -653,7 +669,7 @@ export class ScoreService {
 
     const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
 
-    return Mapper.mapPrepDelegationsRecordToMap(res);
+    return Mapper.mapUserSicxDelegationsRecordToMap(res);
   }
 
   /**
