@@ -77,6 +77,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.subscribeToUserLoginChange();
   }
 
+  private resetInputs(): void {
+    this.stakeInputAmount = new BigNumber(0);
+    this.unstakeInputAmount = new BigNumber(0);
+  }
+
   subscribeToLatestBlockHeightChange(): void {
     this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe(block => {
       this.currentBlockHeight = new BigNumber(block.height)    ;
@@ -115,6 +120,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
             new BigNumber(this.unstakeInputAmount),
         ));
       }
+
+      this.resetInputs();
     } else {
       this.stateChangeService.modalUpdate(ModalType.SIGN_IN);
     }

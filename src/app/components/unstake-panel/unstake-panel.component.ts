@@ -96,6 +96,10 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.subscribeIcxSicxPoolStatsChange();
   }
 
+  private resetInputs(): void {
+    this.unstakeInputAmount = new BigNumber(0);
+  }
+
   subscribeIcxSicxPoolStatsChange(): void {
     this.icxSicxPoolStatsSub = this.stateChangeService.icxSicxPoolStatsChange$.subscribe(value => {
       this.icxSicxPoolStats = value;
@@ -153,6 +157,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
               new BigNumber(this.feeAmount),
           ));
         }
+
+        this.resetInputs();
       }
     } else {
       this.stateChangeService.modalUpdate(ModalType.SIGN_IN);
