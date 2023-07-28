@@ -1,4 +1,4 @@
-<table class="list sicx-votes {{_isSIcxVotesActive ? '' : 'hide'}}">
+<table class="list sicx-votes {{_isSIcxVotesActive ? '' : 'hide'}}" *ngIf="ready">
     <thead>
     <tr>
         <th>Rank</th>
@@ -39,7 +39,7 @@
     </thead>
     <tbody>
     <ng-container *ngFor="let prep of preps; let i = index; trackBy: prepAddress">
-        <tr>
+        <tr intersectionObserver [intersectionDebounce]="0" (visibilityChange)="onVisibilityChanged(i, $event)">
             <td>1</td>
             <td>
                 <!-- Desktop -->

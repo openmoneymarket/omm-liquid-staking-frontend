@@ -24,6 +24,10 @@ export function timestampInMillisecondsToPrettyDate(timestamp: BigNumber): strin
     });
 }
 
+export function isBrowserTabActive(): boolean {
+    return !document.hidden
+}
+
 export function addSecondsToTimestamp(timestamp: BigNumber, seconds: number): BigNumber {
     const microSecond = new BigNumber("1000000");
     return timestamp.plus(microSecond.multipliedBy(seconds));

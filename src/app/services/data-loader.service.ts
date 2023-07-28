@@ -217,7 +217,7 @@ export class DataLoaderService {
     }
   }
 
-  public async loadFeesCollected7D(): Promise<void> {
+  public async loadFeesDistributed7D(): Promise<void> {
     this.stateChangeService.lastBlockHeightChange$.pipe(take(1)).subscribe(async (lastBlockHeight) => {
       try {
         const method = "FeeDistributed"
@@ -565,7 +565,7 @@ export class DataLoaderService {
    */
   public loadCoreAsyncData(): void {
     this.loadUserProposalVotes();
-    this.loadFeesCollected7D();
+    this.loadFeesDistributed7D();
     this.loadlDaoFundTokens();
     this.loadTotalValidatorRewards();
     this.loadActiveBommUsersCount();

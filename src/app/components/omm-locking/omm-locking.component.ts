@@ -65,7 +65,6 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   userLockedOmm?: LockedOmm;
   userOmmTokenBalanceDetails?: OmmTokenBalanceDetails;
   userDelegationWorkingbOmmBalance = new BigNumber(0);
-  yourVotingPower = new BigNumber(0);
 
   userDynamicLockedOmmAmount = 0; // dynamic user locked Omm amount
   userDynamicDelegationWorkingbOmmBalance = new BigNumber(0);

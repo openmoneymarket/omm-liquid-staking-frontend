@@ -19,8 +19,10 @@ export const MAX_PROPOSAL_DESCRIPTION_LENGTH = 500;
 
 export const ICON_BLOCK_INTERVAL = 2; // 2 seconds
 
-export const BLOCK_POOL_INTERVAL_TIME = 10_000 // 10 seconds in milliseconds
+export const BLOCK_POll_INTERVAL_TIME = 10_000 // 10 seconds in milliseconds
 export const CURRENT_TIMESTAMP_INTERVAL = 10_000 // 10 seconds in milliseconds
+
+export const DATA_REFRESH_INTERVAL = 10_000 // 10 seconds in milliseconds
 
 export const BALANCED_DEX_FEE_PERCENTAGE_CONVERSION = 10000;
 

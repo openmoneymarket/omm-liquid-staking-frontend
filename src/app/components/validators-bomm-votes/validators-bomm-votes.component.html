@@ -39,8 +39,8 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let prep of preps; last as isLast; let i = index; trackBy: prepAddress">
-        <tr>
+    <ng-container *ngFor="let prep of preps.slice(0, PREP_PAGE_SIZE_INDEX); last as isLast; let i = index; trackBy: prepAddress">
+        <tr intersectionObserver [intersectionDebounce]="0" (visibilityChange)="onVisibilityChanged(i, $event)">
             <td>{{i + 1}}</td>
             <td>
                 <!-- Desktop -->

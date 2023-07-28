@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
 import {Prep, PrepList} from "../../models/classes/Preps";
@@ -17,15 +25,20 @@ import {usLocale} from "../../common/formats";
 import {YourPrepVote} from "../../models/classes/YourPrepVote";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {Wallet} from "../../models/classes/Wallet";
+import {IntersectionStatus} from "../../directives/from-intersection-observer";
+import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 
 @Component({
   selector: 'app-validators-sicx-votes',
   standalone: true,
-  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe],
+  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe, IntersectionObserverDirective],
   templateUrl: './validators-sicx-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, OnDestroy {
+export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, OnDestroy, AfterViewInit {
+
+  // used for pagination, start with 22 and increase when last element becomes visible
+  PREP_PAGE_SIZE_INDEX = 10;
 
   _isSIcxVotesActive = false;
   @Input({ required: true }) set isSIcxVotesActive(value: boolean) {
@@ -33,6 +46,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.resetAdjustVotesActive();
   }
   @Input({ required: true }) searchSubject$!: Observable<string>;
+  ready = false;
 
   prepList?: PrepList;
   preps: Prep[] = [];
@@ -66,6 +80,11 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   ngOnInit(): void {
     this.registerSubscriptions();
+  }
+
+  ngAfterViewInit(): void {
+    this.ready = true;
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -221,6 +240,12 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
       // detect changes
       this.cdRef.detectChanges();
+    }
+  }
+
+  onVisibilityChanged(index: number, status: IntersectionStatus) {
+    if (index == Math.round(this.PREP_PAGE_SIZE_INDEX / 1.5)  && status == IntersectionStatus.Visible) {
+      this.PREP_PAGE_SIZE_INDEX  = this.PREP_PAGE_SIZE_INDEX * 2 < this.preps.length ? this.PREP_PAGE_SIZE_INDEX * 2 : this.preps.length;
     }
   }
 

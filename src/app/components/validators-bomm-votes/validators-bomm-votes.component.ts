@@ -18,15 +18,20 @@ import {UpdateDelegationPayload} from "../../models/classes/updateDelegationPayl
 import {RemoveDelegationsPayload} from "../../models/classes/removeDelegationsPayload";
 import {Calculations} from "../../common/calculations";
 import {Wallet} from "../../models/classes/Wallet";
+import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
+import {IntersectionStatus} from "../../directives/from-intersection-observer";
 
 @Component({
   selector: 'app-validators-bomm-votes',
   standalone: true,
-  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe],
+  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe, IntersectionObserverDirective],
   templateUrl: './validators-bomm-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, OnDestroy {
+
+  // used for pagination, start with 22 and increase when last element becomes visible
+  PREP_PAGE_SIZE_INDEX = 10;
 
   _isbOmmVotesActive = false;
   @Input({ required: true }) set isbOmmVotesActive(value: boolean) {
@@ -206,6 +211,12 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
       // detect changes
       this.cdRef.detectChanges();
     })
+  }
+
+  onVisibilityChanged(index: number, status: IntersectionStatus) {
+    if (index == Math.round(this.PREP_PAGE_SIZE_INDEX / 1.5)  && status == IntersectionStatus.Visible) {
+      this.PREP_PAGE_SIZE_INDEX  = this.PREP_PAGE_SIZE_INDEX * 2 < this.preps.length ? this.PREP_PAGE_SIZE_INDEX * 2 : this.preps.length;
+    }
   }
 
   onDelegationInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {

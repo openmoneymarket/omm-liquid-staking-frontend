@@ -21,35 +21,8 @@ export const APP_ROUTES: Routes = [
   {
     path: "vote",
     title: "Vote | Omm",
-    component: VoteViewContainerComponent,
-    children: [
-      {
-        path: "new-proposal",
-        title: "New Proposal | Omm",
-        component: NewProposalComponent,
-      },
-      {
-        path: "all-proposals",
-        title: "Proposals | Omm",
-        component: AllProposalsComponent,
-      },
-      {
-        path: "proposal/:id",
-        title: "Proposal | Omm",
-        component: ProposalComponent,
-      },
-      {
-        path: "",
-        title: "Vote | Omm",
-        component: VoteComponent,
-      },
-    ]
+    loadChildren: () => import("./components/vote/vote-routes").then(p => p.VOTE_ROUTES)
   },
-  // { LAZY LOAD placeholder example
-  //   path: 'product',
-  //   loadComponent: () => import('./product/product.component')
-  //       .then(m => m.ProductComponent)
-  // },
   {
     path: '**',
     redirectTo: "stake",

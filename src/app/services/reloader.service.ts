@@ -1,11 +1,10 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {StateChangeService} from "./state-change.service";
 import BigNumber from "bignumber.js";
-import {Times} from "../models/classes/Times";
 import {timestampNowMicroseconds} from "../common/utils";
 import {Subscription, timer} from "rxjs";
 import {IconApiService} from "./icon-api.service";
-import {BLOCK_POOL_INTERVAL_TIME, CURRENT_TIMESTAMP_INTERVAL} from "../common/constants";
+import {BLOCK_POll_INTERVAL_TIME, CURRENT_TIMESTAMP_INTERVAL} from "../common/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +43,7 @@ export class ReloaderService implements OnDestroy {
   }
 
   initBlockHeightPolling(): void {
-    this.blockPollSub = timer(0, BLOCK_POOL_INTERVAL_TIME).subscribe( () => {
+    this.blockPollSub = timer(0, BLOCK_POll_INTERVAL_TIME).subscribe( () => {
       this.iconApiService.getLastBlockHeight().then(block => {
         if (this.lastBlockHeight < block.height) {
           this.lastBlockHeight = block.height;
