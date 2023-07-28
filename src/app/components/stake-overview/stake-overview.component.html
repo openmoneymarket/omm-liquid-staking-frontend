@@ -34,7 +34,8 @@
                 <div class="grid-cell text-center">
                     <dl class="metadata">
                         <dt>Fees collected (7D)</dt>
-                        <dd>{{feeDistributed7D.toFixed(0) | usFormat: true}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="feeDistributed7D.gt(0)">{{feeDistributed7D.toFixed(0) | usFormat: true}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="!feeDistributed7D.gt(0)">-</dd>
                     </dl>
                 </div>
             </div>

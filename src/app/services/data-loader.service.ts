@@ -306,6 +306,16 @@ export class DataLoaderService {
     }
   }
 
+  public async loadUserCollectedFees(): Promise<void> {
+    try {
+      const amount = await this.scoreService.getUserCollectedFees();
+      this.stateChangeService.userCollectedFeeUpdate(amount);
+    } catch (e) {
+      log.error("Error in loadUserCollectedFees:");
+      log.error(e);
+    }
+  }
+
   public async loadUserValidatorBommDelegation(): Promise<void> {
     try {
       const amount = await this.scoreService.getPrepBommDelegation();
@@ -645,6 +655,7 @@ export class DataLoaderService {
       this.loadUserOmmTokenBalanceDetails(),
       this.loadUserDelegationWorkingbOmmBalance(),
       this.loadUserAccumulatedFee(),
+      this.loadUserCollectedFees(),
       this.loadUserbOmmBalance(),
       this.loadUserValidatorBommDelegation(),
       this.loadActualUserPrepDelegations(),

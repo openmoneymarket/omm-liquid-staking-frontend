@@ -345,6 +345,27 @@ export class ScoreService {
   }
 
   /**
+   * @description Get logged in user (validator) collected/earned rewards
+   * @return BigNumber
+   */
+  public async getUserCollectedFees(): Promise<BigNumber> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      address: this.storeService.userWalletAddress(),
+    };
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
+        ScoreMethodNames.GET_COLLECTED_FEE, params, IconTransactionType.READ);
+
+    const res = await this.iconApiService.iconService.call(tx).execute();
+
+    log.debug("getUserCollectedFees: ", res);
+
+    return hexToNormalisedNumber(res);
+  }
+
+  /**
    * @description Get Balanced DEX fees
    * @return BalancedDexFees
    */

@@ -1,28 +1,29 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {Subscription} from "rxjs";
 import {StateChangeService} from "../../services/state-change.service";
 import BigNumber from "bignumber.js";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
 import {ModalType} from "../../models/enums/ModalType";
-import {StoreService} from "../../services/store.service";
 import {ClaimRewardsPayload} from "../../models/classes/ClaimRewardsPayload";
 import {ICX} from "../../common/constants";
 import {Calculations} from "../../common/calculations";
-import {PrepAddress} from "../../models/Types/ModalTypes";
+import {Address, PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
 import {convertICXTosICX} from "../../common/utils";
+import {Wallet} from "../../models/classes/Wallet";
+import {Irc2Token} from "../../models/classes/Irc2Token";
 
 @Component({
   selector: 'app-validator-rewards-overview',
   standalone: true,
   imports: [CommonModule, UsFormatPipe, HideElementPipe],
-  templateUrl: './validator-rewards-overview.component.html'
+  templateUrl: './validator-rewards-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
-  userAccumulatedFee = new BigNumber(0);
-  userValidatorPrepBommDelegation = new BigNumber(0);
+  // Core values
   votingPower = new BigNumber(0);
   ommVotingPower = new BigNumber(0);
   bOmmTotalSupply = new BigNumber(0);
@@ -30,13 +31,21 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   totalSicxAmount = new BigNumber(0);
   todaySicxRate: BigNumber = new BigNumber(0);
   bOMMdelegationIcx = new BigNumber(0);
-  userDelegationWorkingbOmmBalance = new BigNumber(0);
   sicxDelegation = new BigNumber(0);
   icxDelegation = new BigNumber(0);
   actualPrepDelegations = new Map<PrepAddress, BigNumber>(); // prep address to ICX delegated
+  tokenPrices = new Map<TokenSymbol, BigNumber>();
+
+  // User values
+  userAccumulatedFee = new BigNumber(0);
+  userCollectedFee = new BigNumber(0);
+  userValidatorPrepBommDelegation = new BigNumber(0);
+  userDelegationWorkingbOmmBalance = new BigNumber(0);
+  userWallet: Wallet | undefined;
 
   // Subscriptions
   userAccumulatedFeeSub?: Subscription;
+  userCollectedFeeSub?: Subscription;
   loginChangeSub?: Subscription;
   userValidatorPrepBommDelegationSub?: Subscription;
   totalSicxAmountSub?: Subscription;
@@ -46,11 +55,11 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   afterUserDataReload?: Subscription;
   userDelegationWorkingbOmmSub?: Subscription;
   actualPrepDelegationsSub?: Subscription;
-  constructor(private stateChangeService: StateChangeService,
-              private storeService: StoreService) {
-  }
+  tokenPricesSub?: Subscription;
 
-  // TODO reset user values in all components on logout
+  constructor(private stateChangeService: StateChangeService,
+              private cdRef: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
     this.registerSubscriptions()
@@ -58,6 +67,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userAccumulatedFeeSub?.unsubscribe();
+    this.userCollectedFeeSub?.unsubscribe();
     this.loginChangeSub?.unsubscribe();
     this.userValidatorPrepBommDelegationSub?.unsubscribe();
     this.totalSicxAmountSub?.unsubscribe();
@@ -67,10 +77,12 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.afterUserDataReload?.unsubscribe();
     this.userDelegationWorkingbOmmSub?.unsubscribe();
     this.actualPrepDelegationsSub?.unsubscribe();
+    this.tokenPricesSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
     this.subscribeToUserAccumulatedFeeChange();
+    this.subscribeToUserCollectedFeeChange();
     this.subscribeToLoginChange();
     this.subscribeToUserValidatorPrepBommDelegationChange();
     this.subscribeToTotalSicxAmountChange();
@@ -80,16 +92,41 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.subscribeToAfterUserDataReload();
     this.subscribeToUserDelegationWorkingbOmmChange();
     this.subscribeToActualPrepDelegationsChange();
+    this.subscribeToTokenPricesChange();
   }
 
   private resetUserStateValues(): void {
     this.userAccumulatedFee = new BigNumber(0);
+    this.userCollectedFee = new BigNumber(0);
+    this.userValidatorPrepBommDelegation = new BigNumber(0);
+    this.userDelegationWorkingbOmmBalance = new BigNumber(0)
+  }
+
+  private subscribeToTokenPricesChange(): void {
+    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+      this.tokenPrices = value;
+
+      // Detect changes
+      this.cdRef.detectChanges();
+    })
+  }
+
+  private subscribeToUserCollectedFeeChange(): void {
+    this.userCollectedFeeSub = this.stateChangeService.userCollectedFeeChange$.subscribe(value => {
+      this.userCollectedFee = value;
+
+      // Detect changes
+      this.cdRef.detectChanges();
+    })
   }
 
   private subscribeToActualPrepDelegationsChange(): void {
     this.actualPrepDelegationsSub = this.stateChangeService.actualPrepDelegationsChange$.subscribe(value => {
       this.actualPrepDelegations = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     })
   }
 
@@ -97,12 +134,18 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
       this.userDelegationWorkingbOmmBalance = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     })
   }
 
   subscribeToAfterUserDataReload(): void {
     this.afterUserDataReload = this.stateChangeService.afterUserDataReload$.subscribe(() => {
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
@@ -110,6 +153,9 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.bOmmTotalSupplySub = this.stateChangeService.bOmmTotalSupplyChange$.subscribe(value => {
       this.bOmmTotalSupply = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
@@ -117,6 +163,9 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.delegationOmmTotalWorkingSupplySub = this.stateChangeService.delegationbOmmTotalWorkingSupplyChange$.subscribe(value => {
       this.delegationbOmmWorkingTotalSupply = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     })
   }
 
@@ -124,6 +173,9 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.totalSicxAmountSub = this.stateChangeService.totalSicxAmountChange$.subscribe(value => {
       this.totalSicxAmount = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
@@ -131,27 +183,41 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
       this.todaySicxRate = todayRate;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
   private subscribeToUserValidatorPrepBommDelegationChange(): void {
     this.userValidatorPrepBommDelegationSub = this.stateChangeService.prepBommDelegationChange$.subscribe(value => {
       this.userValidatorPrepBommDelegation = value;
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
   subscribeToLoginChange(): void {
     this.loginChangeSub = this.stateChangeService.loginChange$.subscribe((wallet) => {
+      this.userWallet = wallet;
+
       // logout
       if (!wallet) {
         this.resetUserStateValues();
       }
+
+      // Detect changes
+      this.cdRef.detectChanges();
     });
   }
 
   private subscribeToUserAccumulatedFeeChange(): void {
     this.userAccumulatedFeeSub = this.stateChangeService.userAccumulatedFeeChange$.subscribe(fee => {
       this.userAccumulatedFee = fee;
+
+      // Detect changes
+      this.cdRef.detectChanges();
     })
   }
 
@@ -164,7 +230,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   private calculateIcxAndSicxDelegation(): void {
     if (this.userLoggedIn() && this.actualPrepDelegations.size > 0) {
-      this.icxDelegation = this.actualPrepDelegations.get(this.storeService.userWalletAddress()) ?? new BigNumber(0);
+      this.icxDelegation = this.actualPrepDelegations.get(this.userWalletAddress()) ?? new BigNumber(0);
       this.sicxDelegation = convertICXTosICX(this.icxDelegation, this.todaySicxRate);
     }
   }
@@ -191,11 +257,23 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.userAccumulatedFee.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimRewardsPayload(this.userAccumulatedFee, this.storeService.getUserTokenBalance(ICX)));
+      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimRewardsPayload(this.userAccumulatedFee, this.getUserTokenBalance(ICX)));
     }
   }
 
+  icxUsdPrice(): BigNumber {
+    return this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0);
+  }
+
+  public userWalletAddress(): Address {
+    return this.userWallet?.address ?? "";
+  }
+
+  public getUserTokenBalance(token: Irc2Token): BigNumber {
+    return this.userWallet?.irc2TokenBalancesMap.get(token.symbol) ?? new BigNumber(0);
+  }
+
   public userLoggedIn(): boolean {
-    return this.storeService.userLoggedIn();
+    return this.userWallet != undefined;
   }
 }

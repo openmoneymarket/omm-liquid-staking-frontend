@@ -25,7 +25,8 @@
                 <div class="grid-cell text-center border-right">
                     <dl class="metadata">
                         <dt>Staking income</dt>
-                        <dd>{{stakingIncome.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="stakingIncome.gt(0)">{{stakingIncome.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="!stakingIncome.gt(0)">-</dd>
                     </dl>
                 </div>
             </div>
@@ -38,7 +39,8 @@
                 <div class="grid-cell text-center border-right">
                     <dl class="metadata">
                         <dt>Validator rewards</dt>
-                        <dd>{{totalValidatorIcxRewards.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="totalValidatorIcxRewards.gt(0)">{{totalValidatorIcxRewards.toFixed(0) | usFormat}} <span class="label">ICX</span></dd>
+                        <dd *ngIf="!totalValidatorIcxRewards.gt(0)">-</dd>
                     </dl>
                 </div>
 

@@ -22,10 +22,10 @@
         <!-- Past earnings -->
         <div class="grid-cell text-center">
             <dl class="metadata">
-                <!-- TODO: use getCollectedFee -->
-                <dt>Earned past 7D</dt>
-                <dd class="value-rewards-total">??? <span class="label">ICX</span><br><span class="label">$50</span></dd>
-                <dd class="hide" style="opacity: 0.5;">—</dd>
+                <dt>Earnings</dt>
+                <dd *ngIf="userCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userCollectedFee.toFixed(2) | usFormat}} <span class="label">ICX</span><br>
+                    <span class="label">${{userCollectedFee.multipliedBy(icxUsdPrice()).toFixed(2) | usFormat}}</span></dd>
+                <dd *ngIf="!(userCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
 
             </dl>
         </div>
