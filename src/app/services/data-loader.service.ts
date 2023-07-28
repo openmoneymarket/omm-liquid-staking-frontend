@@ -224,7 +224,6 @@ export class DataLoaderService {
         const limit = 100;
         let skip = 0
         let totalFees = new BigNumber(0);
-        // TODO use address from address provider and check how often FeeDistributed is emitted  !!!
         const ommFeeDistScoreAddress = this.storeService.allAddresses?.systemContract.FeeDistribution;
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
         let totalCount = undefined;
@@ -491,111 +490,6 @@ export class DataLoaderService {
       log.error(e);
     }
   }
-
-  public async loadPrepCollectedFees(): Promise<void> {
-    try {
-      // TODO
-      // const userDelegationDetails = await this.scoreService.getUserDelegationDetails();
-      // this.stateChangeService.userDelegationDetailsUpdate(userDelegationDetails);
-    } catch (e) {
-      log.error("Error occurred in loadUserDelegations:");
-      log.error(e);
-    }
-  }
-
-
-  // public async loadUserRewardsWorkingbOmmBalance(): Promise<void> {
-  //   try {
-  //     const balance = await this.scoreService.getUserRewardsWorkingSupplyOfbOmm();
-  //     this.stateChangeService.userRewardsWorkingbOmmBalanceUpdate(balance);
-  //
-  //     log.debug("User working rewards bOMM balance ", balance.toString());
-  //   } catch (e) {
-  //     log.error("Error in loadUserRewardsWorkingbOmmBalance:");
-  //     log.error(e);
-  //   }
-  // }
-
-  //
-  // public async loadRewardsbOmmWorkingTotalSupply(): Promise<void> {
-  //   try {
-  //     this.stateChangeService.rewardsbOmmTotalWorkingSupplyUpdate((await this.scoreService.getRewardsWorkingTotalSupplyOfbOmm()));
-  //   } catch (e) {
-  //     log.error("Error in loadRewardsbOmmWorkingTotalSupply:");
-  //     log.error(e);
-  //   }
-  // }
-
-
-  // public async loadUserDailyOmmRewards(): Promise<void> {
-  //   try {
-  //     const ommDailyRewards = await this.ommService.getUserDailyOmmRewards();
-  //     this.stateChangeService.userOmmDailyRewardsUpdate(ommDailyRewards);
-  //   } catch (e) {
-  //     log.error(e);
-  //   }
-  // }
-
-  // public loadUserUnstakingInfo(): Promise<void> {
-  //   return this.scoreService.getTheUserUnstakeInfo().then(res => {
-  //     this.persistenceService.userUnstakingInfo = res;
-  //     log.debug("User unstake info:", res);
-  //   });
-  // }
-
-  // public loadUserClaimableIcx(): Promise<void> {
-  //   return this.scoreService.getUserClaimableIcx().then(amount => {
-  //     this.persistenceService.userClaimableIcx = amount;
-  //     log.debug("User claimable ICX: " + amount);
-  //   });
-  // }
-
-  // public async loadUsersVotingWeight(): Promise<void> {
-  //   try {
-  //     this.persistenceService.userVotingWeight = await  this.scoreService.getUserVotingWeight();
-  //     log.debug(`Users voting weight = ${this.persistenceService.userVotingWeight}`);
-  //   } catch (e) {
-  //     log.error("Error in loadUsersVotingWeight", e);
-  //   }
-  // }
-
-  // public async loadOmmTokenPriceUSD(): Promise<void> {
-  //   try {
-  //     log.debug("loadOmmTokenPriceUSD..");
-  //     const res = await this.scoreService.getReferenceData("OMM");
-  //     this.stateChangeService.ommPriceUpdate(res);
-  //   } catch (e) {
-  //     log.debug("Failed to fetch OMM price");
-  //     log.error(e);
-  //   }
-  // }
-
-  // public async loadTotalStakedOmm(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getTotalStakedOmm();
-  //     log.debug("getTotalStakedOmm (mapped): ", res);
-  //
-  //     this.stateChangeService.updateTotalStakedOmm(res);
-  //   } catch (e) {
-  //     log.error("Error in loadTotalStakedOmm:");
-  //     log.error(e);
-  //   }
-  // }
-
-
-
-  // public async loadTotalOmmSupply(): Promise<void> {
-  //   try {
-  //     const res = await this.scoreService.getTotalOmmSupply();
-  //     log.debug("loadTotalOmmSupply (mapped): ", res);
-  //
-  //     this.persistenceService.totalSuppliedOmm = res;
-  //   } catch (e) {
-  //     log.error("Error in loadTotalOmmSupply:");
-  //     log.error(e);
-  //   }
-  // }
-
 
   public async loadPrepList(start = 1, end = 100): Promise<void> {
     try {
