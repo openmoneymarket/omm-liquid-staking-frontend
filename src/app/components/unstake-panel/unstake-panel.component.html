@@ -7,7 +7,7 @@
                 <div class="grid-cell">
                     <h3>Unstake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple"><span class="value-wallet-sicx">{{userSicxBalance.toFixed(2) | usFormat: true}}</span> sICX</a></p></div>
+                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple" (click)="onSicxBalanceClick($event)"><span class="value-wallet-sicx" >{{userSicxBalance.toFixed(2) | usFormat: true}}</span> sICX</a></p></div>
             </div>
 
             <div class="grid grid-center input-asset stake">
@@ -17,6 +17,7 @@
 
                 <div class="grid-cell">
                     <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0"
+                           class="{{inputUnstakeAmountGtUserSicxBalance() ? 'text-red' : ''}}"
                            [value]="unstakeInputAmount.toFixed(2) | usFormat: false : true"
                            (keyup)="onUnstakeInputKeyUp($event)"
                            (blur)="processUnstakeInput($event)"

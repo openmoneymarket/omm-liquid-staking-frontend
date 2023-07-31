@@ -62,7 +62,7 @@ export class StateChangeService {
   private sicxTodayRateChange = new ReplaySubject<BigNumber>(1);
   public sicxTodayRateChange$ = this.sicxTodayRateChange.asObservable();
 
-  private tokenPricesChange = new BehaviorSubject<Map<TokenSymbol, BigNumber>>(new Map<Address, BigNumber>());
+  private tokenPricesChange = new BehaviorSubject<Map<TokenSymbol, BigNumber>>(new Map<TokenSymbol, BigNumber>());
   public tokenPricesChange$ = this.tokenPricesChange.asObservable();
 
   private userUnstakeInfoChange = new ReplaySubject<UserUnstakeInfo>(1);

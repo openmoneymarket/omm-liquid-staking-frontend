@@ -17,22 +17,12 @@
                 </div>
             </div>
 
-            <app-stake-panel style="display: contents"
-                             [active]="stakePanelActive()"
-                             [userIcxBalance]="getUserIcxBalance()"
-                             [userSicxBalance]="getUserSicxBalance()"
-                             [icxPrice]="getIcxPrice()"
-                             [sicxPrice]="getSicxPrice()"
-                             [todaySicxRate]="todaySicxRate"
+            <app-stake-panel style="display: contents" [active]="stakePanelActive()"
             >
 
             </app-stake-panel>
 
-            <app-unstake-panel style="display: contents"
-                               [active]="unstakePanelActive()"
-                               [userSicxBalance]="getUserSicxBalance()"
-                               [userIcxBalance]="getUserIcxBalance()"
-                               [todaySicxRate]="todaySicxRate"
+            <app-unstake-panel style="display: contents" [active]="unstakePanelActive()"
             >
 
             </app-unstake-panel>
