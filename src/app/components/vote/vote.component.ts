@@ -64,7 +64,6 @@ export class VoteComponent implements OnDestroy {
         this.dataLoaderService.loadUserAccumulatedFee();
         this.dataLoaderService.loadUserCollectedFees();
         this.dataLoaderService.loadUserValidatorBommDelegation();
-        this.dataLoaderService.loadUserDelegationWorkingbOmmBalance();
       }
     }
   }

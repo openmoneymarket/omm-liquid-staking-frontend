@@ -242,15 +242,18 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
 
   onLockUntilDateClick(date: LockDate): void {
     this.dropdownOpen = false;
-    this.selectedLockTimeInMillisec = lockedDatesToMilliseconds.get(date)!;
-    this.selectedLockTime = date;
-    this.userHasSelectedLockTime = true;
 
-    // update dynamic daily OMM rewards based on the newly selected lock date
-    this.lockUntilDateClicked.emit(date);
+    if (date != this.selectedLockTime) {
+      this.selectedLockTimeInMillisec = lockedDatesToMilliseconds.get(date)!;
+      this.selectedLockTime = date;
+      this.userHasSelectedLockTime = true;
 
-    // update user bOMM balance based on newly selected time
-    this.updateUserbOmmBalance(this.userDynamicLockedOmmAmount);
+      // update dynamic daily OMM rewards based on the newly selected lock date
+      this.lockUntilDateClicked.emit(date);
+
+      // update user bOMM balance based on newly selected time
+      this.updateUserbOmmBalance(this.userDynamicLockedOmmAmount);
+    }
   }
 
   onLockedOmmInputLostFocus(e: KeyboardEvent | ClipboardEvent | FocusEvent): void {
