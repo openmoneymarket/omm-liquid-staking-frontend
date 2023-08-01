@@ -13,7 +13,6 @@ import {GovernanceVotePayload} from "../../models/classes/GovernanceVotePayload"
 import {LoadingComponent} from "../loading/loading.component";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {IconApiService} from "../../services/icon-api.service";
 import {DataLoaderService} from "../../services/data-loader.service";
 import log from "loglevel";
 import {RouterLink} from "@angular/router";
@@ -80,7 +79,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   subscribeToLoginChange(): void {
     this.loginSub = this.stateChangeService.loginChange$.subscribe((wallet) => {
       // logout
-      if (!wallet) {
+      if (wallet == undefined) {
         this.userVote = undefined;
       }
     });
@@ -88,8 +87,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   subscribeToUserProposalVoteChange(): void {
     this.userVoteChangeSub = this.stateChangeService.userProposalVotesChange$.subscribe((change) => {
-      if (this.userLoggedIn() && this.activeProposal &&  change.proposalId == this.activeProposal?.id) {
-        this.userVote = this.storeService.userProposalVotes.get(this.activeProposal.id);
+      if (change && this.activeProposal &&  change.proposalId == this.activeProposal?.id) {
+        this.userVote = this.storeService.userProposalVotes.get(this.proposalId);
       }
     });
   }
@@ -97,6 +96,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   subscribeToProposalListChange(): void {
     this.proposalListSub = this.stateChangeService.proposalListChange$.subscribe((proposalList) => {
       this.activeProposal = proposalList.find(proposal => proposal.id == this.proposalId);
+      this.userVote = this.storeService.userProposalVotes.get(this.proposalId);
 
       if (this.activeProposal && !this.proposalScoreDetails) {
         this.loadProposalScoreDetails();
@@ -162,13 +162,17 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   onRejectClick(): void {
-    const castVotePayload = new GovernanceVotePayload(false, this.proposalId);
+    const castVotePayload = new GovernanceVotePayload(false, this.proposalId, this.userVotingWeight());
     this.stateChangeService.modalUpdate(ModalType.CAST_VOTE, castVotePayload);
   }
 
   onApproveClick(): void {
-    const governanceAction = new GovernanceVotePayload(true, this.proposalId);
+    const governanceAction = new GovernanceVotePayload(true, this.proposalId, this.userVotingWeight());
     this.stateChangeService.modalUpdate(ModalType.CAST_VOTE, governanceAction);
+  }
+
+  userVotingWeight(): BigNumber {
+    return this.storeService.userVotingWeightForProposal.get(this.proposalId) ?? new BigNumber(0);
   }
 
   onChangeVoteClick(): void {

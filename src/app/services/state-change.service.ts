@@ -125,7 +125,7 @@ export class StateChangeService {
   private proposalListChange = new ReplaySubject<Proposal[]>(1);
   proposalListChange$ = this.proposalListChange.asObservable();
 
-  private userProposalVotesChange = new ReplaySubject<IUserProposalVoteChange>(1);
+  private userProposalVotesChange = new BehaviorSubject<IUserProposalVoteChange | undefined>(undefined);
   userProposalVotesChange$ = this.userProposalVotesChange.asObservable();
 
   private userVotingWeightForProposalChange = new ReplaySubject<IUserVotingWeightForProposalChange>(1);
@@ -219,7 +219,7 @@ export class StateChangeService {
   }
 
   public userVotingWeightForProposalUpdate(proposalId: string, votingWeight: BigNumber): void {
-    this.storeService.userVotingWeightForProposal.set(proposalId.toString(), votingWeight);
+    this.storeService.userVotingWeightForProposal.set(proposalId, votingWeight);
     this.userVotingWeightForProposalChange.next({proposalId, votingWeight});
   }
 

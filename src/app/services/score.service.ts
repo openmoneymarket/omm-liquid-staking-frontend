@@ -17,7 +17,7 @@ import {YourPrepVote} from "../models/classes/YourPrepVote";
 import {IRewardWorkingTotal} from "../models/interfaces/IRewardWorkingTotal";
 import {LockedOmm} from "../models/classes/LockedOmm";
 import {Vote, VotersCount} from "../models/classes/Vote";
-import {Proposal} from "../models/classes/Proposal";
+import {CreateProposal, Proposal} from "../models/classes/Proposal";
 import {ILockedOmm} from "../models/interfaces/ILockedOmm";
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
@@ -144,6 +144,52 @@ export class ScoreService {
     log.debug("buildClaimUnstakedIcxTx:", tx);
 
     return tx;
+  }
+
+  /**
+   * @description Build Create a proposal tx
+   * @return  Icon transaction
+   */
+  public buildSubmitProposalTx(proposal: CreateProposal ): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const to = this.storeService.allAddresses!.systemContract.Governance;
+    const value = IconConverter.toHex(IconAmount.of(proposal.voteDefinitionFee, 18).toLoop());
+    const dataPayload = `{ "method": "defineVote", "params": { "name": "${
+        proposal.title}", "description": "${ // "unique name of the proposal"
+        proposal.description}", "forum": "${proposal.forumLink}"${ proposal.transactions ? ', "transactions": ' + JSON.stringify(proposal.transactions) : ''}}}`;
+    log.debug("Create proposal data payload:", dataPayload);
+    const data = IconConverter.fromUtf8(dataPayload);
+
+    const params = {
+      _to: to,
+      _value: value,
+      _data: data
+    };
+
+    const tx =  this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.OmmToken,  ScoreMethodNames.TRANSFER, params, IconTransactionType.WRITE);
+
+    log.debug("createProposal tx = ", tx);
+
+    return tx;
+  }
+
+  /**
+   * @description Cast vote on proposal
+   * @return Icon tx
+   */
+  public buildCastVote(proposalId: BigNumber, approve: boolean): Promise<any> {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const params = {
+      vote_index: IconConverter.toHex(proposalId),
+      vote: approve ? "0x1" : "0x0"
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Governance,
+        ScoreMethodNames.CAST_VOTE, params, IconTransactionType.WRITE);
   }
 
   /**
@@ -408,7 +454,7 @@ export class ScoreService {
   public async getTokenDistributionPerDay(day?: BigNumber | string): Promise<BigNumber> {
     this.checkerService.checkAllAddressesLoaded();
 
-    day = day ? IconConverter.toHex(day) : await this.getRewardsDay();
+    day = day ? IconConverter.toHex(new BigNumber(day)) : await this.getRewardsDay();
 
     const params = {
       _day: day,
@@ -969,7 +1015,7 @@ export class ScoreService {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
-      vote_index: IconConverter.toHex(proposalId ?? 0),
+      vote_index: IconConverter.toHex(proposalId ? parseInt(proposalId) : 0),
       user: this.storeService.userWalletAddress()
     };
 

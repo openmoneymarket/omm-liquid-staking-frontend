@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {RouterLink} from "@angular/router";
+import {CommonModule} from '@angular/common';
+import {Router, RouterLink} from "@angular/router";
 import {MAX_PROPOSAL_DESCRIPTION_LENGTH, OMM, ommForumDomain} from "../../common/constants";
 import {ProposalType} from "../../models/enums/ProposalType";
 import {
@@ -9,7 +9,7 @@ import {
   scoreParamToPayloadParam
 } from "../../models/interfaces/IScoreParameter";
 import {NewProposalScoreData} from "../../models/classes/NewProposalScoreData";
-import {Subscription} from "rxjs";
+import {Subscription, take} from "rxjs";
 import {NotificationService} from "../../services/notification.service";
 import {StoreService} from "../../services/store.service";
 import {ScoreService} from "../../services/score.service";
@@ -22,9 +22,14 @@ import {ScoreParamType} from "../../models/classes/ScoreParamType";
 import {
   getPlaceholderForParam,
   NEW_PROPOSAL_EMPTY_CONTRACT,
-  NEW_PROPOSAL_EMPTY_DESCRIPTION, NEW_PROPOSAL_EMPTY_LINK, NEW_PROPOSAL_EMPTY_METHOD,
-  NEW_PROPOSAL_EMPTY_TITLE, NEW_PROPOSAL_INVALID_LINK_DOMAIN,
-  NEW_PROPOSAL_INVALID_PARAMETER, NEW_PROPOSAL_MIN_BOMM_REQUIRED, NEW_PROPOSAL_MISSING_PARAMETERS
+  NEW_PROPOSAL_EMPTY_DESCRIPTION,
+  NEW_PROPOSAL_EMPTY_LINK,
+  NEW_PROPOSAL_EMPTY_METHOD,
+  NEW_PROPOSAL_EMPTY_TITLE,
+  NEW_PROPOSAL_INVALID_LINK_DOMAIN,
+  NEW_PROPOSAL_INVALID_PARAMETER,
+  NEW_PROPOSAL_MIN_BOMM_REQUIRED,
+  NEW_PROPOSAL_MISSING_PARAMETERS
 } from "../../common/messages";
 import IconService from "icon-sdk-js";
 import BigNumber from "bignumber.js";
@@ -37,6 +42,8 @@ import {ShortenAddressPipePipe} from "../../pipes/shorten-address";
 import {ProposalTokenInputComponent} from "../proposal-token-input/proposal-token-input.component";
 import {ScoreParamPipe} from "../../pipes/score-param.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
+import {ModalStatus} from "../../models/classes/ModalAction";
+
 const { IconConverter } = IconService;
 
 @Component({
@@ -93,7 +100,8 @@ export class NewProposalComponent extends BaseClass implements OnInit, OnDestroy
               private notificationService: NotificationService,
               public scoreService: ScoreService,
               private stateChangeService: StateChangeService,
-              private iconApi: IconApiService) {
+              private iconApi: IconApiService,
+              private router: Router) {
     super();
   }
 
@@ -458,7 +466,12 @@ export class NewProposalComponent extends BaseClass implements OnInit, OnDestroy
 
     const submitProposalPayload = new SubmitProposalPayload(proposal, this.voteDuration);
 
-    this.stateChangeService.modalUpdate(ModalType.SUBMIT_PROPOSAL, submitProposalPayload)
+    this.stateChangeService.modalUpdate(ModalType.SUBMIT_PROPOSAL, submitProposalPayload);
+    this.stateChangeService.userModalActionResult$.pipe(take(1)).subscribe(modalActionResult => {
+      if (modalActionResult.modalAction.modalType === ModalType.SUBMIT_PROPOSAL && modalActionResult.status === ModalStatus.SUCCESS) {
+        this.router.navigate(["vote"]);
+      }
+    });
   }
 
   protected readonly OMM = OMM;

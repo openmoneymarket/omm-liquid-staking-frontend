@@ -2205,7 +2205,9 @@ text-align: right;
 	transition: opacity 0.3s ease;
 }
 #proposal-cards .panel:hover::before,
-#proposal-list .panel:hover::before {
+#proposal-cards .panel.active-vote::before,
+#proposal-list .panel:hover::before,
+#proposal-list .panel.active-vote::before {
 	opacity: 1;
 	transition: opacity 0.2s ease;
 }

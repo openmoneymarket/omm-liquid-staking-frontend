@@ -25,6 +25,8 @@ import {UpdateDelegationPayload} from "../../models/classes/updateDelegationPayl
 import {RemoveDelegationsPayload} from "../../models/classes/removeDelegationsPayload";
 import {UpdateDelegationsModalComponent} from "../modals/update-delegations-modal/update-delegations-modal.component";
 import {RemoveDelegationsModalComponent} from "../modals/remove-delegations-modal/remove-delegations-modal.component";
+import {GovernanceVotePayload} from "../../models/classes/GovernanceVotePayload";
+import {SubmitVoteModalComponent} from "../modals/submit-vote-modal/submit-vote-modal.component";
 
 @Component({
   selector: 'app-modal',
@@ -42,7 +44,8 @@ import {RemoveDelegationsModalComponent} from "../modals/remove-delegations-moda
     SubmitProposalModalComponent,
     ClaimRewardsModalComponent,
     UpdateDelegationsModalComponent,
-    RemoveDelegationsModalComponent
+    RemoveDelegationsModalComponent,
+    SubmitVoteModalComponent
   ],
   templateUrl: './modal-container.component.html',
 })
@@ -60,6 +63,7 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
   claimRewardsPayload?: ClaimRewardsPayload;
   updateDelegationPayload?: UpdateDelegationPayload;
   removeDelegationsPayload?: RemoveDelegationsPayload;
+  governanceVotePayload?: GovernanceVotePayload;
 
   // Subscriptions
   payloadSub?: Subscription;
@@ -99,6 +103,8 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
         this.updateDelegationPayload = payload;
       } else if (payload instanceof RemoveDelegationsPayload) {
         this.removeDelegationsPayload = payload;
+      } else if (payload instanceof GovernanceVotePayload) {
+        this.governanceVotePayload = payload;
       } else {
         this.resetModalPayloads();
       }
@@ -118,6 +124,7 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
     this.claimRewardsPayload = undefined;
     this.updateDelegationPayload = undefined;
     this.removeDelegationsPayload = undefined;
+    this.governanceVotePayload = undefined;
   }
 
   isModalActive(type: ModalType): boolean {

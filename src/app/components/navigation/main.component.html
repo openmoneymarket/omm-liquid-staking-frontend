@@ -23,7 +23,7 @@
                                 <img src="assets/img/icon/vote.svg" class="svg" alt="Vote icon">
                             </div>
                             <div class="grid-cell">
-                                <span class="{{userHasNotVotedClass()}}">Vote</span>
+                                <span class="{{(userHasNotVotedOnActiveProposal() | async) ? 'vote-dot' : ''}}">Vote</span>
                             </div>
                         </div>
                     </a>

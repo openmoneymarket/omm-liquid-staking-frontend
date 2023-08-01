@@ -50,6 +50,13 @@
 >
 </app-submit-proposal-modal>
 
+<app-submit-vote-modal style="display: contents"
+                       [active]="isModalActive(ModalType.CAST_VOTE)"
+                       [payload]="governanceVotePayload"
+>
+
+</app-submit-vote-modal>
+
 <app-claim-rewards-modal style="display: contents"
                          [active]="isModalActive(ModalType.CLAIM_REWARDS)"
                          [payload]="claimRewardsPayload"

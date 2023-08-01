@@ -1,0 +1,25 @@
+<!-- Modal: Vote approve -->
+<div class="modal {{active ? 'modal-show' : ''}}" id="modal-vote-approve">
+    <div  class="modal-content">
+        <!-- Overview -->
+        <h3 class="label text-center">Submit vote?</h3>
+
+        <img *ngIf="!isProposalApprove()" src="assets/img/icon/cross-circle-purple.svg" style="width: 35px; display: block; margin: 0 auto;margin-top: 15px;margin-bottom: 5px;">
+        <img *ngIf="isProposalApprove()" src="assets/img/icon/tick-circle-green.svg" style="width: 35px; display: block; margin: 0 auto;margin-top: 15px;margin-bottom: 5px;">
+        <p class="text-dark text-center" style="font-size: 20px;">{{isProposalApprove() ? "Approve" : "Reject"}}</p>
+
+
+        <!-- Message -->
+        <p class="text-center label" style="margin-top: 10px;">Voting weight: {{userVotingWeight().toFixed(2) | usFormat: true}} bOMM</p>
+
+        <!-- Modal actions -->
+        <div class="modal-actions">
+            <a href="javascript:void(0);" class="cancel modal-close" (click)="onCancelClick($event)">Cancel</a>
+            <a href="javascript:void(0);" class="button {{userVotingWeight().isLessThanOrEqualTo(0) ? 'disabled' : ''}}" (click)="onSubmitVoteClick($event)">Submit vote</a>
+        </div>
+        <ng-container *ngIf="userVotingWeight().isLessThanOrEqualTo(0)">
+            <br>
+            <p class="label text-red text-center">Lock up OMM to vote on this proposal.</p>
+        </ng-container>
+    </div>
+</div>

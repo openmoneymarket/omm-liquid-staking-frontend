@@ -44,11 +44,11 @@ export class SubmitProposalModalComponent {
     e.stopPropagation();
 
     if (this.payload) {
-      const tx = this.scoreService.buildClaimUnstakedIcxTx();
-
       const now = timestampNowMicroseconds();
       this.payload.newProposal.snapshot = addSecondsToTimestamp(now, 60);
       this.payload.newProposal.voteStart = addSecondsToTimestamp(now, 62);
+
+      const tx = this.scoreService.buildSubmitProposalTx(this.payload.newProposal);
 
       this.transactionDispatcher.dispatchTransaction(tx, this.payload);
     } else {

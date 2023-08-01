@@ -13,10 +13,12 @@ export class GovernanceVotePayload implements IActionPayload {
 
   proposalId: string;
   approveProposal: boolean;
+  userVotingWeight: BigNumber;
 
-  constructor(approveProposal: boolean, proposalId: string) {
+  constructor(approveProposal: boolean, proposalId: string, userVotingWeight: BigNumber) {
     this.approveProposal = approveProposal;
     this.proposalId = proposalId;
+    this.userVotingWeight = userVotingWeight;
   }
 
   sendTxMessage(): string {

@@ -338,34 +338,32 @@ export class DataLoaderService {
   }
 
   public async loadUserProposalVotes(): Promise<void> {
-    if (this.storeService.userLoggedIn()) {
-      // when proposal list is loaded, load all user votes for proposals which have not yet passed
-      this.stateChangeService.proposalListChange$.pipe(take(1)).subscribe(async (proposalList) => {
-        await Promise.all(proposalList.map( async (proposal) => {
-          try {
-            // make sure proposal is not over
-            if (!proposal.proposalIsOver()) {
-              try {
-                // fetch user voting weight for proposal
-                const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
-                this.stateChangeService.userVotingWeightForProposalUpdate(proposal.id, votingWeight);
-              } catch (e) {
-                log.error(e);
-              }
+    // when proposal list is loaded, load all user votes for proposals which have not yet passed
+    this.stateChangeService.proposalListChange$.pipe(take(1)).subscribe(async (proposalList) => {
+      await Promise.all(proposalList.map( async (proposal) => {
+        try {
+          // make sure proposal is not over
+          if (!proposal.proposalIsOver()) {
+            try {
+              // fetch user voting weight for proposal
+              const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
+              this.stateChangeService.userVotingWeightForProposalUpdate(proposal.id, votingWeight);
+            } catch (e) {
+              log.error(e);
             }
-
-            const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
-
-            if (!vote.voteIsEmpty()) {
-              this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
-            }
-          } catch (e) {
-            log.error("Failed to get user vote for proposal ", proposal);
-            log.error(e);
           }
-        }));
-      })
-    }
+
+          const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
+
+          if (!vote.voteIsEmpty()) {
+            this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
+          }
+        } catch (e) {
+          log.error("Failed to get user vote for proposal ", proposal);
+          log.error(e);
+        }
+      }));
+    })
   }
 
   public async loadAsyncContractOptions(proposal: Proposal): Promise<void> {
@@ -554,6 +552,7 @@ export class DataLoaderService {
       this.loadUserValidatorBommDelegation(),
       this.loadActualUserPrepDelegations(),
       this.loadUserDelegations(),
+      this.loadUserProposalVotes(),
     ]);
 
     // emit event that user data load has been completed
@@ -564,7 +563,6 @@ export class DataLoaderService {
    * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
-    this.loadUserProposalVotes();
     this.loadFeesDistributed7D();
     this.loadlDaoFundTokens();
     this.loadTotalValidatorRewards();
