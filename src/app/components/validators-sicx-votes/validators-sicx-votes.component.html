@@ -40,7 +40,7 @@
     <tbody>
     <ng-container *ngFor="let prep of preps; let i = index; trackBy: prepAddress">
         <tr intersectionObserver [intersectionDebounce]="0" (visibilityChange)="onVisibilityChanged(i, $event)">
-            <td>1</td>
+            <td>{{i + 1}}</td>
             <td>
                 <!-- Desktop -->
                 <div class="desktop-vote" [ngStyle]="isMobile() | hide">
