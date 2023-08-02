@@ -49,7 +49,9 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   prepList?: PrepList;
   preps: Prep[] = [];
   prepsBommDelegationsMap = new Map<PrepAddress, BigNumber>;
+  allValidatorCollectedFeesMap = new Map<PrepAddress, BigNumber>;
   totalPrepsBommDelegations = new BigNumber(0);
+  totalAllValidatorCollectedFees = new BigNumber(0);
   delegationbOmmWorkingTotalSupply = new BigNumber(0);
   totalSicxAmount = new BigNumber(0);
   todaySicxRate: BigNumber = new BigNumber(0);
@@ -62,6 +64,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   userWallet: Wallet | undefined;
 
   // Subscriptions
+  allValidatorsCollectedFeesSub?: Subscription;
   userDelegationDetailsSub?: Subscription;
   userDelegationWorkingbOmmSub?: Subscription;
   prepListChangeSub?: Subscription;
@@ -83,6 +86,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   ngOnDestroy(): void {
+    this.allValidatorsCollectedFeesSub?.unsubscribe();
     this.userDelegationDetailsSub?.unsubscribe();
     this.userDelegationWorkingbOmmSub?.unsubscribe();
     this.prepListChangeSub?.unsubscribe();
@@ -101,6 +105,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.subscribeToUserDelegationWorkingbOmmChange();
     this.subscribeToPrepListChange();
     this.subscribeToPrepsBommDelegationsChange();
+    this.subscribeToAllValidatorsCollectedFeesChange();
     this.subscribeToDelegationbOmmTotalWorkingSupplyChange();
     this.subscribeToTotalSicxAmountChange();
     this.subscribeToSicxTodayRateChange();
@@ -163,10 +168,20 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     });
   }
 
+  private subscribeToAllValidatorsCollectedFeesChange(): void {
+    this.allValidatorsCollectedFeesSub = this.stateChangeService.allValidatorsCollectedFeesChange$.subscribe(value => {
+      this.allValidatorCollectedFeesMap = value;
+      this.totalAllValidatorCollectedFees = Array.from(value.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
+
+      // detect changes
+      this.cdRef.detectChanges();
+    })
+  }
+
   private subscribeToPrepsBommDelegationsChange(): void {
     this.prepsBommDelegationsSub = this.stateChangeService.prepsBommDelegationsChange$.subscribe(value => {
       this.prepsBommDelegationsMap = value;
-      this.totalPrepsBommDelegations = Array.from(this.prepsBommDelegationsMap.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
+      this.totalPrepsBommDelegations = Array.from(value.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
 
       // detect changes
       this.cdRef.detectChanges();
@@ -328,8 +343,20 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     }
   }
 
+  prepCollectedFeesPercent(address: string): BigNumber {
+    if (this.prepCollectedFees(address).gt(0)) {
+      return (this.prepCollectedFees(address)).dividedBy(this.totalAllValidatorCollectedFees);
+    } else {
+      return new BigNumber(0);
+    }
+  }
+
   prepBommDdelegation(address: string): BigNumber {
     return this.prepsBommDelegationsMap.get(address) ?? new BigNumber(0);
+  }
+
+  prepCollectedFees(address: string): BigNumber {
+    return this.allValidatorCollectedFeesMap.get(address) ?? new BigNumber(0);
   }
 
   userDelegationHasNotChanged(): boolean {

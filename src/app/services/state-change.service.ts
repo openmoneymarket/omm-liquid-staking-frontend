@@ -164,6 +164,9 @@ export class StateChangeService {
   private prepsBommDelegationsChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
   prepsBommDelegationsChange$ = this.prepsBommDelegationsChange.asObservable();
 
+  private allValidatorsCollectedFeesChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
+  allValidatorsCollectedFeesChange$ = this.allValidatorsCollectedFeesChange.asObservable();
+
 
   constructor(private storeService: StoreService) {
   }
@@ -174,6 +177,10 @@ export class StateChangeService {
 
   public userDelegationDetailsUpdate(value: YourPrepVote[]): void {
     this.userDelegationDetailsChange.next(value);
+  }
+
+  public allValidatorsCollectedFeesUpdate(value: Map<PrepAddress, BigNumber>): void {
+    this.allValidatorsCollectedFeesChange.next(value);
   }
 
   public prepsBommDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {
@@ -187,6 +194,8 @@ export class StateChangeService {
   public actualPrepDelegationsUpdate(value: Map<PrepAddress, BigNumber>): void {
     this.actualPrepDelegationsChange.next(value);
   }
+
+
 
   public prepBommDelegationUpdate(value: BigNumber): void {
     this.prepBommDelegationChange.next(value);

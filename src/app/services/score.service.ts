@@ -438,6 +438,23 @@ export class ScoreService {
   }
 
   /**
+   * @description Get all validators collected/earned rewards
+   * @return BigNumber
+   */
+  public async getAllValidatorsCollectedFees(): Promise<Map<PrepAddress, BigNumber>> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
+        ScoreMethodNames.GET_ALL_COLLECTED_FEES, {}, IconTransactionType.READ);
+
+    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+
+    log.debug("getAllValidatorsCollectedFees: ", res);
+
+    return Mapper.mapPrepDelegationsRecordToMap(res);
+  }
+
+  /**
    * @description Get Balanced DEX fees
    * @return BalancedDexFees
    */

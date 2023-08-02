@@ -458,6 +458,16 @@ export class DataLoaderService {
     }
   }
 
+  public async loadAllValidatorsCollectedFees(): Promise<void> {
+    try {
+      const res = await this.scoreService.getAllValidatorsCollectedFees();
+      this.stateChangeService.allValidatorsCollectedFeesUpdate(res);
+    } catch (e) {
+      log.error("Error in loadAllValidatorsCollectedFees:");
+      log.error(e);
+    }
+  }
+
   public async loadActualUserPrepDelegations(): Promise<void> {
     try {
       const res = await this.scoreService.getActualUserDelegationPercentage();
@@ -574,5 +584,6 @@ export class DataLoaderService {
     this.loadActualPrepDelegations();
     this.loadPrepList();
     this.loadAllPrepsBommDelegations();
+    this.loadAllValidatorsCollectedFees();
   }
 }

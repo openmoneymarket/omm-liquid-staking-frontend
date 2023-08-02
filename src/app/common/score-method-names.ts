@@ -56,6 +56,7 @@ export class ScoreMethodNames {
     public static GET_ACCUMULATED_FEE = "getAccumulatedFee";
     public static CLAIM_REWARDS = "claimRewards";
     public static GET_COLLECTED_FEE = "getCollectedFee";
+    public static GET_ALL_COLLECTED_FEES = "getAllCollectedFees";
 
     /**
     * OmmToken SCORE
