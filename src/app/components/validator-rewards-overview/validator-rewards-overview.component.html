@@ -22,7 +22,7 @@
         <!-- Past earnings -->
         <div class="grid-cell text-center">
             <dl class="metadata">
-                <dt>Earnings</dt>
+                <dt>Total earned</dt>
                 <dd *ngIf="userCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userCollectedFee | RndDwn | usFormat}} <span class="label">ICX</span><br>
                     <span class="label">${{userCollectedFee.multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
                 <dd *ngIf="!(userCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
