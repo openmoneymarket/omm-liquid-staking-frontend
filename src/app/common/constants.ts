@@ -54,7 +54,7 @@ export const prepsOfferingIncentiveMap = new Map([
 ]);
 
 // how much ICX should be left when user is supplying
-export const ICX_SUPPLY_BUFFER = 2;
+export const MIN_ICX_BALANCE_KEPT = 2;
 
 export const LOCKED_UNTIL_DATE_OPTIONS = [LockDate.WEEK, LockDate.MONTH, LockDate.MONTH_3, LockDate.MONTH_6, LockDate.YEAR, LockDate.TWO_YEARS,
     LockDate.FOUR_YEARS];

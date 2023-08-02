@@ -2,17 +2,17 @@
 <div class="modal {{active ? 'modal-show' : ''}}" id="modal-unstake-confirm">
     <div class="modal-content">
         <h3 class="text-center label">Claim ICX?</h3>
-        <p class="text-bold text-center value-supply-icx-difference">{{getClaimableAmount().toFixed(2) | usFormat}} ICX</p>
+        <p class="text-bold text-center value-supply-icx-difference">{{getClaimableAmount() | RndDwn | usFormat}} ICX</p>
         <!-- Before & after -->
         <div class="grid before-after">
             <div class="grid-cell text-center border-right">
                 <p class="label">Before</p>
-                <p class="text-dark value-supplied-icx">{{getClaimableAmount().toFixed(2) | usFormat: true}} ICX</p>
+                <p class="text-dark value-supplied-icx">{{getClaimableAmount() | RndDwn | usFormat: true}} ICX</p>
             </div>
 
             <div class="grid-cell text-center">
                 <p class="label">After</p>
-                <p class="text-dark value-supply-icx-after">{{getAfterClaimIcxAmount().toFixed(2) | usFormat}} ICX</p>
+                <p class="text-dark value-supply-icx-after">{{getAfterClaimIcxAmount() | RndDwn | usFormat}} ICX</p>
             </div>
         </div>
 

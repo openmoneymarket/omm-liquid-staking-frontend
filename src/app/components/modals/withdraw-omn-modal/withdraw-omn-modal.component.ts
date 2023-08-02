@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import {WithdrawLockedOmmPayload} from "../../../models/classes/WithdrawLockedOmmPayload";
 import BigNumber from "bignumber.js";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {ModalType} from "../../../models/enums/ModalType";
 import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
+import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-withdraw-omn-modal',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './withdraw-omn-modal.component.html'
 })
 export class WithdrawOmnModalComponent {

@@ -22,18 +22,19 @@ import {Subscription} from "rxjs";
 import {UserUnstakeInfo} from "../../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../../models/classes/BalancedDexFees";
 import {UnstakeInstantSicxPayload} from "../../models/classes/UnstakeInstantSicxPayload";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {PoolStats} from "../../models/classes/PoolStats";
 import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
 import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
 import {FormsModule} from "@angular/forms";
 import {ICX, SICX} from "../../common/constants";
 import {Wallet} from "../../models/classes/Wallet";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 
 @Component({
   selector: 'app-unstake-panel',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, RndDwnNPercPipe, PrettyUntilBlockHeightTime, FormsModule],
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe],
   templateUrl: './unstake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

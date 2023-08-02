@@ -6,11 +6,12 @@ import {TransactionDispatcherService} from "../../../services/transaction-dispat
 import {ScoreService} from "../../../services/score.service";
 import BigNumber from "bignumber.js";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
+import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-submit-vote-modal',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './submit-vote-modal.component.html'
 })
 export class SubmitVoteModalComponent {

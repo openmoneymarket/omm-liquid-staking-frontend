@@ -25,7 +25,8 @@ import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
 import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
 import {Wallet} from "../../models/classes/Wallet";
 import {TokenSymbol} from "../../models/Types/ModalTypes";
-import {ICX, SICX} from "../../common/constants";
+import {ICX, MIN_ICX_BALANCE_KEPT, SICX} from "../../common/constants";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-stake-panel',
@@ -34,7 +35,8 @@ import {ICX, SICX} from "../../common/constants";
     CommonModule,
     UsFormatPipe,
     DollarUsLocalePipe,
-    PrettyUntilBlockHeightTime
+    PrettyUntilBlockHeightTime,
+    RndDwnPipePipe
   ],
   templateUrl: './stake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -231,7 +233,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   onIcxBalanceClick(e: MouseEvent): void {
     e.stopPropagation();
 
-    this.stakeInputAmount = new BigNumber(this.userIcxBalance);
+    console.log("userIcxBalance: ", this.userIcxBalance.toString());
+
+    if (this.userIcxBalance.gt(MIN_ICX_BALANCE_KEPT)) {
+      this.stakeInputAmount = new BigNumber(this.userIcxBalance.minus(MIN_ICX_BALANCE_KEPT));
+    }
+
     this.recalculateInputs();
 
     // Detect Changes

@@ -27,11 +27,12 @@ import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-validators-sicx-votes',
   standalone: true,
-  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe, IntersectionObserverDirective],
+    imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe, IntersectionObserverDirective, RndDwnPipePipe],
   templateUrl: './validators-sicx-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

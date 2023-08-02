@@ -5,8 +5,6 @@ import {ValidatorsSicxVotesComponent} from "../validators-sicx-votes/validators-
 import {Subject} from "rxjs";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {BaseClass} from "../../models/classes/BaseClass";
-import {PrepAddress} from "../../models/Types/ModalTypes";
-import {usLocale} from "../../common/formats";
 
 @Component({
   selector: 'app-validators',

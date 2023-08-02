@@ -43,13 +43,14 @@ import {ProposalTokenInputComponent} from "../proposal-token-input/proposal-toke
 import {ScoreParamPipe} from "../../pipes/score-param.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {ModalStatus} from "../../models/classes/ModalAction";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 const { IconConverter } = IconService;
 
 @Component({
   selector: 'app-new-proposal',
   standalone: true,
-  imports: [CommonModule, RouterLink, ShortenAddressPipePipe, ProposalTokenInputComponent, ScoreParamPipe, UsFormatPipe],
+    imports: [CommonModule, RouterLink, ShortenAddressPipePipe, ProposalTokenInputComponent, ScoreParamPipe, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './new-proposal.component.html'
 })
 export class NewProposalComponent extends BaseClass implements OnInit, OnDestroy {

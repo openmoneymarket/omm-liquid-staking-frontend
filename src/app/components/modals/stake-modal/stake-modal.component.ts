@@ -5,6 +5,7 @@ import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
+import BigNumber from "bignumber.js";
 
 @Component({
   selector: 'app-stake-modal',
@@ -25,11 +26,11 @@ export class StakeModalComponent {
   }
 
   getStakeIcxAmount(): string {
-    return this.stakeIcxPayload?.stakeIcxAmount?.toFixed(2) ?? "0";
+    return this.stakeIcxPayload?.stakeIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   getReceivedSIcxAmount(): string {
-    return this.stakeIcxPayload?.receiveSIcxAmount?.toFixed(2) ?? "0";
+    return this.stakeIcxPayload?.receiveSIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   onCancelClick(e: MouseEvent): void {

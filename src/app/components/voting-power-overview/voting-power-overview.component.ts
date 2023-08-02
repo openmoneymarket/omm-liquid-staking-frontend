@@ -6,11 +6,12 @@ import {Subscription} from "rxjs";
 import {Calculations} from "../../common/calculations";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {StoreService} from "../../services/store.service";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-voting-power-overview',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './voting-power-overview.component.html'
 })
 export class VotingPowerOverviewComponent implements OnInit, OnDestroy {

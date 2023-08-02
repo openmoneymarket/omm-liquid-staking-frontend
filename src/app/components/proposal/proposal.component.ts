@@ -11,16 +11,17 @@ import {StoreService} from "../../services/store.service";
 import {ModalType} from "../../models/enums/ModalType";
 import {GovernanceVotePayload} from "../../models/classes/GovernanceVotePayload";
 import {LoadingComponent} from "../loading/loading.component";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {DataLoaderService} from "../../services/data-loader.service";
 import log from "loglevel";
 import {RouterLink} from "@angular/router";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 
 @Component({
   selector: 'app-proposal',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, RndDwnNPercPipe, UsFormatPipe, RouterLink],
+  imports: [CommonModule, LoadingComponent, RndDwnPipePipe, UsFormatPipe, RouterLink, RndDwnPipePipe, RndDwnNPercPipe],
   templateUrl: './proposal.component.html'
 })
 export class ProposalComponent implements OnInit, OnDestroy {

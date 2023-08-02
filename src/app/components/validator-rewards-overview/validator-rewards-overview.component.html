@@ -10,7 +10,7 @@
     <div id="your-liquidity" class="grid panel">
         <!-- Claim rewards -->
         <div class="grid-cell text-center border-right" [ngStyle]="!userAccumulatedFee.gt(0) | hide">
-            <p class="reward-amount">{{userAccumulatedFee.toFixed(2) | usFormat}} ICX</p>
+            <p class="reward-amount">{{userAccumulatedFee | RndDwn | usFormat}} ICX</p>
             <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 5px;" data-modal="modal-claim-rewards"
                (click)="onClaimRewardsClick($event)">Claim rewards</a>
         </div>
@@ -23,8 +23,8 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>Earnings</dt>
-                <dd *ngIf="userCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userCollectedFee.toFixed(2) | usFormat}} <span class="label">ICX</span><br>
-                    <span class="label">${{userCollectedFee.multipliedBy(icxUsdPrice()).toFixed(2) | usFormat}}</span></dd>
+                <dd *ngIf="userCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userCollectedFee | RndDwn | usFormat}} <span class="label">ICX</span><br>
+                    <span class="label">${{userCollectedFee.multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
                 <dd *ngIf="!(userCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
 
             </dl>
@@ -34,7 +34,7 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>bOMM delegation</dt>
-                <dd *ngIf="userValidatorPrepBommDelegation.gt(0)">{{userValidatorPrepBommDelegation.toFixed(2) | usFormat}} <span class="label">bOMM</span><br><span class="label">{{bOMMdelegationIcx.toFixed(2) | usFormat}} ICX</span></dd>
+                <dd *ngIf="userValidatorPrepBommDelegation.gt(0)">{{userValidatorPrepBommDelegation | RndDwn | usFormat}} <span class="label">bOMM</span><br><span class="label">{{bOMMdelegationIcx | RndDwn | usFormat}} ICX</span></dd>
                 <dd *ngIf="!userValidatorPrepBommDelegation.gt(0)">-</dd>
             </dl>
         </div>
@@ -43,7 +43,7 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>sICX delegation</dt>
-                <dd *ngIf="icxDelegation.gt(0)" class="">{{sicxDelegation.toFixed(2) | usFormat}} <span class="label">sICX</span><br><span class="label">{{icxDelegation.toFixed(2) | usFormat}} ICX</span></dd>
+                <dd *ngIf="icxDelegation.gt(0)" class="">{{sicxDelegation | RndDwn | usFormat}} <span class="label">sICX</span><br><span class="label">{{icxDelegation | RndDwn | usFormat}} ICX</span></dd>
                 <dd *ngIf="!icxDelegation.gt(0)">-</dd>
             </dl>
         </div>

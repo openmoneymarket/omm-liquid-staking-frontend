@@ -20,11 +20,12 @@ import {Calculations} from "../../common/calculations";
 import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-validators-bomm-votes',
   standalone: true,
-  imports: [CommonModule, HideElementPipe, RndDwnNPercPipe, UsFormatPipe, IntersectionObserverDirective],
+    imports: [CommonModule, HideElementPipe, RndDwnPipePipe, UsFormatPipe, IntersectionObserverDirective, RndDwnPipePipe, RndDwnPipePipe, RndDwnNPercPipe],
   templateUrl: './validators-bomm-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

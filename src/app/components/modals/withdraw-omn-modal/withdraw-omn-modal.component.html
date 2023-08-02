@@ -2,17 +2,17 @@
     <div class="modal-content">
         <!-- Title -->
         <h3 class="text-center label">Withdraw Omm Tokens?</h3>
-        <p class="text-center">{{amount().toFixed(2) | usFormat}} OMM</p>
+        <p class="text-center">{{amount() | RndDwn | usFormat}} OMM</p>
 
         <!-- Before vs after -->
         <div class="grid before-after">
             <div class="grid-cell text-center border-right">
                 <p class="label">Before</p>
-                <p class="text-dark">{{before().toFixed(2) | usFormat: true}} OMM</p>
+                <p class="text-dark">{{before() | RndDwn | usFormat: true}} OMM</p>
             </div>
             <div class="grid-cell text-center">
                 <p class="label">After</p>
-                <p class="text-dark">{{after().toFixed(2) | usFormat}} OMM</p>
+                <p class="text-dark">{{after() | RndDwn | usFormat}} OMM</p>
             </div>
         </div>
 

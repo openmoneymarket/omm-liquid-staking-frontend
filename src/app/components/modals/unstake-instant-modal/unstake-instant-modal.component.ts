@@ -6,6 +6,7 @@ import {TransactionDispatcherService} from "../../../services/transaction-dispat
 import {ScoreService} from "../../../services/score.service";
 import {ModalType} from "../../../models/enums/ModalType";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
+import BigNumber from "bignumber.js";
 
 @Component({
   selector: 'app-unstake-instant-modal',
@@ -26,15 +27,15 @@ export class UnstakeInstantModalComponent {
   }
 
   getUnstakeSicxAmount(): string {
-    return this.unstakeInstantSicxPayload?.unstakeSicxAmount?.toFixed(2) ?? "0";
+    return this.unstakeInstantSicxPayload?.unstakeSicxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   getReceivedIcxAmount(): string {
-    return this.unstakeInstantSicxPayload?.receiveIcxAmount?.toFixed(2) ?? "0";
+    return this.unstakeInstantSicxPayload?.receiveIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   getFeeAmount(): string {
-    return this.unstakeInstantSicxPayload?.fee.toFixed(2) ?? "0";
+    return this.unstakeInstantSicxPayload?.fee.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   onCancelClick(e: MouseEvent): void {

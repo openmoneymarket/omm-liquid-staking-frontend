@@ -7,7 +7,7 @@
                 <div class="grid-cell">
                     <h3>Unstake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple" (click)="onSicxBalanceClick($event)"><span class="value-wallet-sicx" >{{userSicxBalance.toFixed(2) | usFormat: true}}</span> sICX</a></p></div>
+                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple" (click)="onSicxBalanceClick($event)"><span class="value-wallet-sicx" >{{userSicxBalance | RndDwn | usFormat: true}}</span> sICX</a></p></div>
             </div>
 
             <div class="grid grid-center input-asset stake">
@@ -18,7 +18,7 @@
                 <div class="grid-cell">
                     <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0"
                            class="{{inputUnstakeAmountGtUserSicxBalance() ? 'text-red' : ''}}"
-                           [value]="unstakeInputAmount.toFixed(2) | usFormat: false : true"
+                           [value]="unstakeInputAmount | RndDwn | usFormat: false : true"
                            (keyup)="onUnstakeInputKeyUp($event)"
                            (blur)="processUnstakeInput($event)"
                            (paste)="processUnstakeInput($event)"
@@ -33,7 +33,7 @@
                         <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" class="svg replaced-svg"><g fill="none" stroke="#7a8294" stroke-width="2" transform="translate(-1 -1)"><circle cx="12" cy="12" r="10"></circle><path d="m12 6v6l4 2"></path></g></svg>
                         <span class="text-bold">Wait</span>
                         <br>
-                        <span>{{receivedIcxAmount.toFixed(2) | usFormat: true}} ICX</span>
+                        <span>{{receivedIcxAmount | RndDwn | usFormat: true}} ICX</span>
                     </label>
                 </div>
 
@@ -47,7 +47,7 @@
                         <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 77 66" xmlns="http://www.w3.org/2000/svg" class="svg replaced-svg"><path d="m72.325 33.234v-2.947c0-5.389-3.698-9.919-8.686-11.217l-.009-4.859c0-4.742-3.859-8.601-8.603-8.601h-.455l-40.262 12.49c-.917.053-1.787.265-2.604.584h-.105c-6.396 0-11.601 5.205-11.601 11.603v28.804c0 6.397 5.204 11.603 11.601 11.603h49.123c6.396 0 11.601-5.205 11.601-11.603v-3.831c2.323-.899 3.979-3.151 3.979-5.789v-10.45c-.001-2.636-1.656-4.888-3.979-5.787zm-2.022 16.236c0 .118-.093.211-.211.211h-16.241c-.118 0-.21-.093-.21-.211v-10.449c0-.115.094-.209.21-.209h16.241c.116 0 .211.094.211.209zm-14.905-37.833c1.261.18 2.232 1.266 2.232 2.579l.008 4.469h-24.959zm5.326 53.056h-49.122c-3.093 0-5.601-2.509-5.601-5.603v-28.803c0-3.095 2.508-5.603 5.601-5.603h49.122c3.094 0 5.601 2.508 5.601 5.603v2.525h-12.474c-3.424 0-6.21 2.785-6.21 6.209v10.449c0 3.425 2.786 6.211 6.21 6.211h12.474v3.41c0 3.093-2.507 5.602-5.601 5.602z" fill="#7a8294" fill-rule="nonzero" transform="translate(0 -5.61)"></path></svg>
                         <span class="text-bold" >Instant</span>
                         <br>
-                        <span>{{instantReceivedIcxAmount.toFixed(2) | usFormat: true}} ICX</span>
+                        <span>{{instantReceivedIcxAmount | RndDwn | usFormat: true}} ICX</span>
                     </label>
                 </div>
             </div>
@@ -99,7 +99,7 @@
 									</div>
 								</span></dt>
                         <dd>
-                            <span class="value-liquidity-apy-4 {{instantLiquidityLtUnstakeAmount() ? 'text-red' : ''}}">{{instantIcxLiquidity().toFixed(2) | usFormat}} {{instantIcxLiquidity().isZero() ? '' : 'ICX'}}</span>
+                            <span class="value-liquidity-apy-4 {{instantLiquidityLtUnstakeAmount() ? 'text-red' : ''}}">{{instantIcxLiquidity() | RndDwn | usFormat}} {{instantIcxLiquidity().isZero() ? '' : 'ICX'}}</span>
                         </dd>
                     </dl>
                 </div>
@@ -111,11 +111,11 @@
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
                 <p class="label">Your unstaking request for
-                    <span class="text-bold">{{unstakeInfo.amount.toFixed(2) | usFormat}} ICX</span> will be ready to claim within
+                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within
                 <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
                 </p>
             </ng-container>
         </ng-container>
-        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx.toFixed(2) | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
+        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

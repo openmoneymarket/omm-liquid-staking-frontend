@@ -5,10 +5,17 @@ import {UnstakeInfoData} from "../models/classes/UserUnstakeInfo";
 import IconService from "icon-sdk-js";
 
 export function numToUsLocaleString(num: BigNumber | string): string {
+    const dp = new BigNumber(num).dp() ?? 0;
     if (typeof num === "string") {
-        return (+num).toLocaleString('en-US', {maximumFractionDigits: DEFAULT_ROUNDING_PRECISION });
+        return (+num).toLocaleString('en-US', {
+            minimumFractionDigits: dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION,
+            maximumFractionDigits: DEFAULT_ROUNDING_PRECISION
+        });
     } else {
-        return num.toNumber().toLocaleString('en-US', {maximumFractionDigits: DEFAULT_ROUNDING_PRECISION });
+        return num.toNumber().toLocaleString('en-US', {
+            minimumFractionDigits: dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION,
+            maximumFractionDigits: DEFAULT_ROUNDING_PRECISION
+        });
     }
 }
 
@@ -117,7 +124,7 @@ export function toNDecimalRoundedDownPercentString(num?: BigNumber | string, dec
         return defaultZero ? "0%" : "-";
     }
 
-    return `${(numToUsLocaleString(num.toFixed(2)))}%`;
+    return `${(numToUsLocaleString(num.toFixed(decimals, BigNumber.ROUND_DOWN)))}%`;
 }
 
 export function hexToBoolean(value: any): boolean {

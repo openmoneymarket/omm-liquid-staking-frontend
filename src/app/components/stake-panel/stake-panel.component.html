@@ -8,7 +8,7 @@
                 <div class="grid-cell">
                     <h3>Stake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-green" (click)="onIcxBalanceClick($event)"><span class="value-wallet-icx">{{userIcxBalance.toFixed(2) | usFormat: true}}</span> ICX</a></p></div>
+                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-green" (click)="onIcxBalanceClick($event)"><span class="value-wallet-icx">{{userIcxBalance | RndDwn | usFormat: true}}</span> ICX</a></p></div>
             </div>
             <!-- Swap from -->
             <div class="grid grid-center input-asset stake">
@@ -19,7 +19,7 @@
                 <div class="grid-cell">
                     <input id="swap-from" pattern="[0-9]*" type="text" name="swap-from" placeholder="0"
                            class="{{userIcxBalanceLtInputAmount() ? 'text-red' : ''}}"
-                           [value]="stakeInputAmount.toFixed(2) | usFormat: false : true"
+                           [value]="stakeInputAmount | RndDwn | usFormat: false : true"
                            (keyup)="onStakeInputKeyUp($event)"
                            (blur)="processStakeInput($event)"
                            (paste)="processStakeInput($event)"
@@ -30,7 +30,7 @@
             <!-- Swap to -->
             <div class="grid grid-center">
                 <div class="grid-cell"><label for="swap-to">Receive</label></div>
-                <div class="grid-cell"><p class="label text-right">Wallet: {{userSicxBalance.toFixed(2) | usFormat: true}} sICX</p></div>
+                <div class="grid-cell"><p class="label text-right">Wallet: {{userSicxBalance | RndDwn | usFormat: true}} sICX</p></div>
             </div>
             <div class="grid grid-center input-asset unstake">
                 <div class="grid-cell">
@@ -39,7 +39,7 @@
 
                 <div class="grid-cell">
                     <input id="swap-to" pattern="[0-9]*" type="text" name="swap-to" placeholder="0"
-                           [value]="unstakeInputAmount.toFixed(2) | usFormat: false : true"
+                           [value]="unstakeInputAmount | RndDwn | usFormat: false : true"
                            (keyup)="onUnstakeInputKeyUp($event)"
                            (blur)="processUnstakeInput($event)"
                            (paste)="processUnstakeInput($event)"
@@ -90,7 +90,7 @@
                 <div class="grid-cell text-center">
                     <dl class="metadata">
                         <dt>Conversion rate</dt>
-                        <dd><span class="value-liquidity-apy-4">{{todaySicxRate.toFixed(4) | usFormat}}</span></dd>
+                        <dd><span class="value-liquidity-apy-4">{{todaySicxRate | RndDwn: 4 | usFormat}}</span></dd>
                     </dl>
                 </div>
             </div>
@@ -102,11 +102,11 @@
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
                 <p class="label">Your unstaking request for
-                    <span class="text-bold">{{unstakeInfo.amount.toFixed(2) | usFormat}} ICX</span> will be ready to claim within
+                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within
                 <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
                 </p>
             </ng-container>
         </ng-container>
-        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx.toFixed(2) | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
+        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

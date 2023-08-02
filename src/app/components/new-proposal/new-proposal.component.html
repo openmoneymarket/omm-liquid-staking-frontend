@@ -96,15 +96,15 @@
                     <div class="grid-cell">
                         <a *ngIf="proposalType === ProposalType.CONTRACT" href="javascript:void(0);" class="" (click)="onAddAnotherContractClick($event)">Add another contract</a>
                         <p><a id="new-proposal-submit" href="javascript:void(0);" class="button modal-trigger {{fieldsValid() && userHasEnoughBOmm() && userHasEnoughOmm() ? '' : 'disabled'}}" data-modal="modal-submit-proposal" (click)="onSubmitClick()">Submit</a></p>
-                        <p class="label message text-center" style="padding-top: 10px;" *ngIf="userHasEnoughOmm()">It costs {{voteDefinitionFee.toFixed(2) | usFormat}} OMM to submit a proposal, which is refunded if it's approved.</p>
+                        <p class="label message text-center" style="padding-top: 10px;" *ngIf="userHasEnoughOmm()">It costs {{voteDefinitionFee | RndDwn | usFormat}} OMM to submit a proposal, which is refunded if it's approved.</p>
                         <!-- Min OMM stake required for creating a proposal -->
                         <ng-container *ngIf="!userHasEnoughBOmm()">
                             <br>
-                            <p class="label text-red text-center">You need at least {{minBOmmRequiredForProposal.toFixed(2) | usFormat}} bOMM to propose a change.</p>
+                            <p class="label text-red text-center">You need at least {{minBOmmRequiredForProposal | RndDwn | usFormat}} bOMM to propose a change.</p>
                         </ng-container>
                         <ng-container *ngIf="!userHasEnoughOmm()">
                             <br>
-                            <p class="label text-red text-center">You need at least {{voteDefinitionFee.toFixed(2) | usFormat}} OMM to submit a proposal, which is refunded if it's approved.</p>
+                            <p class="label text-red text-center">You need at least {{voteDefinitionFee | RndDwn | usFormat}} OMM to submit a proposal, which is refunded if it's approved.</p>
                         </ng-container>
                     </div>
                 </div>

@@ -8,11 +8,12 @@ import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
 import {addSecondsToTimestamp, timestampNowMicroseconds} from "../../../common/utils";
+import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-submit-proposal-modal',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './submit-proposal-modal.component.html'
 })
 export class SubmitProposalModalComponent {

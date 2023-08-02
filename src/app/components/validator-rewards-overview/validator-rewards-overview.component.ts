@@ -13,11 +13,12 @@ import {Address, PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
 import {convertICXTosICX} from "../../common/utils";
 import {Wallet} from "../../models/classes/Wallet";
 import {Irc2Token} from "../../models/classes/Irc2Token";
+import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-validator-rewards-overview',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, HideElementPipe],
+    imports: [CommonModule, UsFormatPipe, HideElementPipe, RndDwnPipePipe],
   templateUrl: './validator-rewards-overview.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

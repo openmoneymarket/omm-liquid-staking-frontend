@@ -6,6 +6,7 @@ import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
 import {ModalType} from "../../../models/enums/ModalType";
+import BigNumber from "bignumber.js";
 
 @Component({
   selector: 'app-unstake-wait-modal',
@@ -27,11 +28,11 @@ export class UnstakeWaitModalComponent {
   }
 
   getUnstakeSicxAmount(): string {
-    return this.unstakeWaitSicxPayload?.unstakeSicxAmount?.toFixed(2) ?? "0";
+    return this.unstakeWaitSicxPayload?.unstakeSicxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   getReceivedIcxAmount(): string {
-    return this.unstakeWaitSicxPayload?.receiveIcxAmount?.toFixed(2) ?? "0";
+    return this.unstakeWaitSicxPayload?.receiveIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
   onCancelClick(e: MouseEvent): void {

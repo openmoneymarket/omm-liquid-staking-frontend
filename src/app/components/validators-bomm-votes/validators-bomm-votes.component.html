@@ -69,7 +69,7 @@
                                 <div class="grid-cell">
                                     <dl class="metadata">
                                         <dt>bOMM delegation</dt>
-                                        <dd *ngIf="prepBommDdelegation(prep.address).gt(0)">{{prepBommDdelegation(prep.address).toFixed(2) | usFormat}} bOMM</dd>
+                                        <dd *ngIf="prepBommDdelegation(prep.address).gt(0)">{{prepBommDdelegation(prep.address) | RndDwn | usFormat}} bOMM</dd>
                                         <dd *ngIf="!prepBommDdelegation(prep.address).gt(0)">-</dd>
                                     </dl>
                                 </div>
@@ -85,7 +85,7 @@
                                     <dl class="metadata">
                                         <dt>Your delegation</dt>
                                         <dd>
-                                            <span *ngIf="userBommDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userBommDelegation(prep.address).toFixed(2) | usFormat}} bOMM</span>
+                                            <span *ngIf="userBommDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
                                             <span *ngIf="!userBommDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">-</span>
 
                                             <input type="text" name="" placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}" class="text-center input-edit"
@@ -117,11 +117,11 @@
                            (paste)="processDelegationInput($event, prep.address)"
                     >
                     <br>
-                    <span *ngIf="userBommDelegation(prep.address).gt(0)" class="label">{{userBommDelegation(prep.address).toFixed(2) | usFormat}} bOMM</span>
+                    <span *ngIf="userBommDelegation(prep.address).gt(0)" class="label">{{userBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
                     <span *ngIf="!userBommDelegation(prep.address).gt(0)" class="label">-</span>
                 </td>
                 <td>{{prepBommDelegationPercent(prep.address) | rndDwnNPerc: 2}}<br>
-                    <span *ngIf="prepBommDdelegation(prep.address).gt(0)" class="label">{{prepBommDdelegation(prep.address).toFixed(2) | usFormat}} bOMM</span>
+                    <span *ngIf="prepBommDdelegation(prep.address).gt(0)" class="label">{{prepBommDdelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
                     <span *ngIf="!prepBommDdelegation(prep.address).gt(0)" class="label">-</span>
                 </td>
                 <td>$???<br><span class="label">??? ICX</span></td>

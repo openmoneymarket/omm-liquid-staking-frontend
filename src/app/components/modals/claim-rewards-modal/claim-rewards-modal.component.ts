@@ -6,11 +6,12 @@ import {ScoreService} from "../../../services/score.service";
 import BigNumber from "bignumber.js";
 import {ClaimRewardsPayload} from "../../../models/classes/ClaimRewardsPayload";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
+import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
 
 @Component({
   selector: 'app-claim-rewards-modal',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
   templateUrl: './claim-rewards-modal.component.html'
 })
 export class ClaimRewardsModalComponent {
