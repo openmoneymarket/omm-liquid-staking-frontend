@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
 import {Address, ModalPayload, PrepAddress, TokenSymbol} from "../models/Types/ModalTypes";
-import {ModalAction, ModalActionsResult} from "../models/classes/ModalAction";
+import {ModalActionsResult} from "../models/classes/ModalAction";
 import BigNumber from "bignumber.js";
 import {Irc2Token} from "../models/classes/Irc2Token";
 import {StoreService} from "./store.service";
