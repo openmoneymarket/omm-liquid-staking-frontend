@@ -13,7 +13,7 @@ import log from "loglevel";
 import {CustomReuseStrategy} from "./app/routing";
 
 // set 18 decimals places computation precision and default ROUND DOWN mode
-BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
+BigNumber.set({ DECIMAL_PLACES: 32, ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
 // set logging level
 log.setLevel(environment.production ? "error" : "debug");

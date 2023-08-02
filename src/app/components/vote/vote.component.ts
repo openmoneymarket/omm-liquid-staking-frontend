@@ -12,6 +12,7 @@ import {DATA_REFRESH_INTERVAL} from "../../common/constants";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {StoreService} from "../../services/store.service";
 import {StateChangeService} from "../../services/state-change.service";
+import {PrepList} from "../../models/classes/Preps";
 
 @Component({
   selector: 'app-vote',
@@ -29,6 +30,7 @@ import {StateChangeService} from "../../services/state-change.service";
 export class VoteComponent implements OnDestroy {
 
   loggedInUserIsValidator = false;
+  private prepList?: PrepList;
 
   // Subscriptions
   dataRefreshPollingIntervalSub?: Subscription;
@@ -57,12 +59,18 @@ export class VoteComponent implements OnDestroy {
     this.prepListSub = this.stateChangeService.prepListChange$.subscribe(prepList => {
       const validator = prepList.preps.find(prep => prep.address == this.storeService.userWalletAddress());
       this.loggedInUserIsValidator = validator != undefined;
+      this.prepList = prepList;
     })
   }
 
   private subscribeToLogoutChange(): void {
     this.logoutSub = this.stateChangeService.loginChange$.subscribe((wallet) => {
-      this.loggedInUserIsValidator = wallet == undefined ? false : this.loggedInUserIsValidator;
+      if (wallet == undefined) {
+        this.loggedInUserIsValidator = false;
+      } else if (this.prepList) {
+        const validator = this.prepList.preps.find(prep => prep.address == this.storeService.userWalletAddress());
+        this.loggedInUserIsValidator = validator != undefined;
+      }
     })
   }
 

@@ -182,7 +182,6 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
       this.todaySicxRate = todayRate;
 
-      this.recalculateInputs();
       this.recalculateSicxPrice();
 
       // Detect Changes
@@ -236,10 +235,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     console.log("userIcxBalance: ", this.userIcxBalance.toString());
 
     if (this.userIcxBalance.gt(MIN_ICX_BALANCE_KEPT)) {
-      this.stakeInputAmount = new BigNumber(this.userIcxBalance.minus(MIN_ICX_BALANCE_KEPT));
+      this.processStakeInput(new BigNumber(this.userIcxBalance.minus(MIN_ICX_BALANCE_KEPT)));
     }
-
-    this.recalculateInputs();
 
     // Detect Changes
     this.cdRef.detectChanges();
@@ -251,15 +248,25 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     }, 800 );
   }
 
-  processStakeInput(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
-    const stakeInputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
+  processStakeInput(e: KeyboardEvent | ClipboardEvent | FocusEvent | BigNumber) {
+    let stakeInputAmount: number;
+
+    if (e instanceof BigNumber) {
+      stakeInputAmount = e.toNumber();
+    } else {
+      stakeInputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
+    }
 
     if (!stakeInputAmount || stakeInputAmount <= 0) {
       this.stakeInputAmount = new BigNumber(0);
       this.unstakeInputAmount = new BigNumber(0);
     } else {
-      this.stakeInputAmount = new BigNumber(stakeInputAmount);
-      this.unstakeInputAmount = convertICXTosICX(this.stakeInputAmount, this.todaySicxRate);
+      const newStakeInput = new BigNumber(stakeInputAmount);
+
+      if (!newStakeInput.dp(2, BigNumber.ROUND_DOWN).eq(this.stakeInputAmount.dp(2, BigNumber.ROUND_DOWN))) {
+        this.stakeInputAmount = new BigNumber(stakeInputAmount);
+        this.unstakeInputAmount = convertICXTosICX(this.stakeInputAmount, this.todaySicxRate);
+      }
     }
 
     // Detect Changes
@@ -279,22 +286,16 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
       this.unstakeInputAmount = new BigNumber(0);
       this.stakeInputAmount = new BigNumber(0);
     } else {
-      this.unstakeInputAmount = new BigNumber(unstakeInputAmount);
-      this.stakeInputAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
+      const newUnstakeInput = new BigNumber(unstakeInputAmount);
+
+      if (!newUnstakeInput.dp(2, BigNumber.ROUND_DOWN).eq(this.unstakeInputAmount.dp(2, BigNumber.ROUND_DOWN))) {
+        this.unstakeInputAmount = new BigNumber(unstakeInputAmount);
+        this.stakeInputAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
+      }
     }
 
     // Detect Changes
     this.cdRef.detectChanges();
-  }
-
-  private recalculateInputs(): void {
-    if (this.stakeInputAmount.gt(0) && this.todaySicxRate.gt(0)) {
-      this.unstakeInputAmount = convertICXTosICX(this.stakeInputAmount, this.todaySicxRate);
-    }
-
-    if (this.unstakeInputAmount.gt(0) && this.todaySicxRate.gt(0)) {
-      this.stakeInputAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
-    }
   }
 
   private recalculateSicxPrice(): void {
