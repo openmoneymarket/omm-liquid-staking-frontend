@@ -17,9 +17,9 @@
                             </div>
                         </span>
                 </a></span></th>
-        <th class="text-right">
-            <a href="javascript:void(0);" class="adjust-votes" [ngStyle]="(adjustVotesActive  || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
-            </a><span class="adjust-options" [ngStyle]="!adjustVotesActive | hide">
+        <th class="text-right" *ngIf="userLoggedIn()">
+            <a href="javascript:void(0);" class="adjust-votes" [ngStyle]="(adjustVotesActive  || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt=""></a>
+            <span class="adjust-options" [ngStyle]="!adjustVotesActive | hide">
                 <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onCancelAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
                 <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm" (click)="onConfirmClick($event)">
                     <ng-container *ngIf="userAllocatedVotesPercent().eq(1) || userAllocatedVotesPercent().eq(0)">Confirm</ng-container>
@@ -33,7 +33,8 @@
                         </div>
                     </span>
                 </a>
-        </span><br>Your delegation</th>
+            </span>
+            <br>Your delegation</th>
         <th class="text-right">sICX delegation</th>
     </tr>
     </thead>
@@ -43,7 +44,7 @@
             <td>{{i + 1}}</td>
             <td>
                 <!-- Desktop -->
-                <div class="desktop-vote" [ngStyle]="isMobile() | hide">
+                <div class="desktop-vote">
                     <div class="grid grid-center">
                         <div class="grid-cell">
                             <img [src]="prep.logoUrl" (error)="errorHandlerPrepLogo($event)" alt="">
@@ -61,19 +62,19 @@
                 </div>
 
                 <!-- Mobile -->
-                <div class="mobile-vote" [ngStyle]="!isMobile() | hide">
+                <div class="mobile-vote hide">
                     <div class="grid metadata-group notice">
                         <div class="grid-cell">
                             <div class="grid supply-group">
-                                <div class="grid-cell">
+                                <div class="grid-cell" *ngIf="userLoggedIn()">
                                     <dl class="metadata">
                                         <dt>Your delegation</dt>
                                         <dd>
-                                            <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
-                                            <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActive | hide">-</span>
+                                            <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActiveMobile | hide">{{userSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
+                                            <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActiveMobile | hide">-</span>
 
                                             <input type="text" name="" placeholder="15%" class="input-edit"
-                                                   [ngStyle]="!adjustVotesActive | hide"
+                                                   [ngStyle]="!adjustVotesActiveMobile | hide"
                                                    [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
                                                    (keyup)="onDelegationInputKeyUp($event, prep.address)"
                                                    (blur)="processDelegationInput($event, prep.address)"
@@ -94,28 +95,27 @@
                         </div>
                     </div>
                 </div>
+                <!-- END OF Mobile -->
             </td>
 
-            <ng-container *ngIf="!isMobile()">
-                <td>
-                    <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
-                    <input type="text" name="" class="input-edit"
-                           [ngStyle]="!adjustVotesActive | hide"
-                           placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}"
-                           [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
-                           (keyup)="onDelegationInputKeyUp($event, prep.address)"
-                           (blur)="processDelegationInput($event, prep.address)"
-                           (paste)="processDelegationInput($event, prep.address)"
-                    >
-                    <br>
-                    <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="label">{{userSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
-                    <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="label">-</span>
-                </td>
-                <td>{{prepSicxDelegationPercent(prep.address) | rndDwnNPerc: 2}}<br>
-                    <span *ngIf="prepSicxDelegation(prep.address).gt(0)" class="label">{{prepSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
-                    <span *ngIf="!prepSicxDelegation(prep.address).gt(0)" class="label">-</span>
-                </td>
-            </ng-container>
+            <td *ngIf="userLoggedIn()">
+                <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
+                <input type="text" name="" class="input-edit"
+                       [ngStyle]="!adjustVotesActive | hide"
+                       placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}"
+                       [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
+                       (keyup)="onDelegationInputKeyUp($event, prep.address)"
+                       (blur)="processDelegationInput($event, prep.address)"
+                       (paste)="processDelegationInput($event, prep.address)"
+                >
+                <br>
+                <span *ngIf="userSicxDelegation(prep.address).gt(0)" class="label">{{userSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
+                <span *ngIf="!userSicxDelegation(prep.address).gt(0)" class="label">-</span>
+            </td>
+            <td>{{prepSicxDelegationPercent(prep.address) | rndDwnNPerc: 2}}<br>
+                <span *ngIf="prepSicxDelegation(prep.address).gt(0)" class="label">{{prepSicxDelegation(prep.address) | RndDwn | usFormat}} sICX</span>
+                <span *ngIf="!prepSicxDelegation(prep.address).gt(0)" class="label">-</span>
+            </td>
         </tr>
     </ng-container>
     </tbody>
