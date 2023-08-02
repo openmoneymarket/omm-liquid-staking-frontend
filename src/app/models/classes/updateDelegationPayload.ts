@@ -14,10 +14,12 @@ export class UpdateDelegationPayload implements IActionPayload {
 
     userDelegations: YourPrepVote[];
     isBommDelegation: boolean
+    userHoldsBomm: boolean;
 
-    constructor(userDelegations: YourPrepVote[], isBommDelegation: boolean) {
+    constructor(userDelegations: YourPrepVote[], isBommDelegation: boolean, userHoldsBomm: boolean) {
         this.userDelegations = userDelegations;
         this.isBommDelegation = isBommDelegation;
+        this.userHoldsBomm = userHoldsBomm;
     }
 
     sendTxMessage(): string {

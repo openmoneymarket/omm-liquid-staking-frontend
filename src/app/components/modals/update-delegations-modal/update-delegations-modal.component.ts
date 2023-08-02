@@ -16,7 +16,19 @@ import {RndDwnNPercPipe} from "../../../pipes/round-down-percent.pipe";
 export class UpdateDelegationsModalComponent {
 
   @Input({ required: true }) active!: boolean;
-  @Input() payload: UpdateDelegationPayload | undefined;
+
+  _payload: UpdateDelegationPayload | undefined;
+
+  @Input() set payload(value: UpdateDelegationPayload | undefined) {
+    this._payload = value;
+    this.useDelegationForBommAndSicx = false;
+  }
+
+  get payload(): UpdateDelegationPayload | undefined {
+    return this._payload;
+  }
+
+  useDelegationForBommAndSicx = false;
 
   constructor(private stateChangeService: StateChangeService,
               private transactionDispatcher: TransactionDispatcherService,
@@ -34,13 +46,19 @@ export class UpdateDelegationsModalComponent {
     e.stopPropagation();
 
     if (this.payload) {
-      if (this.payload.isBommDelegation) {
-        const updateBommDelegationsTx = this.scoreService.buildUpdateBommDelegationsTx(this.payload.userDelegations);
-        this.transactionDispatcher.dispatchTransaction(updateBommDelegationsTx, this.payload);
+      let tx;
+
+      if (this.useDelegationForBommAndSicx) {
+        tx = this.scoreService.buildUpdateBommAndSicxDelegationsTx(this.payload.userDelegations);
       } else {
-        const updateSicxDelegationsTx = this.scoreService.buildUpdateSicxDelegationsTx(this.payload.userDelegations);
-        this.transactionDispatcher.dispatchTransaction(updateSicxDelegationsTx, this.payload);
+        if (this.payload.isBommDelegation) {
+          tx = this.scoreService.buildUpdateBommDelegationsTx(this.payload.userDelegations);
+        } else {
+          tx = this.scoreService.buildUpdateSicxDelegationsTx(this.payload.userDelegations);
+        }
       }
+
+      this.transactionDispatcher.dispatchTransaction(tx, this.payload);
     } else {
       throw new Error(`[UpdateDelegationsModalComponent.onUnstakeClick] payload undefined!`)
     }

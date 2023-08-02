@@ -40,6 +40,32 @@ export class ScoreService {
               private checkerService: CheckerService) {
   }
 
+
+  /**
+   * @description Build Icon transaction to update user delegation preferences for both bOmm and sICX delegations
+   * @return  Icon tx
+   */
+  public buildUpdateBommAndSicxDelegationsTx(userDelegations: YourPrepVote[]): any {
+    this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
+
+    const delegations: {_address: string, _votes_in_per: string}[] = userDelegations.map(vote => {
+      return {
+        _address: vote.address,
+        _votes_in_per: IconConverter.toHex(IconAmount.of(vote.percentage, 18).toLoop()) // note 1EXA is 100%
+      }
+    });
+    log.debug("delegations:", delegations);
+
+    const params = {
+      _delegations: delegations
+    };
+
+    return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
+        this.storeService.allAddresses!.systemContract.Delegation,
+        ScoreMethodNames.UPDATE_DELEGATION_AT_ONCE, params, IconTransactionType.WRITE);
+  }
+
+
   /**
    * @description Build Icon transaction to update user delegation preferences
    * @return  Icon tx

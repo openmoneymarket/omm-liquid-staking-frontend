@@ -36,7 +36,7 @@ import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
   templateUrl: './validators-sicx-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, OnDestroy, AfterViewInit {
+export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, OnDestroy {
 
   // used for pagination, start with 22 and increase when last element becomes visible
   PREP_PAGE_SIZE_INDEX = 10;
@@ -62,8 +62,10 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   actualDynUserDelegationPercentage = new Map<PrepAddress, BigNumber>(); // votes in ICX
   userWallet: Wallet | undefined;
   userSicxBalance = new BigNumber(0);
+  userDelegationWorkingbOmmBalance = new BigNumber(0);
 
   // Subscriptions
+  userDelegationWorkingbOmmSub?: Subscription;
   actualUserDelegationPercentageSub?: Subscription;
   prepListChangeSub?: Subscription;
   searchSubjectSub?: Subscription;
@@ -83,11 +85,6 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.registerSubscriptions();
   }
 
-  ngAfterViewInit(): void {
-    this.ready = true;
-    this.cdRef.detectChanges();
-  }
-
   ngOnDestroy(): void {
     this.prepListChangeSub?.unsubscribe();
     this.searchSubjectSub?.unsubscribe();
@@ -96,6 +93,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.actualUserDelegationPercentageSub?.unsubscribe();
     this.loginSub?.unsubscribe();
     this.userTokenBalanceSub?.unsubscribe();
+    this.userDelegationWorkingbOmmSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
@@ -106,16 +104,27 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.subscribeToActualPrepDelegationsChange();
     this.subscribeToTodaySicxRateChange();
     this.subscribeToUserTokenBalanceChange();
+    this.subscribeToUserDelegationWorkingbOmmChange();
   }
 
   private resetUserState(): void {
     this.actualUserDelegationPercentage = new Map<PrepAddress, BigNumber>();
     this.actualDynUserDelegationPercentage = new Map<PrepAddress, BigNumber>();
     this.userSicxBalance = new BigNumber(0);
+    this.userDelegationWorkingbOmmBalance = new BigNumber(0);
   }
 
   private resetDynamicState(): void {
     this.actualDynUserDelegationPercentage = new Map(Array.from(this.actualUserDelegationPercentage.entries()).map(([k, v]) => [k, new BigNumber(v)]));
+  }
+
+  private subscribeToUserDelegationWorkingbOmmChange(): void {
+    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
+      this.userDelegationWorkingbOmmBalance = value;
+
+      // detect changes
+      this.cdRef.detectChanges();
+    })
   }
 
   private subscribeToUserTokenBalanceChange(): void {
@@ -229,7 +238,8 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
                   value
               );
             }),
-            false
+            false,
+            this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
         this.resetAdjustVotesActive();

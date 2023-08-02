@@ -95,6 +95,7 @@ export class ScoreMethodNames {
     public static GET_WORKING_TOTAL_SUPPLY = "getWorkingTotalSupply";
     public static GET_USER_WORKING_BALANCE = "getWorkingBalance";
     public static PREP_VOTES = "prepVotes";
+    public static UPDATE_DELEGATION_AT_ONCE = "updateDelegationAtOnce";
 
     /**
     * Governance SCORE

@@ -261,7 +261,8 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
               v.name = (this.prepList?.prepAddressToNameMap.get(v.address) ?? ""); // get name from prep list
               return v;
             }),
-            this._isbOmmVotesActive
+            this._isbOmmVotesActive,
+            this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
         this.resetAdjustVotesActive();
