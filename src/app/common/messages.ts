@@ -64,8 +64,8 @@ export const PRE_UNSTAKE_LP = "Unstaking LP tokens...";
  *  NOTIFICATIONS SHOWN AFTER TRANSACTION SUCCESS
  */
 
-export const SUCCESS_STAKE_ICX = (amount: BigNumber) => `Successfully staked ${numToUsLocaleString(amount.dp(2))} ICX.`
-export const SUCCESS_UNSTAKE_SICX = (stakeIcxAmount: BigNumber) => `Successfully unstaked ${numToUsLocaleString(stakeIcxAmount.dp(2))} sICX.`
+export const SUCCESS_STAKE_ICX = (amount: BigNumber) => `Staked ${numToUsLocaleString(amount.dp(2))} ICX.`
+export const SUCCESS_UNSTAKE_SICX = (stakeIcxAmount: BigNumber) => `Unstaked ${numToUsLocaleString(stakeIcxAmount.dp(2))} sICX.`
 export const SUCCESS_CLAIM_ICX = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
 export const SUCCESS_CLAIM_REWARDS = (amount: BigNumber) => `${numToUsLocaleString(amount.dp(2))} ICX claimed.`;
 export const SUCCESS_WITHDRAW_LOCKED_OMM = (amount: BigNumber) => `Withdrew ${numToUsLocaleString(amount.dp(2))} OMM.`;

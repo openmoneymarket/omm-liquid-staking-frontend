@@ -111,9 +111,8 @@
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
                 <p class="label">Your unstaking request for
-                    <span class="text-bold">{{unstakeInfo.amount.toFixed(2) | usFormat}} ICX will be ready to claim within
+                    <span class="text-bold">{{unstakeInfo.amount.toFixed(2) | usFormat}} ICX</span> will be ready to claim within
                 <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
-            </span>
                 </p>
             </ng-container>
         </ng-container>

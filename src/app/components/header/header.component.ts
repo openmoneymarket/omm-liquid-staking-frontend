@@ -92,6 +92,8 @@ export class HeaderComponent {
     }
 
     document.body.removeChild(textArea);
+
+    this.dropdownOpen = false;
   }
 
   userLoggedIn(): boolean {

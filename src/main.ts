@@ -33,7 +33,7 @@ bootstrapApplication(AppComponent,{
         provideToastr({
             timeOut: 5000,
             extendedTimeOut: 3000,
-            positionClass: 'toast-bottom-right',
+            positionClass: 'toast-top-right',
             preventDuplicates: true,
             progressBar: true,
         }), // Toastr providers
