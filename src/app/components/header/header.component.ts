@@ -39,6 +39,7 @@ export class HeaderComponent {
     }
   }
   onSignInClick(): void {
+    this.dropdownOpen = false;
     this.stateChangeService.modalUpdate(ModalType.SIGN_IN);
   }
 
