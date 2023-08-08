@@ -45,14 +45,16 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   adjustVotesActiveMobile = false;
 
   votingPower = new BigNumber(0);
+  delegationPower = new BigNumber(0);
   ommVotingPower = new BigNumber(0);
   prepList?: PrepList;
   preps: Prep[] = [];
-  prepsBommDelegationsMap = new Map<PrepAddress, BigNumber>;
+  prepsBommDelegationsInIcxMap = new Map<PrepAddress, BigNumber>;
   allValidatorCollectedFeesMap = new Map<PrepAddress, BigNumber>;
   totalPrepsBommDelegations = new BigNumber(0);
   totalAllValidatorCollectedFees = new BigNumber(0);
   delegationbOmmWorkingTotalSupply = new BigNumber(0);
+  undelegatedIcx = new BigNumber(0);
   totalSicxAmount = new BigNumber(0);
   todaySicxRate: BigNumber = new BigNumber(0);
 
@@ -69,6 +71,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   userDelegationWorkingbOmmSub?: Subscription;
   prepListChangeSub?: Subscription;
   delegationOmmTotalWorkingSupplySub?: Subscription;
+  undelegatedIcxSub?: Subscription;
   prepsBommDelegationsSub?: Subscription;
   searchSubjectSub?: Subscription;
   totalSicxAmountSub?: Subscription;
@@ -96,6 +99,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.totalSicxAmountSub?.unsubscribe();
     this.todayRateSub?.unsubscribe();
     this.loginSub?.unsubscribe();
+    this.undelegatedIcxSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
@@ -103,6 +107,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.subscribeToSearchStringChange();
     this.subscribeToUserDelegationDetailsChange();
     this.subscribeToUserDelegationWorkingbOmmChange();
+    this.subscribeToUndelegatedIcxChange()
     this.subscribeToPrepListChange();
     this.subscribeToPrepsBommDelegationsChange();
     this.subscribeToAllValidatorsCollectedFeesChange();
@@ -180,7 +185,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   private subscribeToPrepsBommDelegationsChange(): void {
     this.prepsBommDelegationsSub = this.stateChangeService.prepsBommDelegationsChange$.subscribe(value => {
-      this.prepsBommDelegationsMap = value;
+      this.prepsBommDelegationsInIcxMap = value;
       this.totalPrepsBommDelegations = Array.from(value.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
 
       // detect changes
@@ -201,6 +206,16 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   private subscribeToUserDelegationWorkingbOmmChange(): void {
     this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
       this.userDelegationWorkingbOmmBalance = value;
+      this.refreshValues();
+
+      // detect changes
+      this.cdRef.detectChanges();
+    })
+  }
+
+  private subscribeToUndelegatedIcxChange(): void {
+    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
+      this.undelegatedIcx = value;
       this.refreshValues();
 
       // detect changes
@@ -320,6 +335,13 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   refreshValues(): void {
     this.calculateOmmVotingPower();
     this.calculateVotingPower();
+    this.calculateDelegationPower();
+  }
+
+  private calculateDelegationPower(): void {
+    if (this.undelegatedIcx.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.delegationPower = Calculations.delegationPower(this.undelegatedIcx, this.delegationbOmmWorkingTotalSupply);
+    }
   }
 
   private calculateVotingPower(): void {
@@ -336,8 +358,8 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   prepBommDelegationPercent(address: string): BigNumber {
-    if (this.prepBommDdelegation(address).gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0) && this.votingPower.gt(0)) {
-      return (this.prepBommDdelegation(address)).dividedBy(this.totalPrepsBommDelegations);
+    if (this.prepBommDdelegationIcx(address).gt(0) && this.totalPrepsBommDelegations.gt(0)) {
+      return (this.prepBommDdelegationIcx(address)).dividedBy(this.totalPrepsBommDelegations);
     } else {
       return new BigNumber(0);
     }
@@ -351,8 +373,18 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     }
   }
 
+  prepBommDdelegationIcx(address: string): BigNumber {
+    return this.prepsBommDelegationsInIcxMap.get(address) ?? new BigNumber(0);
+  }
+
   prepBommDdelegation(address: string): BigNumber {
-    return this.prepsBommDelegationsMap.get(address) ?? new BigNumber(0);
+    const icxDelegation = this.prepsBommDelegationsInIcxMap.get(address);
+
+    if (icxDelegation && this.delegationPower.gt(0)) {
+      return icxDelegation.dividedBy(this.delegationPower);
+    } else {
+      return new BigNumber(0);
+    }
   }
 
   prepCollectedFees(address: string): BigNumber {

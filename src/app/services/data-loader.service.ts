@@ -25,6 +25,10 @@ import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails"
 })
 export class DataLoaderService {
 
+  /**
+   * A Service responsible for loading data and consequently triggering the state change
+   */
+
   constructor(private scoreService: ScoreService,
               private storeService: StoreService,
               private stateChangeService: StateChangeService,
@@ -213,6 +217,15 @@ export class DataLoaderService {
       this.stateChangeService.delegationbOmmTotalWorkingSupplyUpdate((await this.scoreService.getDelegationWorkingTotalSupplyOfbOmm()));
     } catch (e) {
       log.error("Error in loadDelegationbOmmWorkingTotalSupply:");
+      log.error(e);
+    }
+  }
+
+  public async loadUndelegatedIcx(): Promise<void> {
+    try {
+      this.stateChangeService.undelegatedIcxUpdate((await this.scoreService.getUndelegatedIcx()));
+    } catch (e) {
+      log.error("Error in loadUndelegatedIcx:");
       log.error(e);
     }
   }
@@ -541,6 +554,7 @@ export class DataLoaderService {
       this.loadlTotalSicxAmount(),
       this.loadSicxHoldersAmount(),
       this.loadDelegationbOmmWorkingTotalSupply(),
+      this.loadUndelegatedIcx(),
       this.loadbOmmTotalSupply(),
     ]);
 

@@ -119,6 +119,9 @@ export class StateChangeService {
   private delegationbOmmTotalWorkingSupplyChange = new ReplaySubject<BigNumber>(1);
   delegationbOmmTotalWorkingSupplyChange$ = this.delegationbOmmTotalWorkingSupplyChange.asObservable();
 
+  private undelegatedIcxChange = new ReplaySubject<BigNumber>(1);
+  undelegatedIcxChange$ = this.undelegatedIcxChange.asObservable();
+
   private bOmmTotalSupplyChange = new ReplaySubject<BigNumber>(1);
   bOmmTotalSupplyChange$ = this.bOmmTotalSupplyChange.asObservable();
 
@@ -242,6 +245,10 @@ export class StateChangeService {
 
   public delegationbOmmTotalWorkingSupplyUpdate(value: BigNumber): void {
       this.delegationbOmmTotalWorkingSupplyChange.next(value);
+  }
+
+  public undelegatedIcxUpdate(value: BigNumber): void {
+    this.undelegatedIcxChange.next(value);
   }
 
   public userAccumulatedFeeUpdate(value: BigNumber): void {

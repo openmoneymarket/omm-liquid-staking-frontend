@@ -71,6 +71,15 @@ export abstract class Calculations {
         return (ommVotingPower.dividedBy(totalWorkingbOmmBalance).multipliedBy(userWorkingbOmmBalance)).dp(2);
     }
 
+    /** Formulae: delegation power : undelegated ICX in staking contract / working total supply of bOMM from delegation */
+    public static delegationPower(undelegatedIcx: BigNumber, workingDelegationTotalSupplyBomm: BigNumber): BigNumber {
+        if (undelegatedIcx.isZero() || workingDelegationTotalSupplyBomm.isZero()) {
+            return new BigNumber(0);
+        }
+
+        return undelegatedIcx.dividedBy(workingDelegationTotalSupplyBomm);
+    }
+
     /** Formulae: Omm's Voting Power/Total staked OMM tokens */
     public static votingPower(
         ommVotingPower: BigNumber,

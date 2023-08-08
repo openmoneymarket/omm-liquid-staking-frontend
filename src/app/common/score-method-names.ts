@@ -129,6 +129,7 @@ export class ScoreMethodNames {
     public static GET_ACTUAL_USER_PREP_DELEGATIONS = "getActualUserDelegationPercentage";
     public static GET_BOMM_DELEGATIONS = "getbOMMDelegations";
     public static DELEGATE = "delegate";
+    public static GET_UNDELEGATED_ICX = "getUndelegatedICX";
 
 
     /**

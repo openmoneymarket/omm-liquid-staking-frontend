@@ -559,6 +559,21 @@ export class ScoreService {
   }
 
   /**
+   * @description Get undelegated ICX of Staking SCORE amount
+   * @return  Undelegated ICX amount
+   */
+  public async getUndelegatedIcx(): Promise<BigNumber> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.GET_UNDELEGATED_ICX, {}, IconTransactionType.READ);
+
+    const res: HexString = await this.iconApiService.iconService.call(tx).execute();
+
+    return hexToNormalisedNumber(res);
+  }
+
+  /**
    * @description Get the un-stake information for a specific user.
    * @return  list of un-staking amounts and block heights
    */
