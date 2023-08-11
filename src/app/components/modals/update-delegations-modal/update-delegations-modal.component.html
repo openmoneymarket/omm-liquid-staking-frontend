@@ -12,7 +12,8 @@
         </ul>
 
         <!-- Checkbox (bOMM holders only) -->
-        <input *ngIf="_payload?.userHoldsBomm" type="checkbox" style="" [(ngModel)]="useDelegationForBommAndSicx"><label style="padding-top:10px;padding-left: 5px;" class="label text-center">Use this delegation for bOMM and sICX.</label>
+        <input *ngIf="_payload?.userHoldsBomm" type="checkbox" style="" [(ngModel)]="useDelegationForBommAndSicx">
+        <label *ngIf="_payload?.userHoldsBomm" style="padding-top:10px;padding-left: 5px;" class="label text-center">Use this delegation for bOMM and sICX.</label>
 
         <!-- Modal actions -->
         <div class="modal-actions">
