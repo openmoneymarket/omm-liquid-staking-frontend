@@ -27,12 +27,13 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
   @Input({ required: true }) lockAdjustActive!: boolean;
 
   yourVotingPower = new BigNumber(0);
-  votingPower = new BigNumber(0);
-  ommVotingPower = new BigNumber(0);
+  delegationPower = new BigNumber(0);
+  totalOmmDelegationPower = new BigNumber(0);
   bOmmTotalSupply = new BigNumber(0);
   delegationbOmmWorkingTotalSupply = new BigNumber(0);
   totalSicxAmount = new BigNumber(0);
   todaySicxRate: BigNumber = new BigNumber(0);
+  undelegatedIcx = new BigNumber(0);
 
   // Subscriptions
   totalSicxAmountSub?: Subscription;
@@ -40,6 +41,8 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
   delegationOmmTotalWorkingSupplySub?: Subscription;
   bOmmTotalSupplySub?: Subscription;
   afterUserDataReload?: Subscription;
+  undelegatedIcxSub?: Subscription;
+
 
   constructor(private stateChangeService: StateChangeService,
               private scoreService: StoreService) {
@@ -56,6 +59,7 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
     this.delegationOmmTotalWorkingSupplySub?.unsubscribe();
     this.bOmmTotalSupplySub?.unsubscribe();
     this.afterUserDataReload?.unsubscribe();
+    this.undelegatedIcxSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
@@ -64,6 +68,14 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
     this.subscribeToDelegationbOmmTotalWorkingSupplyChange();
     this.subscribeTobOmmTotalSupplyChange();
     this.subscribeToAfterUserDataReload();
+    this.subscribeToUndelegatedIcxChange();
+  }
+
+  private subscribeToUndelegatedIcxChange(): void {
+    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
+      this.undelegatedIcx = value;
+      this.refreshValues();
+    })
   }
 
   subscribeToAfterUserDataReload(): void {
@@ -101,28 +113,27 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
   }
 
   private refreshValues(): void {
+    this.calculateDelegationPower();
     this.calculateOmmVotingPower();
-    this.calculateVotingPower();
     this.calculateYourVotingPower();
   }
 
   private calculateYourVotingPower(): void {
-    if (this.scoreService.userLoggedIn() && this.votingPower.gt(0)) {
-      this.yourVotingPower = Calculations.usersVotingPower(this.ommVotingPower, this.delegationbOmmWorkingTotalSupply,
-          this.userDelegationWorkingbOmmBalance, this.userDynamicDelegationWorkingbOmmBalance);
+    if (this.scoreService.userLoggedIn() && this.delegationPower.gt(0)) {
+      this.yourVotingPower = Calculations.usersVotingPower(this.delegationPower, this.userDelegationWorkingbOmmBalance,
+          this.userDynamicDelegationWorkingbOmmBalance);
     }
   }
 
-  private calculateVotingPower(): void {
-    if (this.ommVotingPower.gt(0)) {
-      this.votingPower = Calculations.votingPower(this.ommVotingPower, this.userDelegationWorkingbOmmBalance,
-          this.delegationbOmmWorkingTotalSupply, this.userDynamicDelegationWorkingbOmmBalance);
+  private calculateDelegationPower(): void {
+    if (this.undelegatedIcx.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.delegationPower = Calculations.delegationPower(this.undelegatedIcx, this.delegationbOmmWorkingTotalSupply);
     }
   }
 
   private calculateOmmVotingPower(): void {
-    if (this.todaySicxRate.gt(0) && this.totalSicxAmount.gt(0)) {
-      this.ommVotingPower = Calculations.ommVotingPower(this.totalSicxAmount, this.todaySicxRate);
+    if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.totalOmmDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
     }
   }
 

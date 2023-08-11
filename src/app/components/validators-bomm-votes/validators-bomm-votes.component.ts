@@ -44,9 +44,8 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   adjustVotesActive = false;
   adjustVotesActiveMobile = false;
 
-  votingPower = new BigNumber(0);
   delegationPower = new BigNumber(0);
-  ommVotingPower = new BigNumber(0);
+  ommTotalDelegationPower = new BigNumber(0);
   prepList?: PrepList;
   preps: Prep[] = [];
   prepsBommDelegationsInIcxMap = new Map<PrepAddress, BigNumber>;
@@ -333,9 +332,8 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   refreshValues(): void {
-    this.calculateOmmVotingPower();
-    this.calculateVotingPower();
     this.calculateDelegationPower();
+    this.calculateOmmVotingPower();
   }
 
   private calculateDelegationPower(): void {
@@ -344,16 +342,9 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     }
   }
 
-  private calculateVotingPower(): void {
-    if (this.ommVotingPower.gt(0)) {
-      this.votingPower = Calculations.votingPower(this.ommVotingPower, this.userDelegationWorkingbOmmBalance,
-          this.delegationbOmmWorkingTotalSupply);
-    }
-  }
-
   private calculateOmmVotingPower(): void {
-    if (this.todaySicxRate.gt(0) && this.totalSicxAmount.gt(0)) {
-      this.ommVotingPower = Calculations.ommVotingPower(this.totalSicxAmount, this.todaySicxRate);
+    if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
     }
   }
 

@@ -58,17 +58,13 @@ export abstract class Calculations {
 
     /** Formulae: Omm's Voting Power/Total bOMM balance * user’s bOMM balance */
     public static usersVotingPower(
-        ommVotingPower: BigNumber,
-        delegationbOmmWorkingTotalSupply: BigNumber,
+        delegationPower: BigNumber,
         userDelegationWorkingbOmmBalance: BigNumber,
-        userDynamicDelegationWorkingbOmmBalance: BigNumber
+        userDynDelegWrkbOmmBalance: BigNumber
     ): BigNumber {
-        const userWorkingbOmmBalance = userDynamicDelegationWorkingbOmmBalance.gt(userDelegationWorkingbOmmBalance) ? userDynamicDelegationWorkingbOmmBalance : userDelegationWorkingbOmmBalance;
-        const userbOmmDiff = userDynamicDelegationWorkingbOmmBalance.lte(userDelegationWorkingbOmmBalance) ? new BigNumber(0) : userDynamicDelegationWorkingbOmmBalance.minus(
-            userDelegationWorkingbOmmBalance);
-        const totalWorkingbOmmBalance = delegationbOmmWorkingTotalSupply.plus(userbOmmDiff);
+        const userWorkingbOmmBalance = userDynDelegWrkbOmmBalance.gt(userDelegationWorkingbOmmBalance) ? userDynDelegWrkbOmmBalance : userDelegationWorkingbOmmBalance;
 
-        return (ommVotingPower.dividedBy(totalWorkingbOmmBalance).multipliedBy(userWorkingbOmmBalance)).dp(2);
+        return userWorkingbOmmBalance.multipliedBy(delegationPower);
     }
 
     /** Formulae: delegation power : undelegated ICX in staking contract / working total supply of bOMM from delegation */
@@ -80,27 +76,9 @@ export abstract class Calculations {
         return undelegatedIcx.dividedBy(workingDelegationTotalSupplyBomm);
     }
 
-    /** Formulae: Omm's Voting Power/Total staked OMM tokens */
-    public static votingPower(
-        ommVotingPower: BigNumber,
-        userDelegationWorkingbOmmBalance: BigNumber,
-        delegationbOmmWorkingTotalSupply: BigNumber,
-        userNewWorkingbOmmBalance: BigNumber = new BigNumber(0)
-    ): BigNumber {
-        const userbOmmDiff = userNewWorkingbOmmBalance.isZero() ? new BigNumber(0) : userNewWorkingbOmmBalance.minus(
-            userDelegationWorkingbOmmBalance);
-        const totalWorkingbOmmBalance = delegationbOmmWorkingTotalSupply.plus(userbOmmDiff);
-
-        if (ommVotingPower.isZero() || totalWorkingbOmmBalance.isZero()) {
-            return new BigNumber("0");
-        }
-
-        return divide(ommVotingPower, totalWorkingbOmmBalance).dp(2);
-    }
-
-    /** totalLiquidity of sICX * (sICX/ICX ratio) */
-    public static ommVotingPower(totalLiquiditySicx: BigNumber, sIcxIcxRatio: BigNumber): BigNumber {
-        return ((totalLiquiditySicx).multipliedBy(sIcxIcxRatio)).dp(2);
+    /** total delegation power = working total supply of delegation * delegaiton ratio */
+    public static ommTotalDelegationPower(delegationPower: BigNumber, delegationbOmmWorkingTotalSupply: BigNumber): BigNumber {
+        return ((delegationbOmmWorkingTotalSupply).multipliedBy(delegationPower));
     }
 
     public static getVoteDurationTime(voteDurationMicro?: BigNumber): string {

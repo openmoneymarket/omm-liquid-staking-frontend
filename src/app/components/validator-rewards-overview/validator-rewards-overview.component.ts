@@ -25,8 +25,8 @@ import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   // Core values
-  votingPower = new BigNumber(0);
-  ommVotingPower = new BigNumber(0);
+  delegationPower = new BigNumber(0);
+  ommTotalDelegationPower = new BigNumber(0);
   bOmmTotalSupply = new BigNumber(0);
   delegationbOmmWorkingTotalSupply = new BigNumber(0);
   totalSicxAmount = new BigNumber(0);
@@ -36,6 +36,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   icxDelegation = new BigNumber(0);
   actualPrepDelegations = new Map<PrepAddress, BigNumber>(); // prep address to ICX delegated
   tokenPrices = new Map<TokenSymbol, BigNumber>();
+  undelegatedIcx = new BigNumber(0);
 
   // User values
   userAccumulatedFee = new BigNumber(0);
@@ -57,6 +58,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   userDelegationWorkingbOmmSub?: Subscription;
   actualPrepDelegationsSub?: Subscription;
   tokenPricesSub?: Subscription;
+  undelegatedIcxSub?: Subscription;
 
   constructor(private stateChangeService: StateChangeService,
               private cdRef: ChangeDetectorRef) {
@@ -79,6 +81,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userDelegationWorkingbOmmSub?.unsubscribe();
     this.actualPrepDelegationsSub?.unsubscribe();
     this.tokenPricesSub?.unsubscribe();
+    this.undelegatedIcxSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
@@ -94,6 +97,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.subscribeToUserDelegationWorkingbOmmChange();
     this.subscribeToActualPrepDelegationsChange();
     this.subscribeToTokenPricesChange();
+    this.subscribeToUndelegatedIcxChange();
   }
 
   private resetUserStateValues(): void {
@@ -101,6 +105,13 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userCollectedFee = new BigNumber(0);
     this.userValidatorPrepBommDelegation = new BigNumber(0);
     this.userDelegationWorkingbOmmBalance = new BigNumber(0)
+  }
+
+  private subscribeToUndelegatedIcxChange(): void {
+    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
+      this.undelegatedIcx = value;
+      this.refreshValues();
+    })
   }
 
   private subscribeToTokenPricesChange(): void {
@@ -223,8 +234,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private refreshValues(): void {
+    this.calculateDelegationPower();
     this.calculateOmmVotingPower();
-    this.calculateVotingPower();
     this.calculateBommDelegationIcx();
     this.calculateIcxAndSicxDelegation();
   }
@@ -237,20 +248,20 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private calculateBommDelegationIcx(): void {
-    if (this.votingPower.gt(0) && this.userValidatorPrepBommDelegation.gt(0)) {
-      this.bOMMdelegationIcx = this.userValidatorPrepBommDelegation.multipliedBy(this.votingPower);
+    if (this.delegationPower.gt(0) && this.userValidatorPrepBommDelegation.gt(0)) {
+      this.bOMMdelegationIcx = this.userValidatorPrepBommDelegation.multipliedBy(this.delegationPower);
     }
   }
 
-  private calculateVotingPower(): void {
-    if (this.ommVotingPower.gt(0)) {
-      this.votingPower = Calculations.votingPower(this.ommVotingPower, this.userDelegationWorkingbOmmBalance, this.delegationbOmmWorkingTotalSupply);
+  private calculateDelegationPower(): void {
+    if (this.ommTotalDelegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.delegationPower = Calculations.delegationPower(this.undelegatedIcx, this.delegationbOmmWorkingTotalSupply);
     }
   }
 
   private calculateOmmVotingPower(): void {
-    if (this.todaySicxRate.gt(0) && this.totalSicxAmount.gt(0)) {
-      this.ommVotingPower = Calculations.ommVotingPower(this.totalSicxAmount, this.todaySicxRate);
+    if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
     }
   }
 

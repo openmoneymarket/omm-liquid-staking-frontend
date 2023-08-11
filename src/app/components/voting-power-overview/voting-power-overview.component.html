@@ -4,7 +4,7 @@
             <div class="grid-cell border-right">
                 <dl class="metadata">
                     <dt>Delegation ratio</dt>
-                    <dd>{{votingPower.gt(0) ? "1 bOMM = " + (votingPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
+                    <dd>{{delegationPower.gt(0) ? "1 bOMM = " + (delegationPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
                 </dl>
             </div>
             <div class="grid-cell border-right" *ngIf="userLoggedIn()">
@@ -26,7 +26,7 @@
                                     <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
                                     <p class="total-bomm-tooltip-content tooltip-content">{{delegationbOmmWorkingTotalSupply | RndDwn | usFormat}} bOMM</p>
                                 </span></dt>
-                    <dd class="value-voting-power-total">{{ommVotingPower.gt(0) ? (ommVotingPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
+                    <dd class="value-voting-power-total">{{totalOmmDelegationPower.gt(0) ? (totalOmmDelegationPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
                 </dl>
             </div>
         </div>
