@@ -7,15 +7,22 @@
                     <dd>{{votingPower.gt(0) ? "1 bOMM = " + (votingPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
                 </dl>
             </div>
-            <div class="grid-cell border-right">
+            <div class="grid-cell border-right" *ngIf="userLoggedIn()">
                 <dl class="metadata">
                     <dt>Your delegation power</dt>
                     <dd class="value-voting-power">{{yourVotingPower.gt(0) ? (yourVotingPower | RndDwn | usFormat) + " ICX" : '-'}}</dd>
                 </dl>
             </div>
+
+            <div class="grid-cell border-right" *ngIf="!userLoggedIn()">
+                <dl class="metadata">
+                    <dt>Total voting power</dt>
+                    <dd class="value-voting-power">{{delegationbOmmWorkingTotalSupply.gt(0) ? (delegationbOmmWorkingTotalSupply | RndDwn | usFormat) + " bOMM" : '-'}}</dd>
+                </dl>
+            </div>
             <div class="grid-cell">
                 <dl class="metadata">
-                    <dt>Total delegation power <span class="total-bomm-tooltip tooltip">
+                    <dt>Total delegation power <span class="total-bomm-tooltip tooltip" *ngIf="userLoggedIn()">
                                     <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
                                     <p class="total-bomm-tooltip-content tooltip-content">{{delegationbOmmWorkingTotalSupply | RndDwn | usFormat}} bOMM</p>
                                 </span></dt>

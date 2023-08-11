@@ -126,4 +126,8 @@ export class VotingPowerOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
+  public userLoggedIn(): boolean {
+    return this.scoreService.userLoggedIn();
+  }
+
 }
