@@ -11,12 +11,13 @@ import {hexToNormalisedNumber, hexToBigNumber, multiply, uriDecodeIfEncodedUri} 
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {IScoreParameter, IScorePayloadParameter, scoreParamToPayloadParam} from "../models/interfaces/IScoreParameter";
 import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
-import {UnstakeInfoData, UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
+import {UserUnstakeData, UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {BALANCED_DEX_FEE_PERCENTAGE_CONVERSION, SICX} from "./constants";
 import {IBalancedDexFees} from "../models/interfaces/IBalnDexFees";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
-import {HexString, PrepAddress} from "../models/Types/ModalTypes";
+import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
+import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
 
 export abstract class Mapper {
 
@@ -26,6 +27,35 @@ export abstract class Mapper {
     for (const prepAddress in actualPrepDelegations) {
       res.set(prepAddress, hexToNormalisedNumber(actualPrepDelegations[prepAddress]));
     }
+
+    return res;
+  }
+
+  public static mapUnstakeInfo(value: Array<Array<HexString>>): Map<Address, UnstakeInfoData[]> {
+    const res = new Map<Address, UnstakeInfoData[]>();
+
+
+    let unstakeInfoData;
+    let currUnstakeDataArray;
+
+    value.forEach(unstakeinfo => {
+      unstakeInfoData = new UnstakeInfoData(
+          hexToBigNumber(unstakeinfo[0]).toNumber(),
+          hexToNormalisedNumber(unstakeinfo[1]),
+          hexToBigNumber(unstakeinfo[3]),
+          unstakeinfo[2],
+          unstakeinfo[4]
+      );
+
+      currUnstakeDataArray = res.get(unstakeInfoData.from);
+
+      // if array already exists, push new value next to it
+      if (currUnstakeDataArray) {
+        res.set(unstakeInfoData.from, [unstakeInfoData, ...currUnstakeDataArray]);
+      } else {
+        res.set(unstakeInfoData.from, [unstakeInfoData]);
+      }
+    });
 
     return res;
   }
@@ -171,12 +201,12 @@ export abstract class Mapper {
 
   public static mapUserUnstakeInfo(userUnstakeInfo: IUserUnstakeInfo[]): UserUnstakeInfo {
     let totalAmount = new BigNumber(0);
-    const data: UnstakeInfoData[] = [];
+    const data: UserUnstakeData[] = [];
 
     userUnstakeInfo.forEach(u => {
       totalAmount = totalAmount.plus(hexToNormalisedNumber(u.amount, SICX.decimals));
 
-      const unstkData = new UnstakeInfoData(
+      const unstkData = new UserUnstakeData(
           hexToNormalisedNumber(u.amount, SICX.decimals),
           hexToBigNumber(u.blockHeight),
           u.from,

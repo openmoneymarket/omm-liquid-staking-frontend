@@ -5,7 +5,7 @@ import {StateChangeService} from "./state-change.service";
 import log from "loglevel";
 import {CheckerService} from "./checker.service";
 import {ReloaderService} from "./reloader.service";
-import {ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
+import {ICON_BLOCK_INTERVAL, ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
 import BigNumber from "bignumber.js";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
 import {TokenSymbol} from "../models/Types/ModalTypes";
@@ -13,7 +13,7 @@ import {lastValueFrom, take} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {IEventLog} from "../models/interfaces/IEventLog";
-import {hexToNormalisedNumber} from "../common/utils";
+import {hexToBigNumber, hexToNormalisedNumber} from "../common/utils";
 import {Vote} from "../models/classes/Vote";
 import {Proposal} from "../models/classes/Proposal";
 import {IScoreParameter, IScoreParameterValue} from "../models/interfaces/IScoreParameter";
@@ -129,6 +129,15 @@ export class DataLoaderService {
       this.stateChangeService.userUnstakeInfoUpdate(await this.scoreService.getUserUnstakeInfo());
     } catch (e) {
       log.error("Error in loadUserUnstakeInfo:");
+      log.error(e);
+    }
+  }
+
+  public async loadUnstakeInfo(): Promise<void> {
+    try {
+      this.stateChangeService.unstakeInfoUpdate(await this.scoreService.getUnstakeInfo());
+    } catch (e) {
+      log.error("Error in loadUnstakeInfo:");
       log.error(e);
     }
   }
@@ -271,6 +280,39 @@ export class DataLoaderService {
         log.error(e);
       }
     })
+  }
+
+  public async loadUnstakingTime(): Promise<void> {
+    try {
+      const method = "UnstakingUpdate"
+      const limit = 10;
+      const stakingScore = this.storeService.allAddresses?.systemContract.Staking;
+
+      const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${stakingScore}&method=${method}`;
+      const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
+
+      const unstakingTimesInBlock: BigNumber[] = [];
+
+      res.body?.forEach(eventLog => {
+        if (eventLog.method == method) {
+          const indexed = JSON.parse(eventLog.indexed);
+          const currentBlockHeight = hexToBigNumber(indexed[1]);
+          const nextUnstakeBlock = hexToBigNumber(indexed[2]);
+
+          unstakingTimesInBlock.push(nextUnstakeBlock.minus(currentBlockHeight));
+        }
+      });
+
+      const avgUnstakingTimeInBlock = unstakingTimesInBlock.reduce((prev, curr) => prev.plus(curr), new BigNumber(0)).dividedBy(unstakingTimesInBlock.length);
+      const avgUnstakingTimeInSeconds = avgUnstakingTimeInBlock.multipliedBy(ICON_BLOCK_INTERVAL);
+
+      log.debug("avgUnstakingTimeInSeconds: ", avgUnstakingTimeInSeconds.toString());
+
+      this.stateChangeService.unstakingTimeUpdate(avgUnstakingTimeInSeconds);
+    } catch (e) {
+      log.error("Error in loadUnstakingTime:");
+      log.error(e);
+    }
   }
 
   public async loadUserLockedOmm(): Promise<void> {
@@ -556,6 +598,7 @@ export class DataLoaderService {
       this.loadDelegationbOmmWorkingTotalSupply(),
       this.loadUndelegatedIcx(),
       this.loadbOmmTotalSupply(),
+      this.loadUnstakeInfo(),
     ]);
 
     // emit event indicating that core data was loaded
@@ -587,6 +630,7 @@ export class DataLoaderService {
    * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
+    this.loadUnstakingTime();
     this.loadFeesDistributed7D();
     this.loadlDaoFundTokens();
     this.loadTotalValidatorRewards();

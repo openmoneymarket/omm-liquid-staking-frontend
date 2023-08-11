@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
 import {environment} from "../../environments/environment";
-import {UnstakeInfoData} from "../models/classes/UserUnstakeInfo";
+import {UserUnstakeData} from "../models/classes/UserUnstakeInfo";
 import IconService from "icon-sdk-js";
 
 export function numToUsLocaleString(num: BigNumber | string): string {
@@ -205,7 +205,7 @@ export function getPrettyTimeForBlockHeightDiff(currentBlockHeight: BigNumber, t
     return convertSecondsToDHM(secondsUntilTargetBlock.toNumber());
 }
 
-export function getPrettyUntilBlockHeightTime(userUnstakeInfo: UnstakeInfoData | undefined, currentBlockHeight?: BigNumber): string | undefined {
+export function getPrettyUntilBlockHeightTime(userUnstakeInfo: UserUnstakeData | undefined, currentBlockHeight?: BigNumber): string | undefined {
     if (userUnstakeInfo && currentBlockHeight) {
         return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.blockHeight);
     } else {
@@ -214,17 +214,34 @@ export function getPrettyUntilBlockHeightTime(userUnstakeInfo: UnstakeInfoData |
 }
 
 export function convertSecondsToDHM(seconds: number): string {
+    let res = "";
+
     const days = Math.floor(seconds / (24 * 60 * 60));
     seconds -= days * 24 * 60 * 60;
+
+    if (days > 0) res += `${days}d`;
 
     const hours = Math.floor(seconds / (60 * 60));
     seconds -= hours * 60 * 60;
 
+    if (hours > 0) res += ` ${hours}h`;
+
     const minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
 
-    return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) res += ` ${minutes}m`;
+
+    return res;
 }
+
+export function convertSecondsToDays(seconds: number, roundUp = false): number {
+    if (roundUp) {
+        return Math.ceil(seconds / (24 * 60 * 60));
+    } else {
+        return Math.floor(seconds / (24 * 60 * 60));
+    }
+}
+
 
 
 

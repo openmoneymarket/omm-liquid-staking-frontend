@@ -101,9 +101,9 @@
     <div class="notice" *ngIf="userLoggedIn() && (shouldShowUnstakeInfo() || claimableIcx?.gt(0.01))">
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
-                <p class="label">Your unstaking request for
-                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within
-                <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
+                <p class="label" *ngIf="!unstakeInfo.sicxBefore.isZero()">
+                    Your <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> unstaking request will be ready to claim within <span class="text-bold"
+                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the queue.
                 </p>
             </ng-container>
         </ng-container>

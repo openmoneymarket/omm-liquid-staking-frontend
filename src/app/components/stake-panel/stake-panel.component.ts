@@ -24,9 +24,10 @@ import {Subscription} from "rxjs";
 import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
 import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
 import {Wallet} from "../../models/classes/Wallet";
-import {TokenSymbol} from "../../models/Types/ModalTypes";
+import {Address, TokenSymbol} from "../../models/Types/ModalTypes";
 import {ICX, MIN_ICX_BALANCE_KEPT, SICX} from "../../common/constants";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
 
 @Component({
   selector: 'app-stake-panel',
@@ -66,6 +67,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   todaySicxRate: BigNumber = new BigNumber(0);
   tokenPricesMap = new Map<TokenSymbol, BigNumber>();
   currentBlockHeight?: BigNumber;
+  unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -75,6 +77,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   userTokenBalanceSub?: Subscription;
   tokenPriceSub?: Subscription;
   todayRateSub?: Subscription;
+  unstakeInfoSub?: Subscription;
 
   constructor(public stateChangeService: StateChangeService,
               private chartService: ChartService,
@@ -98,6 +101,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.tokenPriceSub?.unsubscribe();
     this.todayRateSub?.unsubscribe();
     this.stakingApyChart?.remove();
+    this.unstakeInfoSub?.unsubscribe();
   }
 
   registerSubscriptions(): void {
@@ -108,6 +112,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.subscribeToUserLoginChange();
     this.subscribeToTokenPriceChange();
     this.subscribeToTodayRateChange();
+    this.subscribeToUnstakeInfoChange();
   }
 
   private resetInputs(): void {
@@ -120,6 +125,18 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.userSicxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
+  }
+
+  private subscribeToUnstakeInfoChange(): void {
+    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe(value => {
+      this.unstakeInfoMap = value;
+
+
+      this.recalculateUserUnstakeInfo();
+
+      // Detect Changes
+      this.cdRef.detectChanges();
+    });
   }
 
   private subscribeToTokenPriceChange(): void {
@@ -158,6 +175,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   private subscribeToUserUnstakeInfoChange(): void {
     this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe(data => {
       this.userUnstakeInfo = data;
+
+      this.recalculateUserUnstakeInfo();
 
       // Detect Changes
       this.cdRef.detectChanges();
@@ -232,8 +251,6 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   onIcxBalanceClick(e: MouseEvent): void {
     e.stopPropagation();
 
-    console.log("userIcxBalance: ", this.userIcxBalance.toString());
-
     if (this.userIcxBalance.gt(MIN_ICX_BALANCE_KEPT)) {
       this.processStakeInput(new BigNumber(this.userIcxBalance.minus(MIN_ICX_BALANCE_KEPT)));
     }
@@ -301,6 +318,33 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   private recalculateSicxPrice(): void {
     if (this.todaySicxRate.gt(0) && this.icxPrice.gt(0)) {
       this.sicxPrice = convertICXToSICXPrice(this.icxPrice, this.todaySicxRate);
+    }
+  }
+
+  recalculateUserUnstakeInfo() {
+    if (this.userLoggedIn() && this.userUnstakeInfo && this.userUnstakeInfo.data.length > 0 && this.unstakeInfoMap) {
+      this.userUnstakeInfo.data.forEach((userUnstakeInfo) => {
+        const unstakeInfos = this.unstakeInfoMap.get(userUnstakeInfo.from);
+
+        if (unstakeInfos) {
+          const equalUnstakeInfo = unstakeInfos.find(value => {
+            return value.blockHeight.eq(userUnstakeInfo.blockHeight) && value.amount.eq(userUnstakeInfo.amount);
+          });
+
+          if (equalUnstakeInfo) {
+            const sIcxBefore = unstakeInfos.reduce((prev, curr) => {
+              // if order higher/before than users
+              if (curr.orderNumber < equalUnstakeInfo.orderNumber) {
+                return prev.plus(curr.amount);
+              } else {
+                return prev;
+              }
+            }, new BigNumber(0))
+
+            userUnstakeInfo.setSicxBefore(sIcxBefore)
+          }
+        }
+      })
     }
   }
 

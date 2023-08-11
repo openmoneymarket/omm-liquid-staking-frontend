@@ -5,13 +5,13 @@ import {UnstakeWaitSicxPayload} from "../../../models/classes/UnstakeWaitSicxPay
 import {StateChangeService} from "../../../services/state-change.service";
 import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
 import {ScoreService} from "../../../services/score.service";
-import {ModalType} from "../../../models/enums/ModalType";
 import BigNumber from "bignumber.js";
+import {SecondsToDaysPipe} from "../../../pipes/seconds-to-days";
 
 @Component({
   selector: 'app-unstake-wait-modal',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe],
+  imports: [CommonModule, UsFormatPipe, SecondsToDaysPipe],
   templateUrl: './unstake-wait-modal.component.html'
 })
 export class UnstakeWaitModalComponent {
@@ -33,6 +33,10 @@ export class UnstakeWaitModalComponent {
 
   getReceivedIcxAmount(): string {
     return this.unstakeWaitSicxPayload?.receiveIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
+  }
+
+  getUnstakingTimeInSeconds(): BigNumber {
+    return this.unstakeWaitSicxPayload?.unstakingTimeInSeconds ?? new BigNumber(0);
   }
 
   onCancelClick(e: MouseEvent): void {

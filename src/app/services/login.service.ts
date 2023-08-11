@@ -17,7 +17,7 @@ import {FAILED_LOADING_USER_DATA} from "../common/messages";
 export class LoginService {
 
   constructor(
-    private scoreService: StoreService,
+    private storeService: StoreService,
     // private localStorageService: LocalStorageService,
     private dataLoaderService: DataLoaderService,
     private notificationService: NotificationService,
@@ -29,7 +29,8 @@ export class LoginService {
     // clear up old login data first
     this.signOutUser();
 
-    this.scoreService.activeWallet = wallet;
+    this.storeService.activeWallet = wallet;
+    this.stateChangeService.updateLoginStatus(this.storeService.activeWallet);
 
     log.info("Login with wallet: ", wallet);
 
@@ -38,20 +39,18 @@ export class LoginService {
     } catch (e: any) {
       log.error(e);
 
-      this.scoreService.activeWallet = undefined;
+      this.storeService.activeWallet = undefined;
       this.notificationService.showNewNotification(FAILED_LOADING_USER_DATA);
       throw new Error("Error occurred! Try again in a moment.", e);
     }
-
-    this.stateChangeService.updateLoginStatus(this.scoreService.activeWallet);
   }
 
   signOutUser(): void {
     // clear active wallet from persistence service
-    this.scoreService.logoutUser();
+    this.storeService.logoutUser();
 
     // commit change to the state change service
-    this.stateChangeService.updateLoginStatus(this.scoreService.activeWallet);
+    this.stateChangeService.updateLoginStatus(this.storeService.activeWallet);
   }
 
 }

@@ -26,6 +26,7 @@ import {IProposalScoreDetailsChange} from "../models/interfaces/IProposalScoreDe
 import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
 import {YourPrepVote} from "../models/classes/YourPrepVote";
 import {PrepList} from "../models/classes/Preps";
+import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
 
 @Injectable({
   providedIn: 'root'
@@ -91,6 +92,9 @@ export class StateChangeService {
 
   private feeDistributed7DChange = new ReplaySubject<BigNumber>(1);
   public feeDistributed7DChange$ = this.feeDistributed7DChange.asObservable();
+
+  private unstakingTimeInSecondsChange = new ReplaySubject<BigNumber>(1);
+  public unstakingTimeInSecondsChange$ = this.unstakingTimeInSecondsChange.asObservable();
 
   private daoFundBalanceChange = new BehaviorSubject<IDaoFundBalance>({ balances: [] });
   public daoFundBalanceChange$ = this.daoFundBalanceChange.asObservable();
@@ -170,8 +174,14 @@ export class StateChangeService {
   private allValidatorsCollectedFeesChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
   allValidatorsCollectedFeesChange$ = this.allValidatorsCollectedFeesChange.asObservable();
 
+  private unstakeInfoChange = new ReplaySubject<Map<Address, UnstakeInfoData[]>>(1);
+  unstakeInfoChange$ = this.unstakeInfoChange.asObservable();
 
   constructor(private storeService: StoreService) {
+  }
+
+  public unstakeInfoUpdate(value: Map<Address, UnstakeInfoData[]>): void {
+    this.unstakeInfoChange.next(value);
   }
 
   public prepListUpdate(value: PrepList): void {
@@ -285,6 +295,10 @@ export class StateChangeService {
 
   public feeDistributed7DUpdate(value: BigNumber): void {
     this.feeDistributed7DChange.next(value);
+  }
+
+  public unstakingTimeUpdate(value: BigNumber): void {
+    this.unstakingTimeInSecondsChange.next(value);
   }
 
   public sicxHoldersUpdate(value: BigNumber): void {

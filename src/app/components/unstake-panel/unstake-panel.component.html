@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <p id="wait-text" class="text-center label {{unstakeWaitIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Join the unstaking queue to receive your ICX within 7 days.</p>
+            <p id="wait-text" class="text-center label {{unstakeWaitIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Join the unstaking queue to receive your ICX within {{unstakingTimeInSeconds | secToDays}}.</p>
 
             <p id="instant-text" class="text-center label {{unstakeInstantIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Pay a {{balancedDexFees?.icxTotal | rndDwnNPerc}} fee to swap your sICX for ICX.</p>
 
@@ -79,15 +79,15 @@
             <div class="grid notice" style="margin-top: 0;">
                 <div class="grid-cell text-center">
                     <dl class="metadata">
-                        <dt>Avg. unstaking time <span id="p-rep-tooltip" class="tooltip">
+                        <dt>Unstaking time <span id="p-rep-tooltip" class="tooltip">
 									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
 									<div class="tooltip-content">
-										<p>Based on the volume of staking and unstaking requests over the last 10 days.</p>
-										<br>
-										<p>The maximum unstaking time is currently 7d 5h.</p>
+										<p>Based on the most recent unstaking request.<br>
+                                            The maximum unstaking time is currently <span class="text-bold">{{unstakingTimeInSeconds | secToDhm}}</span>.
+                                        </p>
 									</div>
 								</span></dt>
-                        <dd><span class="value-liquidity-apy-4">??? days</span></dd>
+                        <dd><span class="value-liquidity-apy-4">{{unstakingTimeInSeconds | secToDays}}</span></dd>
                     </dl>
                 </div>
                 <div class="grid-cell text-center">
@@ -109,10 +109,10 @@
     <!-- Unstaking messgae -->
     <div class="notice" *ngIf="userLoggedIn() && (shouldShowUnstakeInfo() || claimableIcx?.gt(0.01))">
         <ng-container *ngIf="shouldShowUnstakeInfo()">
-            <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
-                <p class="label">Your unstaking request for
-                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within
-                <span class="text-bold">{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>.
+            <ng-container *ngFor="let unstakeInfo of userUnstakeInfo?.data">
+                <p class="label" *ngIf="!unstakeInfo.sicxBefore.isZero()">
+                    Your <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> unstaking request will be ready to claim within <span class="text-bold"
+                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the queue.
                 </p>
             </ng-container>
         </ng-container>

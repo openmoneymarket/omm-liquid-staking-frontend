@@ -28,6 +28,7 @@ import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
 import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
+import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
 
 
 @Injectable({
@@ -590,6 +591,21 @@ export class ScoreService {
     const res: IUserUnstakeInfo[] = await this.iconApiService.iconService.call(tx).execute();
 
     return Mapper.mapUserUnstakeInfo(res);
+  }
+
+  /**
+   * @description Get all users unstake info
+   * @return  list of un-staking requests in Staking SCORE queue
+   */
+  public async getUnstakeInfo(): Promise<Map<Address, UnstakeInfoData[]>> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.GET_UNSTAKE_INFO, {}, IconTransactionType.READ);
+
+    const res: Array<Array<HexString>> = await this.iconApiService.iconService.call(tx).execute();
+
+    return Mapper.mapUnstakeInfo(res);
   }
 
   /**

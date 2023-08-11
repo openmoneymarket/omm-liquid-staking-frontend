@@ -30,11 +30,15 @@ import {ICX, SICX} from "../../common/constants";
 import {Wallet} from "../../models/classes/Wallet";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
+import {SecondsToDaysPipe} from "../../pipes/seconds-to-days";
+import {SecondsToDhm} from "../../pipes/seconds-to-dhm";
+import {Address} from "../../models/Types/ModalTypes";
+import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
 
 @Component({
   selector: 'app-unstake-panel',
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe],
+    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe, SecondsToDaysPipe, SecondsToDhm],
   templateUrl: './unstake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -68,6 +72,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   balancedDexFees?: BalancedDexFees;
   icxSicxPoolStats?: PoolStats;
   todaySicxRate: BigNumber = new BigNumber(0);
+  unstakingTimeInSeconds = new BigNumber(0);
+  unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -78,6 +84,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   balancedDexFeeSub?: Subscription;
   icxSicxPoolStatsSub?: Subscription;
   todayRateSub?: Subscription;
+  unstakingTimeSub?: Subscription;
+  unstakeInfoSub?: Subscription;
 
   constructor(private chartService: ChartService,
               public stateChangeService: StateChangeService,
@@ -103,6 +111,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.icxSicxPoolStatsSub?.unsubscribe();
     this.userTokenBalanceSub?.unsubscribe();
     this.todayRateSub?.unsubscribe();
+    this.unstakingTimeSub?.unsubscribe();
+    this.unstakeInfoSub?.unsubscribe();
 
     this.unstakingChart?.remove();
   }
@@ -116,6 +126,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.subscribeIcxSicxPoolStatsChange();
     this.subscribeToUserTokenBalanceChange();
     this.subscribeToTodayRateChange();
+    this.subscribeToUnstakingTimeChange();
+    this.subscribeToUnstakeInfoChange();
   }
 
   private resetInputs(): void {
@@ -130,6 +142,24 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.userIcxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
+  }
+
+  private subscribeToUnstakeInfoChange(): void {
+    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe(value => {
+      this.unstakeInfoMap = value;
+
+
+      this.recalculateUserUnstakeInfo();
+
+      // Detect Changes
+      this.cdRef.detectChanges();
+    });
+  }
+
+  private subscribeToUnstakingTimeChange(): void {
+    this.unstakingTimeSub = this.stateChangeService.unstakingTimeInSecondsChange$.subscribe(value => {
+      this.unstakingTimeInSeconds = value;
+    })
   }
 
   private subscribeToTodayRateChange(): void {
@@ -170,7 +200,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToBalancedDexFeeChange(): void {
-    this.userUnstakeInfoSub = this.stateChangeService.balancedDexFeesChange$.subscribe(fees => {
+    this.balancedDexFeeSub = this.stateChangeService.balancedDexFeesChange$.subscribe(fees => {
       this.balancedDexFees = fees;
 
       this.recalculateInputs();
@@ -191,6 +221,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   private subscribeToUserUnstakeInfoChange(): void {
     this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe(data => {
       this.userUnstakeInfo = data;
+
+      this.recalculateUserUnstakeInfo();
 
       // Detect Changes
       this.cdRef.detectChanges();
@@ -229,6 +261,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_WAIT_SICX, new UnstakeWaitSicxPayload(
               new BigNumber(this.unstakeInputAmount),
               new BigNumber(this.receivedIcxAmount),
+              new BigNumber(this.unstakingTimeInSeconds)
           ));
         } else {
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_INSTANT_SICX, new UnstakeInstantSicxPayload(
@@ -362,6 +395,33 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
       }
 
       this.checkForInstantLiquidityGap();
+    }
+  }
+
+  recalculateUserUnstakeInfo() {
+    if (this.userLoggedIn() && this.userUnstakeInfo && this.userUnstakeInfo.data.length > 0 && this.unstakeInfoMap) {
+      this.userUnstakeInfo.data.forEach((userUnstakeInfo) => {
+        const unstakeInfos = this.unstakeInfoMap.get(userUnstakeInfo.from);
+
+        if (unstakeInfos) {
+          const equalUnstakeInfo = unstakeInfos.find(value => {
+            return value.blockHeight.eq(userUnstakeInfo.blockHeight) && value.amount.eq(userUnstakeInfo.amount);
+          });
+
+          if (equalUnstakeInfo) {
+            const sIcxBefore = unstakeInfos.reduce((prev, curr) => {
+              // if order higher/before than users
+              if (curr.orderNumber < equalUnstakeInfo.orderNumber) {
+                return prev.plus(curr.amount);
+              } else {
+                return prev;
+              }
+            }, new BigNumber(0))
+
+            userUnstakeInfo.setSicxBefore(sIcxBefore)
+          }
+        }
+      })
     }
   }
 
