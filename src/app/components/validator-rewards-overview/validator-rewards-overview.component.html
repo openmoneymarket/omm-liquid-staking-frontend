@@ -1,5 +1,5 @@
 <!-- Validator rewards -->
-<section class="overview" [ngStyle]="!userLoggedIn() | hide">
+<section class="overview" [ngStyle]="!userLoggedIn() || !shouldShowValidatorSection() | hide">
     <div class="grid">
         <div class="grid-cell">
             <h2>Validator rewards</h2>
@@ -23,9 +23,9 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>Total earned</dt>
-                <dd *ngIf="userCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userCollectedFee | RndDwn | usFormat}} <span class="label">ICX</span><br>
-                    <span class="label">${{userCollectedFee.multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
-                <dd *ngIf="!(userCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
+                <dd *ngIf="userValidatorCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFee | RndDwn | usFormat}} <span class="label">ICX</span><br>
+                    <span class="label">${{userValidatorCollectedFee.multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
+                <dd *ngIf="!(userValidatorCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
 
             </dl>
         </div>

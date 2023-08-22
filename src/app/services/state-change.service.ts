@@ -118,8 +118,8 @@ export class StateChangeService {
   private userAccumulatedFeeChange = new ReplaySubject<BigNumber>(1);
   userAccumulatedFeeChange$ = this.userAccumulatedFeeChange.asObservable();
 
-  private userCollectedFeeChange = new ReplaySubject<BigNumber>(1);
-  userCollectedFeeChange$ = this.userCollectedFeeChange.asObservable();
+  private userValidatorCollectedFeeChange = new ReplaySubject<BigNumber>(1);
+  userValidatorCollectedFeeChange$ = this.userValidatorCollectedFeeChange.asObservable();
 
   private delegationbOmmTotalWorkingSupplyChange = new ReplaySubject<BigNumber>(1);
   delegationbOmmTotalWorkingSupplyChange$ = this.delegationbOmmTotalWorkingSupplyChange.asObservable();
@@ -280,8 +280,8 @@ export class StateChangeService {
     this.userAccumulatedFeeChange.next(value);
   }
 
-  public userCollectedFeeUpdate(value: BigNumber): void {
-    this.userCollectedFeeChange.next(value);
+  public userValidatorCollectedFeeUpdate(value: BigNumber): void {
+    this.userValidatorCollectedFeeChange.next(value);
   }
 
   public userDelegationWorkingbOmmBalanceUpdate(balance: BigNumber): void {

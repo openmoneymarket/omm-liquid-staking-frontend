@@ -40,7 +40,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   // User values
   userAccumulatedFee = new BigNumber(0);
-  userCollectedFee = new BigNumber(0);
+  userValidatorCollectedFee = new BigNumber(0);
   userValidatorPrepBommDelegation = new BigNumber(0);
   userDelegationWorkingbOmmBalance = new BigNumber(0);
   userWallet: Wallet | undefined;
@@ -102,7 +102,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   private resetUserStateValues(): void {
     this.userAccumulatedFee = new BigNumber(0);
-    this.userCollectedFee = new BigNumber(0);
+    this.userValidatorCollectedFee = new BigNumber(0);
     this.userValidatorPrepBommDelegation = new BigNumber(0);
     this.userDelegationWorkingbOmmBalance = new BigNumber(0)
   }
@@ -124,8 +124,10 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserCollectedFeeChange(): void {
-    this.userCollectedFeeSub = this.stateChangeService.userCollectedFeeChange$.subscribe(value => {
-      this.userCollectedFee = value;
+    this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe(value => {
+      this.userValidatorCollectedFee = value;
+
+      console.log("this.userValidatorCollectedFee = ", this.userValidatorCollectedFee.toString());
 
       // Detect changes
       this.cdRef.detectChanges();
@@ -254,7 +256,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private calculateDelegationPower(): void {
-    if (this.ommTotalDelegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
+    if (this.undelegatedIcx.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
       this.delegationPower = Calculations.delegationPower(this.undelegatedIcx, this.delegationbOmmWorkingTotalSupply);
     }
   }
@@ -269,7 +271,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.userAccumulatedFee.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimRewardsPayload(this.userAccumulatedFee, this.getUserTokenBalance(ICX)));
+      this.stateChangeService.modalUpdate(ModalType.CLAIM_REWARDS, new ClaimRewardsPayload(this.userAccumulatedFee, this.getUserTokenBalance(ICX)));
     }
   }
 
@@ -283,6 +285,13 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   public getUserTokenBalance(token: Irc2Token): BigNumber {
     return this.userWallet?.irc2TokenBalancesMap.get(token.symbol) ?? new BigNumber(0);
+  }
+
+  shouldShowValidatorSection(): boolean {
+    return this.userAccumulatedFee.gt(0)
+        || this.userValidatorCollectedFee.gt(0)
+        || this.userValidatorPrepBommDelegation.gt(0)
+        || this.icxDelegation.gt(0)
   }
 
   public userLoggedIn(): boolean {

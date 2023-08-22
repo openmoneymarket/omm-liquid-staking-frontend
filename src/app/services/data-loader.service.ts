@@ -365,8 +365,8 @@ export class DataLoaderService {
 
   public async loadUserCollectedFees(): Promise<void> {
     try {
-      const amount = await this.scoreService.getUserCollectedFees();
-      this.stateChangeService.userCollectedFeeUpdate(amount);
+      const amount = await this.scoreService.getValidatorCollectedFees();
+      this.stateChangeService.userValidatorCollectedFeeUpdate(amount);
     } catch (e) {
       log.error("Error in loadUserCollectedFees:");
       log.error(e);

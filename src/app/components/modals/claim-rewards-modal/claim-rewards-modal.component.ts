@@ -26,6 +26,10 @@ export class ClaimRewardsModalComponent {
   ) {
   }
 
+  getUserIcxbalance(): BigNumber {
+    return this.payload?.userIcxBalance ?? new BigNumber(0);
+  }
+
   getClaimableAmount(): BigNumber {
     return this.payload?.claimableAmount ?? new BigNumber(0);
   }

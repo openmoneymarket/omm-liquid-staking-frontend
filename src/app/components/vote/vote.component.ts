@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ValidatorsComponent} from "../validators/validators.component";
 import {OmmLockingComponent} from "../omm-locking/omm-locking.component";
@@ -29,13 +29,11 @@ import {PrepList} from "../../models/classes/Preps";
 })
 export class VoteComponent implements OnDestroy {
 
-  loggedInUserIsValidator = false;
   private prepList?: PrepList;
 
   // Subscriptions
   dataRefreshPollingIntervalSub?: Subscription;
   prepListSub? : Subscription;
-  logoutSub?: Subscription;
 
   constructor(private dataLoaderService: DataLoaderService,
               private storeService: StoreService,
@@ -47,30 +45,15 @@ export class VoteComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.dataRefreshPollingIntervalSub?.unsubscribe();
     this.prepListSub?.unsubscribe();
-    this.logoutSub?.unsubscribe();
   }
 
   private registerSubscriptions(): void {
     this.subscribeToPreplistChange();
-    this.subscribeToLogoutChange();
   }
 
   private subscribeToPreplistChange(): void {
     this.prepListSub = this.stateChangeService.prepListChange$.subscribe(prepList => {
-      const validator = prepList.preps.find(prep => prep.address == this.storeService.userWalletAddress());
-      this.loggedInUserIsValidator = validator != undefined;
       this.prepList = prepList;
-    })
-  }
-
-  private subscribeToLogoutChange(): void {
-    this.logoutSub = this.stateChangeService.loginChange$.subscribe((wallet) => {
-      if (wallet == undefined) {
-        this.loggedInUserIsValidator = false;
-      } else if (this.prepList) {
-        const validator = this.prepList.preps.find(prep => prep.address == this.storeService.userWalletAddress());
-        this.loggedInUserIsValidator = validator != undefined;
-      }
     })
   }
 

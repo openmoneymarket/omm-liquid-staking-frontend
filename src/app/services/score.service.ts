@@ -421,7 +421,7 @@ export class ScoreService {
    * @description Get logged in user (validator) collected/earned rewards
    * @return BigNumber
    */
-  public async getUserCollectedFees(): Promise<BigNumber> {
+  public async getValidatorCollectedFees(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
     const params = {
@@ -433,7 +433,7 @@ export class ScoreService {
 
     const res = await this.iconApiService.iconService.call(tx).execute();
 
-    log.debug("getUserCollectedFees: ", res);
+    log.debug("getValidatorCollectedFees: ", res);
 
     return hexToNormalisedNumber(res);
   }

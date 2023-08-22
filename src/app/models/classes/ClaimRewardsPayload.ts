@@ -17,9 +17,12 @@ export class ClaimRewardsPayload implements IActionPayload {
 
     afterClaimIcxAmount: BigNumber;
 
+    userIcxBalance: BigNumber
+
     constructor(claimableAmount: BigNumber, userIcxBalance: BigNumber) {
         this.claimableAmount = claimableAmount;
         this.afterClaimIcxAmount = claimableAmount.plus(userIcxBalance);
+        this.userIcxBalance = userIcxBalance;
     }
 
     sendTxMessage(): string {
