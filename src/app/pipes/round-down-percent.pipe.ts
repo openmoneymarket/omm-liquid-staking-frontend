@@ -8,7 +8,7 @@ import {toNDecimalRoundedDownPercentString} from "../common/utils";
 })
 export class RndDwnNPercPipe implements PipeTransform {
 
-  transform(num?: BigNumber | string, decimals = 0, defaultZero = false): string {
+  transform(num?: BigNumber | string | number, decimals = 0, defaultZero = false): string {
     return toNDecimalRoundedDownPercentString(num, decimals, defaultZero);
   }
 

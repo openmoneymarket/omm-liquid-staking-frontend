@@ -18,8 +18,17 @@ import {BalancedDexFees} from "../models/classes/BalancedDexFees";
 import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
 import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
+import {LiquidStakingStats} from "../models/classes/LiquidStakingStats";
 
 export abstract class Mapper {
+
+  public static mapLiquidStakingStats(liquidStakingStats: LiquidStakingStats[]): LiquidStakingStats[] {
+    liquidStakingStats.forEach(el => {
+      el.date = new Date(el.date);
+    });
+
+    return liquidStakingStats;
+  }
 
   public static mapPrepDelegationsRecordToMap(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
     const res = new Map<PrepAddress, BigNumber>();

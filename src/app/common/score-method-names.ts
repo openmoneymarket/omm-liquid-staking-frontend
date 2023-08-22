@@ -131,6 +131,7 @@ export class ScoreMethodNames {
     public static DELEGATE = "delegate";
     public static GET_UNDELEGATED_ICX = "getUndelegatedICX";
     public static GET_UNSTAKE_INFO = "getUnstakeInfo"
+    public static GET_FEE_PERCENTAGE = "getFeePercentage";
 
 
     /**

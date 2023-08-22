@@ -62,17 +62,17 @@
                                 <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
                             </span>
                             <div class="tooltip-content" style="min-width: 320px;">
-                            <p class="label">The traditional ICX staking return (6.92%), minus a 10% fee.</p>
+                            <p class="label">The traditional ICX staking return ({{stakingApr.dividedBy(ONE.minus(stakingFee)) | rndDwnNPerc: 2}}), minus a 10% fee.</p>
                             </div>
                         </span>
                     </h3>
                 </div>
                 <div class="grid-cell text-right">
-                    <p><span class="supply-apy text-green">6.23%</span></p>
+                    <p><span class="supply-apy text-green">{{stakingApr | rndDwnNPerc: 2}}</span></p>
                 </div>
             </div>
 
-            <div id="chart-line-1" class="chart-apy" #stkApyChart></div>
+            <div id="chart-line-1" class="chart-apy" #stkAprChart></div>
 
             <div class="grid notice">
                 <div class="grid-cell text-center">

@@ -560,6 +560,26 @@ export class ScoreService {
   }
 
   /**
+   * @description Get all users unstake info
+   * @return  list of un-staking requests in Staking SCORE queue
+   */
+  public async getStakingFeePercentage(): Promise<BigNumber> {
+    this.checkerService.checkAllAddressesLoaded();
+
+    const tx = this.iconApiService.buildTransaction(
+        "",
+        this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.GET_FEE_PERCENTAGE,
+        {},
+        IconTransactionType.READ,
+    );
+
+    const res: HexString = await this.iconApiService.iconService.call(tx).execute();
+
+    return hexToNormalisedNumber(res).dividedBy(100);
+  }
+
+  /**
    * @description Get undelegated ICX of Staking SCORE amount
    * @return  Undelegated ICX amount
    */

@@ -13,12 +13,14 @@ import {lastValueFrom, take} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {IEventLog} from "../models/interfaces/IEventLog";
-import {hexToBigNumber, hexToNormalisedNumber} from "../common/utils";
+import {dateToDateOnlyIsoString, hexToBigNumber, hexToNormalisedNumber} from "../common/utils";
 import {Vote} from "../models/classes/Vote";
 import {Proposal} from "../models/classes/Proposal";
 import {IScoreParameter, IScoreParameterValue} from "../models/interfaces/IScoreParameter";
 import {IconApiService} from "./icon-api.service";
 import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
+import {Mapper} from "../common/mapper";
+import {LiquidStakingStatsHistoryService} from "./liquid-staking-stats-history.service";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +37,8 @@ export class DataLoaderService {
               private checkerService: CheckerService,
               private reloaderService: ReloaderService,
               private iconApi: IconApiService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private liquidStakingStatsService: LiquidStakingStatsHistoryService) {
 
   }
 
@@ -554,6 +557,16 @@ export class DataLoaderService {
     }
   }
 
+  public async loadStakingFeePercentage(): Promise<void> {
+    try {
+      const res = await this.scoreService.getStakingFeePercentage();
+      this.stateChangeService.stakingFeeUpdate(res);
+    } catch (e) {
+      log.error("Error occurred in loadUserDelegations:");
+      log.error(e);
+    }
+  }
+
   public async loadPrepList(start = 1, end = 100): Promise<void> {
     try {
       const prepList = await this.scoreService.getListOfPreps(start, end);
@@ -573,6 +586,40 @@ export class DataLoaderService {
       this.stateChangeService.prepListUpdate(prepList);
     } catch (e) {
       log.error("Failed to load prep list... Details:");
+      log.error(e);
+    }
+  }
+
+  public async loadLiquidStakingStatsHistory(): Promise<void> {
+    try {
+
+      // load liquid staking stats history from local storage
+      const liquidStakingStatsPersisted = this.liquidStakingStatsService.getLiquidStakingStatsFromLocalStorage();
+      let liquidStakingStats = liquidStakingStatsPersisted?.data;
+
+      // if liquid staking stats history did not exist in local storage fetch from backend API
+      if (!liquidStakingStatsPersisted || !liquidStakingStats) {
+        log.debug("liquidStakingStats does not exists in localstorage!");
+        liquidStakingStats = Mapper.mapLiquidStakingStats([...(await this.liquidStakingStatsService.getLiquidStakingStatsHistory()).docs]);
+        this.liquidStakingStatsService.persistLiquidStakingStatsHistoryInLocalStorage(liquidStakingStats);
+      } else {
+        log.debug("liquidStakingStats exists!");
+        const nowDate = dateToDateOnlyIsoString(new Date());
+
+        // check if loaded liquid staking stats history is up to date and re-load if not
+        if (liquidStakingStatsPersisted.to !== nowDate) {
+          log.debug("liquidStakingStats exists but with old date (older than 365 days)!!");
+          liquidStakingStats = Mapper.mapLiquidStakingStats([...(await this.liquidStakingStatsService.getLiquidStakingStatsHistoryFromTo(
+              liquidStakingStatsPersisted.to, nowDate
+          )).docs]);
+          this.liquidStakingStatsService.persistLiquidStakingStatsHistoryInLocalStorage(liquidStakingStats, true);
+          liquidStakingStats = this.liquidStakingStatsService.getLiquidStakingStatsFromLocalStorage()!.data;
+        }
+      }
+
+      this.stateChangeService.liquidStakingStatsUpdate(liquidStakingStats);
+    } catch (e) {
+      log.error("Failed to fetch liquid staking stats..");
       log.error(e);
     }
   }
@@ -630,6 +677,8 @@ export class DataLoaderService {
    * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
+    this.loadStakingFeePercentage();
+    this.loadLiquidStakingStatsHistory();
     this.loadUnstakingTime();
     this.loadFeesDistributed7D();
     this.loadlDaoFundTokens();

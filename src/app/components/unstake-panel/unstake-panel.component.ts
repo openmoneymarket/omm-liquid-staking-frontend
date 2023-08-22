@@ -74,6 +74,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   todaySicxRate: BigNumber = new BigNumber(0);
   unstakingTimeInSeconds = new BigNumber(0);
   unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
+  unstakingAmount = new BigNumber(0);
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -86,6 +87,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   todayRateSub?: Subscription;
   unstakingTimeSub?: Subscription;
   unstakeInfoSub?: Subscription;
+  liquidStakingSub?: Subscription;
 
   constructor(private chartService: ChartService,
               public stateChangeService: StateChangeService,
@@ -97,8 +99,6 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.registerSubscriptions();
-
-    this.chartService.initUnstakingApyChart(this.unstakingChartEl, this.unstakingChart);
   }
 
   ngOnDestroy(): void {
@@ -113,6 +113,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.todayRateSub?.unsubscribe();
     this.unstakingTimeSub?.unsubscribe();
     this.unstakeInfoSub?.unsubscribe();
+    this.liquidStakingSub?.unsubscribe();
 
     this.unstakingChart?.remove();
   }
@@ -128,6 +129,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.subscribeToTodayRateChange();
     this.subscribeToUnstakingTimeChange();
     this.subscribeToUnstakeInfoChange();
+    this.subscribeToLiquidStakingStatsChange();
   }
 
   private resetInputs(): void {
@@ -142,6 +144,34 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.userIcxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
+  }
+
+  private subscribeToLiquidStakingStatsChange(): void {
+    this.liquidStakingSub = this.stateChangeService.liquidStakingStatsChange$.subscribe((value) => {
+      const res = this.chartService.initUnstakingApyChart(this.unstakingChartEl, this.unstakingChart, value);
+      this.unstakingChart = res?.chart;
+      const lastValue = res?.lastValue ?? 0;
+      this.unstakingAmount = new BigNumber(lastValue);
+
+      this.unstakingChart?.timeScale().fitContent();
+
+      this.unstakingChart?.subscribeCrosshairMove((param: any) => {
+        if (param?.point) {
+          const supplyApy = param.seriesPrices.entries().next().value;
+          if (supplyApy && supplyApy.length > 1) {
+            this.unstakingAmount = new BigNumber(supplyApy[1]);
+          }
+        } else {
+          this.unstakingAmount = new BigNumber(lastValue ?? 0);
+        }
+
+        // Detect Changes
+        this.cdRef.detectChanges();
+      });
+
+      // Detect Changes
+      this.cdRef.detectChanges();
+    })
   }
 
   private subscribeToUnstakeInfoChange(): void {

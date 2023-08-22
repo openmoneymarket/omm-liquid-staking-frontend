@@ -19,6 +19,8 @@ export const MAX_PROPOSAL_DESCRIPTION_LENGTH = 500;
 
 export const ICON_BLOCK_INTERVAL = 2; // 2 seconds
 
+export const ONE = new BigNumber(1);
+
 export const BLOCK_POll_INTERVAL_TIME = 10_000 // 10 seconds in milliseconds
 export const CURRENT_TIMESTAMP_INTERVAL = 10_000 // 10 seconds in milliseconds
 

@@ -25,9 +25,10 @@ import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
 import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
 import {Wallet} from "../../models/classes/Wallet";
 import {Address, TokenSymbol} from "../../models/Types/ModalTypes";
-import {ICX, MIN_ICX_BALANCE_KEPT, SICX} from "../../common/constants";
+import {ICX, MIN_ICX_BALANCE_KEPT, ONE, SICX} from "../../common/constants";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
+import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 
 @Component({
   selector: 'app-stake-panel',
@@ -37,16 +38,19 @@ import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
     UsFormatPipe,
     DollarUsLocalePipe,
     PrettyUntilBlockHeightTime,
-    RndDwnPipePipe
+    RndDwnPipePipe,
+    RndDwnNPercPipe
   ],
   templateUrl: './stake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy {
 
-  stakingApyChartEl: any;
-  stakingApyChart: any;
-  @ViewChild("stkApyChart", { static: true}) set a(a: ElementRef) { this.stakingApyChartEl = a.nativeElement; }
+  ONE = ONE;
+
+  stakingAprChartEl: any;
+  stakingAprChart: any;
+  @ViewChild("stkAprChart", { static: true}) set a(a: ElementRef) { this.stakingAprChartEl = a.nativeElement; }
 
   @Input({ required: true}) active!: boolean;
 
@@ -68,6 +72,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   tokenPricesMap = new Map<TokenSymbol, BigNumber>();
   currentBlockHeight?: BigNumber;
   unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
+  stakingFee = new BigNumber(0);
+
+  // dynamic values
+  stakingApr = new BigNumber(0);
+  originalStakingApr = new BigNumber(0);
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -78,6 +87,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   tokenPriceSub?: Subscription;
   todayRateSub?: Subscription;
   unstakeInfoSub?: Subscription;
+  liquidStakingSub?: Subscription;
+  stakingFeeSub?: Subscription;
 
   constructor(public stateChangeService: StateChangeService,
               private chartService: ChartService,
@@ -87,8 +98,6 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.registerSubscriptions();
-
-    this.chartService.initStakingApyChart(this.stakingApyChartEl, this.stakingApyChart);
   }
 
   ngOnDestroy(): void {
@@ -100,8 +109,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.userLoginSub?.unsubscribe();
     this.tokenPriceSub?.unsubscribe();
     this.todayRateSub?.unsubscribe();
-    this.stakingApyChart?.remove();
+    this.stakingAprChart?.remove();
     this.unstakeInfoSub?.unsubscribe();
+    this.liquidStakingSub?.unsubscribe();
+    this.stakingFeeSub?.unsubscribe();
+    this.stakingAprChart?.remove();
   }
 
   registerSubscriptions(): void {
@@ -113,6 +125,8 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.subscribeToTokenPriceChange();
     this.subscribeToTodayRateChange();
     this.subscribeToUnstakeInfoChange();
+    this.subscribeToLiquidStakingStatsChange();
+    this.subscribeToStakingFeeChange();
   }
 
   private resetInputs(): void {
@@ -125,6 +139,43 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.userSicxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
     this.claimableIcx = undefined;
+  }
+
+  private subscribeToStakingFeeChange(): void {
+    this.stakingFeeSub = this.stateChangeService.stakingFeeChange$.subscribe(value => {
+      this.stakingFee = value;
+
+      // Detect Changes
+      this.cdRef.detectChanges();
+    })
+  }
+
+  private subscribeToLiquidStakingStatsChange(): void {
+    this.liquidStakingSub = this.stateChangeService.liquidStakingStatsChange$.subscribe((value) => {
+      const res = this.chartService.initStakingAprChart(this.stakingAprChartEl, this.stakingAprChart, value);
+      this.stakingAprChart = res?.chart;
+      const lastValue = res?.lastValue ?? 0;
+      this.stakingApr = new BigNumber(lastValue);
+
+      this.stakingAprChart?.timeScale().fitContent();
+
+      this.stakingAprChart?.subscribeCrosshairMove((param: any) => {
+        if (param?.point) {
+          const supplyApy = param.seriesPrices.entries().next().value;
+          if (supplyApy && supplyApy.length > 1) {
+            this.stakingApr = new BigNumber(supplyApy[1]);
+          }
+        } else {
+          this.stakingApr = new BigNumber(lastValue ?? 0);
+        }
+
+        // Detect Changes
+        this.cdRef.detectChanges();
+      });
+
+      // Detect Changes
+      this.cdRef.detectChanges();
+    })
   }
 
   private subscribeToUnstakeInfoChange(): void {

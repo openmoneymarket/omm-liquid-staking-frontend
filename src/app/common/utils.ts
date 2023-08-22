@@ -95,6 +95,10 @@ export function hexToBigNumber(value: string | BigNumber): BigNumber {
     }
 }
 
+export function dateToDateOnlyIsoString(date: Date): string {
+    return date.toISOString().split("T")[0];
+}
+
 export function timestampNowMicroseconds(): BigNumber {
     return new BigNumber(Date.now()).multipliedBy(new BigNumber("1000"));
 }
@@ -114,7 +118,7 @@ export function hexToNormalisedNumber(value: BigNumber | string, decimals: numbe
     }
 }
 
-export function toNDecimalRoundedDownPercentString(num?: BigNumber | string, decimals = 0, defaultZero = false): string {
+export function toNDecimalRoundedDownPercentString(num?: BigNumber | string | number, decimals = 0, defaultZero = false): string {
     if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultZero ? "0%" : "-"; }
 
     // convert in to percentage

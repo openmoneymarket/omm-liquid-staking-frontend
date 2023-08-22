@@ -27,6 +27,7 @@ import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails"
 import {YourPrepVote} from "../models/classes/YourPrepVote";
 import {PrepList} from "../models/classes/Preps";
 import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
+import {LiquidStakingStats} from "../models/classes/LiquidStakingStats";
 
 @Injectable({
   providedIn: 'root'
@@ -177,7 +178,21 @@ export class StateChangeService {
   private unstakeInfoChange = new ReplaySubject<Map<Address, UnstakeInfoData[]>>(1);
   unstakeInfoChange$ = this.unstakeInfoChange.asObservable();
 
+  private liquidStakingStatsChange = new ReplaySubject<LiquidStakingStats[]>(1);
+  liquidStakingStatsChange$ = this.liquidStakingStatsChange.asObservable();
+
+  private stakingFeeChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  stakingFeeChange$ = this.stakingFeeChange.asObservable();
+
   constructor(private storeService: StoreService) {
+  }
+
+  public stakingFeeUpdate(value: BigNumber): void {
+    this.stakingFeeChange.next(value);
+  }
+
+  public liquidStakingStatsUpdate(value: LiquidStakingStats[]): void {
+    this.liquidStakingStatsChange.next(value);
   }
 
   public unstakeInfoUpdate(value: Map<Address, UnstakeInfoData[]>): void {
