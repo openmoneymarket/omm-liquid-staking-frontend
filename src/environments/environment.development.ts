@@ -3,7 +3,7 @@ import {Network} from "../app/models/enums/Network";
 export const environment = {
     production: false,
     iconRpcUrl: "https://lisbon.net.solidwallet.io/api/v3",
-    ommRestApi: "http://144.126.223.165",
+    ommRestApi: "https://orca-app-auu8v.ondigitalocean.app/api/v1",
     iconDebugRpcUrl: "https://lisbon.net.solidwallet.io/api/v3d",
     BALANCED_DEX_SCORE: "cx7a90ed2f781876534cf1a04be34e4af026483de4",
     ledgerBip32Path: "44'/4801368'/0'/0'",
