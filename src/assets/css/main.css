@@ -1999,6 +1999,23 @@ input[type="text"].input-borrow-available {
 	margin-left: -170px;
 }
 
+/*
+*
+* Loader
+*
+*/
+
+.loader {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	z-index: -1;
+}
+.stats-container .loader {
+	height: 139px;
+	scale: 1.5;
+}
+
 /* ==========================================================================
 	Home specific styles (Layout styles: sizing, spacing, etc.)
 ========================================================================== */
