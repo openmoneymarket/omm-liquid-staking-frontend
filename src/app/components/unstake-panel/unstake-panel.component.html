@@ -94,12 +94,10 @@
                     <dl class="metadata">
                         <dt>Instant liquidity <span id="p-rep-tooltip" class="tooltip">
 									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
-									<div class="tooltip-content" style="min-width: 300px;">
-										<p>The amount of ICX available to swap via the Balanced exchange.</p>
-									</div>
+									<div class="tooltip-content"><p>The amount of ICX available to swap via the Balanced exchange.</p></div>
 								</span></dt>
                         <dd>
-                            <span class="value-liquidity-apy-4 {{instantLiquidityLtUnstakeAmount() ? 'text-red' : ''}}">{{instantIcxLiquidity() | RndDwn | usFormat}} {{instantIcxLiquidity().isZero() ? '' : 'ICX'}}</span>
+                            <span class="value-liquidity-apy-4 {{instantLiquidityLtUnstakeAmount() ? 'text-red' : ''}}">{{instantIcxLiquidity() | RndDwn:0 | usFormat}} {{instantIcxLiquidity().isZero() ? '' : 'ICX'}}</span>
                         </dd>
                     </dl>
                 </div>
@@ -111,11 +109,11 @@
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo?.data">
                 <p class="label" *ngIf="!unstakeInfo.sicxBefore.isZero()">
-                    Your <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> unstaking request will be ready to claim within <span class="text-bold"
-                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the queue.
+                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within <span class="text-bold"
+                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the unstaking queue.
                 </p>
             </ng-container>
         </ng-container>
-        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
+        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label text-white-in-dark">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

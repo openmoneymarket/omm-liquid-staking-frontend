@@ -20,6 +20,8 @@ export class Wallet {
     // init asset balances
     supportedTokens.forEach(token => this.irc2TokenBalancesMap.set(token.symbol, new BigNumber(0)));
   }
+
+
 }
 
 export function getPrettyWalletName(type: WalletType): string {

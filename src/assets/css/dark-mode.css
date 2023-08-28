@@ -461,6 +461,10 @@
 	.input-asset + .dropdown-content tbody tr:hover td {
 		background-color: #32343c;
 	}
+
+	.text-white-in-dark {
+		color: #ffffff !important;
+	}
 }
 @media (prefers-color-scheme: dark) and (max-width: 1200px) {
 	.navigation {

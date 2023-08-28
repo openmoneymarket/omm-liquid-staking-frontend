@@ -62,7 +62,7 @@
                                 <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
                             </span>
                             <div class="tooltip-content" style="min-width: 320px;">
-                            <p class="label">The traditional ICX staking return ({{stakingApr.dividedBy(ONE.minus(stakingFee)) | rndDwnNPerc: 2}}), minus a 10% fee.</p>
+                            <p>The traditional ICX staking return ({{stakingApr.dividedBy(ONE.minus(stakingFee)) | rndDwnNPerc: 2}}), minus a 10% fee.</p>
                             </div>
                         </span>
                     </h3>
@@ -102,11 +102,11 @@
         <ng-container *ngIf="shouldShowUnstakeInfo()">
             <ng-container *ngFor="let unstakeInfo of userUnstakeInfo!.data">
                 <p class="label" *ngIf="!unstakeInfo.sicxBefore.isZero()">
-                    Your <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> unstaking request will be ready to claim within <span class="text-bold"
-                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the queue.
+                    <span class="text-bold">{{unstakeInfo.amount | RndDwn | usFormat}} ICX</span> will be ready to claim within <span class="text-bold"
+                >{{unstakeInfo | untilBlockTime: currentBlockHeight}}</span>. {{unstakeInfo.sicxBefore | RndDwn | usFormat: true}} ICX is ahead of yours in the unstaking queue.
                 </p>
             </ng-container>
         </ng-container>
-        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
+        <p *ngIf="claimableIcx && claimableIcx?.gt(0.01)" class="label text-white-in-dark">{{claimableIcx | RndDwn | usFormat}} ICX is ready to claim. <a href="javascript:void(0);" (click)="onClaimIcxClick($event)">Claim ICX.</a></p>
     </div>
 </div>

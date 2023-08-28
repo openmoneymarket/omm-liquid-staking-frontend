@@ -23,9 +23,9 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>Total earned</dt>
-                <dd *ngIf="userValidatorCollectedFee.gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFee | RndDwn | usFormat}} <span class="label">ICX</span><br>
-                    <span class="label">${{userValidatorCollectedFee.multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
-                <dd *ngIf="!(userValidatorCollectedFee.gt(0) && icxUsdPrice().gt(0))">-</dd>
+                <dd *ngIf="userValidatorCollectedFee.plus(userAccumulatedFee).gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFee.plus(userAccumulatedFee) | RndDwn | usFormat}} <span class="label">ICX</span><br>
+                    <span class="label">${{userValidatorCollectedFee.plus(userAccumulatedFee).multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
+                <dd *ngIf="!(userValidatorCollectedFee.plus(userAccumulatedFee).gt(0) && icxUsdPrice().gt(0))">-</dd>
 
             </dl>
         </div>
