@@ -293,7 +293,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     e.stopPropagation();
 
     if (this.userLoggedIn()) {
-      if (!this.inputUnstakeAmountGtUserSicxBalance() && this.unstakeInputAmount && this.receivedIcxAmount) {
+      if (!this.inputUnstakeAmountGtUserSicxBalance() && this.unstakeInputAmount.gt(0) && this.receivedIcxAmount.gt(0)) {
         if (this.unstakeWaitActive) {
           this.stateChangeService.modalUpdate(ModalType.UNSTAKE_WAIT_SICX, new UnstakeWaitSicxPayload(
               new BigNumber(this.unstakeInputAmount),
