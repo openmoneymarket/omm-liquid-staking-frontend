@@ -621,6 +621,7 @@ export class DataLoaderService {
     } catch (e) {
       log.error("Failed to fetch liquid staking stats..");
       log.error(e);
+      this.stateChangeService.liquidStakingStatsUpdate(undefined);
     }
   }
 

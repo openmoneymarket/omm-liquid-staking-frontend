@@ -29,6 +29,7 @@ import {ICX, MIN_ICX_BALANCE_KEPT, ONE, SICX} from "../../common/constants";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
+import {HideElementPipe} from "../../pipes/hide-element-pipe";
 
 @Component({
   selector: 'app-stake-panel',
@@ -39,7 +40,8 @@ import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
     DollarUsLocalePipe,
     PrettyUntilBlockHeightTime,
     RndDwnPipePipe,
-    RndDwnNPercPipe
+    RndDwnNPercPipe,
+    HideElementPipe
   ],
   templateUrl: './stake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -73,6 +75,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   currentBlockHeight?: BigNumber;
   unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
   stakingFee = new BigNumber(0);
+  chartFailedToLoad = false;
 
   // dynamic values
   stakingApr = new BigNumber(0);
@@ -109,7 +112,6 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.userLoginSub?.unsubscribe();
     this.tokenPriceSub?.unsubscribe();
     this.todayRateSub?.unsubscribe();
-    this.stakingAprChart?.remove();
     this.unstakeInfoSub?.unsubscribe();
     this.liquidStakingSub?.unsubscribe();
     this.stakingFeeSub?.unsubscribe();
@@ -152,26 +154,30 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
   private subscribeToLiquidStakingStatsChange(): void {
     this.liquidStakingSub = this.stateChangeService.liquidStakingStatsChange$.subscribe((value) => {
-      const res = this.chartService.initStakingAprChart(this.stakingAprChartEl, this.stakingAprChart, value);
-      this.stakingAprChart = res?.chart;
-      const lastValue = res?.lastValue ?? 0;
-      this.stakingApr = new BigNumber(lastValue);
+      if (value) {
+        const res = this.chartService.initStakingAprChart(this.stakingAprChartEl, this.stakingAprChart, value);
+        this.stakingAprChart = res?.chart;
+        const lastValue = res?.lastValue ?? 0;
+        this.stakingApr = new BigNumber(lastValue);
 
-      this.stakingAprChart?.timeScale().fitContent();
+        this.stakingAprChart?.timeScale().fitContent();
 
-      this.stakingAprChart?.subscribeCrosshairMove((param: any) => {
-        if (param?.point) {
-          const supplyApy = param.seriesPrices.entries().next().value;
-          if (supplyApy && supplyApy.length > 1) {
-            this.stakingApr = new BigNumber(supplyApy[1]);
+        this.stakingAprChart?.subscribeCrosshairMove((param: any) => {
+          if (param?.point) {
+            const supplyApy = param.seriesPrices.entries().next().value;
+            if (supplyApy && supplyApy.length > 1) {
+              this.stakingApr = new BigNumber(supplyApy[1]);
+            }
+          } else {
+            this.stakingApr = new BigNumber(lastValue ?? 0);
           }
-        } else {
-          this.stakingApr = new BigNumber(lastValue ?? 0);
-        }
 
-        // Detect Changes
-        this.cdRef.detectChanges();
-      });
+          // Detect Changes
+          this.cdRef.detectChanges();
+        });
+      } else {
+        this.chartFailedToLoad = true;
+      }
 
       // Detect Changes
       this.cdRef.detectChanges();

@@ -869,6 +869,9 @@ ul.toggle li:hover:after {
 	opacity: 1;
 	transform: translate3d(0,0,0) rotate3d(0,0,0,0);
 }
+a .tooltip-content {
+	color: #7a8294;
+}
 
 /*
 *

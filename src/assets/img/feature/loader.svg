@@ -1,0 +1,520 @@
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5">
+    <g id="wrapper">
+    <g>
+        <circle id="circle1" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle2" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle3" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle4" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle5" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle6" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle7" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle8" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle9" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle10" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle11" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle12" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle13" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle14" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle15" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle16" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle17" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle18" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle19" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle20" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle21" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle22" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle23" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle24" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle25" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle26" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle27" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle28" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle29" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle30" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle31" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle32" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle33" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle34" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle35" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle36" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle37" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle38" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle39" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle40" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle41" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle42" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle43" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle44" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle45" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    <g>
+        <circle id="circle46" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle47" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+        <circle id="circle48" cx="250" cy="250" r="3.043" style="fill:#00d3c2;"/>
+    </g>
+    </g>
+    <defs>
+        <radialGradient id="circle-gradient" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" style="stop-color:#00d3c2;"/>
+            <stop offset="33%" style="stop-color:#15c1c8;"/>
+            <stop offset="66%" style="stop-color:#518dda;"/>
+            <stop offset="100%" style="stop-color:#9d4df1;"/>
+        </radialGradient>
+    </defs>    
+    <style>
+        #circle1,
+        #circle2,
+        #circle3 {
+            animation: expand 2s linear infinite;
+            fill: url(#circle-gradient);
+            transform-origin: center;
+            /*transform-box: fill-box;*/
+            transform: translate(7.5%, 7.5%) scale(0);
+        }
+        #circle4,
+        #circle5,
+        #circle6 {
+            animation: expand2 2s linear infinite;
+            transform-origin: center;
+            transform: translate(0%, 10%) scale(0);
+        }
+        #circle7,
+        #circle8,
+        #circle9 {
+            animation: expand3 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-7.5%, 7.5%) scale(0);
+        }
+        #circle10,
+        #circle11,
+        #circle12 {
+            animation: expand4 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-10%, 0%) scale(0);
+        }
+        #circle13,
+        #circle14,
+        #circle15 {
+            animation: expand5 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-7.5%, -7.5%) scale(0);
+        }
+        #circle16,
+        #circle17,
+        #circle18 {
+            animation: expand6 2s linear infinite;
+            transform-origin: center;
+            transform: translate(0%, -10%) scale(0);
+        }
+        #circle19,
+        #circle20,
+        #circle21 {
+            animation: expand7 2s linear infinite;
+            transform-origin: center;
+            transform: translate(7.5%, -7.5%) scale(0);
+        }
+        #circle22,
+        #circle23,
+        #circle24 {
+            animation: expand8 2s linear infinite;
+            transform-origin: center;
+            transform: translate(10%, 0%) scale(0);
+        }
+        #circle25,
+        #circle26,
+        #circle27 {
+            animation: expand9 2s linear infinite;
+            transform-origin: center;
+            transform: translate(7.5%, 3%) scale(0);
+        }
+        #circle28,
+        #circle29,
+        #circle30 {
+            animation: expand10 2s linear infinite;
+            transform-origin: center;
+            transform: translate(3.5%, 7.5%) scale(0);
+        }
+        #circle31,
+        #circle32,
+        #circle33 {
+            animation: expand11 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-3.5%, 7.5%) scale(0);
+            
+        }
+        #circle34,
+        #circle35,
+        #circle36 {
+            animation: expand12 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-7.5%, 3%) scale(0);
+        }
+        #circle37,
+        #circle38,
+        #circle39 {
+            animation: expand13 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-7.5%, -3%) scale(0);
+        }
+        #circle40,
+        #circle41,
+        #circle42 {
+            animation: expand14 2s linear infinite;
+            transform-origin: center;
+            transform: translate(-3.75%, -7.5%) scale(0);
+        }
+        #circle43,
+        #circle44,
+        #circle45 {
+            animation: expand15 2s linear infinite;
+            transform-origin: center;
+            transform: translate(3.75%, -7.5%) scale(0);
+        }
+        #circle46,
+        #circle47,
+        #circle48 {
+            animation: expand16 2s linear infinite;
+            transform-origin: center;
+            transform: translate(7.5%, -3%) scale(0);
+        }
+        #circle2,
+        #circle5,
+        #circle8,
+        #circle11,
+        #circle14,
+        #circle17,
+        #circle20,
+        #circle23 {
+            animation-delay: 0.7s;
+        }
+        #circle3,
+        #circle6,
+        #circle9,
+        #circle12,
+        #circle15,
+        #circle18,
+        #circle21,
+        #circle24 {
+            animation-delay: 1.4s;
+        }
+        #circle25,
+        #circle28,
+        #circle31,
+        #circle34,
+        #circle37,
+        #circle40,
+        #circle43,
+        #circle46 {
+            animation-delay: 0.35s;
+        }
+        #circle26,
+        #circle29,
+        #circle32,
+        #circle35,
+        #circle38,
+        #circle41,
+        #circle44,
+        #circle47 {
+            animation-delay: 0.95s;
+        }
+        #circle27,
+        #circle30,
+        #circle33,
+        #circle36,
+        #circle39,
+        #circle42,
+        #circle45,
+        #circle48 {
+            animation-delay: 1.6s;
+        }
+        @keyframes expand {
+            0% {
+                transform: translate(7.5%, 7.5%) scale(0);
+            }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(11.25%, 11.25%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(15%, 15%) scale(0);
+            }
+        }
+        @keyframes expand2 {
+            0% {
+                transform: translate(0%, 10%) scale(0);
+            }
+            40% {
+                fill: #15c1c8;
+            }
+            50% {
+                transform: translate(0%, 15%) scale(3.5);
+                }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(0%, 20%) scale(0); }
+        }
+        @keyframes expand3 {
+            0% { transform: translate(-7.5%, 7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-11.25%, 11.25%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-15%, 15%) scale(0);
+            }
+        }
+        @keyframes expand4 {
+            0% {
+                transform: translate(-10%, 0%) scale(0);
+            }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-15%, 0%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-20%, 0%) scale(0);
+            }
+        }
+        @keyframes expand5 {
+            0% { transform: translate(-7.5%, -7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% {
+                transform: translate(-11.25%, -11.25%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-15%, -15%) scale(0);
+            }
+        }
+        @keyframes expand6 {
+            0% { transform: translate(0%, -10%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(0%, -15%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(0%, -20%) scale(0);
+            }
+        }
+        @keyframes expand7 {
+            0% { transform: translate(7.5%, -7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(11.25%, -11.25%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(15%, -15%) scale(0);
+            }
+        }
+        @keyframes expand8 {
+            0% { transform: translate(10%, 0%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(15%, 0%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(20%, 0%) scale(0);
+            }
+        }
+        @keyframes expand9 {
+            0% { transform: translate(7.5%, 3%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(15%, 6%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(20%, 8.5%) scale(0);
+            }
+        }
+        @keyframes expand10 {
+            0% { transform: translate(3.5%, 7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(5.75%, 13.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(8.5%, 20%) scale(0);
+            }
+        }
+        @keyframes expand11 {
+            0% { transform: translate(-3.5%, 7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-5.75%, 13.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-7.5%, 18%) scale(0);
+            }
+        }
+        @keyframes expand12 {
+            0% { transform: translate(-7.5%, 3%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-13%, 5.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-18.5%, 8.5%) scale(0);
+            }
+        }
+        @keyframes expand13 {
+            0% { transform: translate(-7.5%, -3%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-13.75%, -5.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-20%, -8.5%) scale(0);
+            }
+        }
+        @keyframes expand14 {
+            0% { transform: translate(-3.75%, -7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(-5.75%, -13.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(-8.5%, -20%) scale(0);
+            }
+        }
+        @keyframes expand15 {
+            0% { transform: translate(3.75%, -7.5%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(6%, -13.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(8.5%, -20%) scale(0);
+            }
+        }
+        @keyframes expand16 {
+            0% { transform: translate(7.5%, -3%) scale(0); }
+            40% {
+                fill: #15c1c8;
+            }
+            50% { 
+                transform: translate(13.75%, -5.75%) scale(3.5);
+            }
+            65% {
+                fill: #518dda;
+            }
+            100% {
+                fill: #9d4df1;
+                transform: translate(20%, -7.5%) scale(0);
+            }
+        }
+    </style>
+</svg>

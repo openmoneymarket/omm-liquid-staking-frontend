@@ -34,11 +34,12 @@ import {SecondsToDaysPipe} from "../../pipes/seconds-to-days";
 import {SecondsToDhm} from "../../pipes/seconds-to-dhm";
 import {Address} from "../../models/Types/ModalTypes";
 import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
+import {HideElementPipe} from "../../pipes/hide-element-pipe";
 
 @Component({
   selector: 'app-unstake-panel',
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe, SecondsToDaysPipe, SecondsToDhm],
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe, SecondsToDaysPipe, SecondsToDhm, HideElementPipe],
   templateUrl: './unstake-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -75,6 +76,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   unstakingTimeInSeconds = new BigNumber(0);
   unstakeInfoMap = new Map<Address, UnstakeInfoData[]>();
   unstakingAmount = new BigNumber(0);
+  chartFailedToLoad = false;
 
   // Subscriptions
   userUnstakeInfoSub?: Subscription;
@@ -148,26 +150,31 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   private subscribeToLiquidStakingStatsChange(): void {
     this.liquidStakingSub = this.stateChangeService.liquidStakingStatsChange$.subscribe((value) => {
-      const res = this.chartService.initUnstakingApyChart(this.unstakingChartEl, this.unstakingChart, value);
-      this.unstakingChart = res?.chart;
-      const lastValue = res?.lastValue ?? 0;
-      this.unstakingAmount = new BigNumber(lastValue);
+      if (value) {
+        const res = this.chartService.initUnstakingApyChart(this.unstakingChartEl, this.unstakingChart, value);
+        this.unstakingChart = res?.chart;
+        const lastValue = res?.lastValue ?? 0;
+        this.unstakingAmount = new BigNumber(lastValue);
 
-      this.unstakingChart?.timeScale().fitContent();
+        this.unstakingChart?.timeScale().fitContent();
 
-      this.unstakingChart?.subscribeCrosshairMove((param: any) => {
-        if (param?.point) {
-          const supplyApy = param.seriesPrices.entries().next().value;
-          if (supplyApy && supplyApy.length > 1) {
-            this.unstakingAmount = new BigNumber(supplyApy[1]);
+        this.unstakingChart?.subscribeCrosshairMove((param: any) => {
+          if (param?.point) {
+            const supplyApy = param.seriesPrices.entries().next().value;
+            if (supplyApy && supplyApy.length > 1) {
+              this.unstakingAmount = new BigNumber(supplyApy[1]);
+            }
+          } else {
+            this.unstakingAmount = new BigNumber(lastValue ?? 0);
           }
-        } else {
-          this.unstakingAmount = new BigNumber(lastValue ?? 0);
-        }
 
-        // Detect Changes
-        this.cdRef.detectChanges();
-      });
+          // Detect Changes
+          this.cdRef.detectChanges();
+        });
+      } else {
+        this.chartFailedToLoad = true;
+      }
+
 
       // Detect Changes
       this.cdRef.detectChanges();

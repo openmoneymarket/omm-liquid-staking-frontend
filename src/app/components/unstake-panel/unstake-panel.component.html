@@ -70,11 +70,22 @@
                     <h3>Unstaking requests</h3>
                 </div>
                 <div class="grid-cell text-right">
-                    <p><span class="text-purple" style="font-size: 20px;">{{unstakingAmount | RndDwn | usFormat}} ICX</span></p>
+                    <p><span class="text-purple" style="font-size: 20px;">{{unstakingAmount | RndDwn | usFormat}}{{unstakingAmount.gt(0) ? " ICX" : ""}}</span></p>
                 </div>
             </div>
 
-            <div id="chart-line-2" class="chart-apy" #unstkApyChart></div>
+            <!-- Chart message -->
+            <div style="height:125px;" class="grid grid-center" [ngStyle]="unstakingChart !== undefined || !chartFailedToLoad | hide">
+                <div class="grid-cell">
+                    <p class="label text-center">Chart data unavailable.</p>
+                </div>
+            </div>
+
+            <!-- Loader -->
+            <img src="assets/img/feature/loader.svg" [ngStyle]="unstakingChart !== undefined || chartFailedToLoad | hide" class="loader" alt="Loading..">
+
+            <!-- Chart -->
+            <div id="chart-line-2" class="chart-apy" [ngStyle]="unstakingChart === undefined || chartFailedToLoad | hide" #unstkApyChart></div>
 
             <div class="grid notice" style="margin-top: 0;">
                 <div class="grid-cell text-center">

@@ -462,6 +462,11 @@
 		background-color: #32343c;
 	}
 
+	a .tooltip-content,
+	.adjust-options .tooltip .tooltip-content {
+		color: #ffffff;
+	}
+
 	.text-white-in-dark {
 		color: #ffffff !important;
 	}

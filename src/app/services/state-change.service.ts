@@ -178,7 +178,7 @@ export class StateChangeService {
   private unstakeInfoChange = new ReplaySubject<Map<Address, UnstakeInfoData[]>>(1);
   unstakeInfoChange$ = this.unstakeInfoChange.asObservable();
 
-  private liquidStakingStatsChange = new ReplaySubject<LiquidStakingStats[]>(1);
+  private liquidStakingStatsChange = new ReplaySubject<LiquidStakingStats[] | undefined>(1);
   liquidStakingStatsChange$ = this.liquidStakingStatsChange.asObservable();
 
   private stakingFeeChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
@@ -191,7 +191,7 @@ export class StateChangeService {
     this.stakingFeeChange.next(value);
   }
 
-  public liquidStakingStatsUpdate(value: LiquidStakingStats[]): void {
+  public liquidStakingStatsUpdate(value: LiquidStakingStats[] | undefined): void {
     this.liquidStakingStatsChange.next(value);
   }
 

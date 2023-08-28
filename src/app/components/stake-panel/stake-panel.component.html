@@ -72,7 +72,18 @@
                 </div>
             </div>
 
-            <div id="chart-line-1" class="chart-apy" #stkAprChart></div>
+            <!-- Chart message -->
+            <div style="height:125px;" class="grid grid-center" [ngStyle]="stakingAprChart !== undefined || !chartFailedToLoad | hide">
+                <div class="grid-cell">
+                    <p class="label text-center">Chart data unavailable.</p>
+                </div>
+            </div>
+
+            <!-- Loader -->
+            <img src="assets/img/feature/loader.svg" [ngStyle]="stakingAprChart !== undefined || chartFailedToLoad | hide" class="loader" alt="Loading..">
+
+            <!-- Chart -->
+            <div id="chart-line-1" class="chart-apy" #stkAprChart [ngStyle]="stakingAprChart === undefined || chartFailedToLoad | hide"></div>
 
             <div class="grid notice">
                 <div class="grid-cell text-center">
