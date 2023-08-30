@@ -124,8 +124,9 @@ export function toNDecimalRoundedDownPercentString(num?: BigNumber | string | nu
     // convert in to percentage
     num = new BigNumber(num).multipliedBy(new BigNumber("100"));
 
-    if (num.isLessThan(1)) {
-        return defaultZero ? "0%" : "-";
+    // handle values smaller than 0.01%
+    if (num.isLessThan(new BigNumber("0.01"))) {
+        return "<0.01%";
     }
 
     return `${(numToUsLocaleString(num.toFixed(decimals, BigNumber.ROUND_DOWN)))}%`;
