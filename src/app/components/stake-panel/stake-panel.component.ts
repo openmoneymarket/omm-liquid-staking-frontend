@@ -61,7 +61,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   userIcxBalance = new BigNumber(0);
   userWallet: Wallet | undefined;
   userUnstakeInfo?: UserUnstakeInfo;
-  claimableIcx?: BigNumber;
+  claimableIcx = new BigNumber(0);
 
   // Inputs
   stakeInputAmount: BigNumber = new BigNumber(0);
@@ -140,7 +140,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     this.userIcxBalance = new BigNumber(0);
     this.userSicxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
-    this.claimableIcx = undefined;
+    this.claimableIcx = new BigNumber(0);
   }
 
   private subscribeToStakingFeeChange(): void {
@@ -415,6 +415,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
   shouldShowUnstakeInfo(): boolean {
     return this.userUnstakeInfo != undefined
+        && this.userUnstakeInfo.data != undefined
         && this.userUnstakeInfo.data.length > 0
         && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
         && this.currentBlockHeight != undefined

@@ -58,7 +58,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   // User values
   userSicxBalance = new BigNumber(0);
   userIcxBalance = new BigNumber(0);
-  claimableIcx?: BigNumber;
+  claimableIcx: BigNumber = new BigNumber(0);
   userUnstakeInfo?: UserUnstakeInfo;
   userWallet: Wallet | undefined;
 
@@ -145,7 +145,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.userSicxBalance = new BigNumber(0);
     this.userIcxBalance = new BigNumber(0);
     this.userUnstakeInfo = undefined;
-    this.claimableIcx = undefined;
+    this.claimableIcx = new BigNumber(0);
   }
 
   private subscribeToLiquidStakingStatsChange(): void {
@@ -476,6 +476,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
   shouldShowUnstakeInfo(): boolean {
     return this.userUnstakeInfo != undefined
+        && this.userUnstakeInfo.data != undefined
         && this.userUnstakeInfo.data.length > 0
         && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
         && this.currentBlockHeight != undefined
