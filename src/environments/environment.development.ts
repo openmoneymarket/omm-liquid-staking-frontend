@@ -15,6 +15,6 @@ export const environment = {
     ICX_TOKEN: "cx1111111111111111111111111111111111111111",
     OMM_TOKEN: "cx60d6cd6f54514eef43f5160dd60fc25c8a00f430",
     SICX_TOKEN: "cx2d013cb55781fb54b81d629aa4b611be2daec564",
-    ADDRESS_PROVIDER_SCORE: "cx3beb2fa9b7cfa3684f6db1413897dfcf6cc1b04c",
+    ADDRESS_PROVIDER_SCORE: "cx3beb2fa9b7cfa3684f6db1413897dfcf6cc1b04c" ,
     trackerUrl: "https://tracker.lisbon.icon.community",
 };
