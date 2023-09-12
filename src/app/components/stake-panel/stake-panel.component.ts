@@ -381,9 +381,9 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   recalculateUserUnstakeInfo() {
     if (this.userLoggedIn() && this.userUnstakeInfo && this.userUnstakeInfo.data.length > 0 && this.unstakeInfoMap) {
       this.userUnstakeInfo.data.forEach((userUnstakeInfo) => {
-        const unstakeInfos = this.unstakeInfoMap.get(userUnstakeInfo.from);
+        const unstakeInfos = Array.from(this.unstakeInfoMap.values()).flat();
 
-        if (unstakeInfos) {
+        if (unstakeInfos.length > 0) {
           const equalUnstakeInfo = unstakeInfos.find(value => {
             return value.blockHeight.eq(userUnstakeInfo.blockHeight) && value.amount.eq(userUnstakeInfo.amount);
           });
