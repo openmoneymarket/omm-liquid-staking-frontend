@@ -122,13 +122,9 @@ export class ScoreService {
   public buildRemoveAllBommVotes(): Promise<any> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
 
-    const params = {
-      _user: this.storeService.userWalletAddress()
-    };
-
     return this.iconApiService.buildTransaction(this.storeService.userWalletAddress(),
         this.storeService.allAddresses!.systemContract.Delegation,
-        ScoreMethodNames.CLEAR_PREVIOUS_DELEGATIONS, params, IconTransactionType.WRITE);
+        ScoreMethodNames.CLEAR_PREVIOUS_DELEGATIONS, {}, IconTransactionType.WRITE);
   }
 
   /**
