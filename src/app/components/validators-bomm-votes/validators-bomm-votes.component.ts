@@ -21,11 +21,22 @@ import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import {toNDecimalRoundedDownPercentString} from "../../common/utils";
+import log from "loglevel";
 
 @Component({
   selector: 'app-validators-bomm-votes',
   standalone: true,
-    imports: [CommonModule, HideElementPipe, RndDwnPipePipe, UsFormatPipe, IntersectionObserverDirective, RndDwnPipePipe, RndDwnPipePipe, RndDwnNPercPipe],
+    imports: [
+        CommonModule,
+        HideElementPipe,
+        RndDwnPipePipe,
+        UsFormatPipe,
+        IntersectionObserverDirective,
+        RndDwnPipePipe,
+        RndDwnPipePipe,
+        RndDwnNPercPipe
+    ],
   templateUrl: './validators-bomm-votes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -36,8 +47,10 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   _isbOmmVotesActive = false;
   @Input({ required: true }) set isbOmmVotesActive(value: boolean) {
+    const oldValue = this._isbOmmVotesActive;
     this._isbOmmVotesActive = value
-    this.resetAdjustVotesActive();
+
+    this.handleIsbOmmVotesActiveChange(value, oldValue);
   }
   @Input({ required: true }) searchSubject$!: Observable<string>;
 
@@ -60,7 +73,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   // User variables
   userDelegationDetails: YourPrepVote[] = [];
   userDelegationDetailsMap = new Map<PrepAddress, YourPrepVote>();
-  userDynamicDelegationDetailsMap = new Map<PrepAddress, YourPrepVote>();
+  userDynamicDelegationDetailsMap = new Map<PrepAddress, BigNumber>();
   userDelegationWorkingbOmmBalance = new BigNumber(0);
   userWallet: Wallet | undefined;
 
@@ -118,12 +131,12 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   private resetUserState(): void {
     this.userDelegationDetails = [];
     this.userDelegationDetailsMap = new Map<PrepAddress, YourPrepVote>();
-    this.userDynamicDelegationDetailsMap = new Map<PrepAddress, YourPrepVote>();
+    this.userDynamicDelegationDetailsMap = new Map<PrepAddress, BigNumber>();
     this.userDelegationWorkingbOmmBalance = new BigNumber(0);
   }
 
   private resetDynamicState(): void {
-    this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v]));
+    this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v.percentage]));
   }
 
   private subscribeToUserLoginChange(): void {
@@ -226,7 +239,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.userDelegationDetailsSub = this.stateChangeService.userDelegationDetailsChange$.subscribe(value => {
       this.userDelegationDetails = value;
       this.userDelegationDetailsMap = new Map(value.map(v => [v.address, v]));
-      this.userDynamicDelegationDetailsMap = new Map(value.map(v => [v.address, v.clone()]));
+      this.userDynamicDelegationDetailsMap = new Map(value.map(v => [v.address, v.percentage]));
 
       // detect changes
       this.cdRef.detectChanges();
@@ -256,24 +269,21 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
-    const inputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
-    const delegation =  this.userDynamicDelegationDetailsMap.get(address);
+    const element: HTMLInputElement = (<HTMLInputElement>e.target);
+    const inputAmount: number = +usLocale.from(element.value);
+
+    let delegationPercentage = new BigNumber(0);
 
     if (!inputAmount || inputAmount <= 0) {
-      if (delegation) {
-        delegation.percentage =  new BigNumber(0);
-      }
+      // handle invalid amount by resetting to 0
+      this.userDynamicDelegationDetailsMap.set(address, new BigNumber(0));
     } else {
-      if (delegation) {
-        delegation.percentage = new BigNumber(inputAmount).dividedBy(100);
-      } else {
-        this.userDynamicDelegationDetailsMap.set(address, new YourPrepVote(
-            address,
-            (this.prepList?.prepAddressToNameMap.get(address) ?? ""),
-            new BigNumber(inputAmount).dividedBy(100)
-        ))
-      }
+      delegationPercentage = new BigNumber(inputAmount).dividedBy(100);
+      this.userDynamicDelegationDetailsMap.set(address, delegationPercentage)
     }
+
+    // write value to the element because [value] does not trigger on change if number is equal to previous
+    element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, true);
 
     // detect changes
     this.cdRef.detectChanges();
@@ -282,27 +292,36 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   onConfirmClick(e: MouseEvent) {
     e.stopPropagation();
 
-    if (!this.userDelegationHasNotChanged()) {
+    if (this.userDelegationHasChanged()) {
       if (this.userAllocatedVotesPercent().eq(1)) {
         // update delegations
         const payload = new UpdateDelegationPayload(
-            Array.from(this.userDynamicDelegationDetailsMap.values()).filter(v => v.percentage.gt(0)).map(v => {
-              v.name = (this.prepList?.prepAddressToNameMap.get(v.address) ?? ""); // get name from prep list
-              return v;
-            }),
+            Array.from(this.userDynamicDelegationDetailsMap.entries())
+                .filter(([, value]) => value.gt(0))
+                .map(([address, value]) => {
+                  return new YourPrepVote(
+                      address,
+                      (this.prepList?.prepAddressToNameMap.get(address) ?? ""),
+                      value
+                  )
+                }),
             this._isbOmmVotesActive,
             this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
-        this.resetAdjustVotesActive();
       } else if (this.userAllocatedVotesPercent().eq(0)) {
         // remove delegations
         this.stateChangeService.modalUpdate(ModalType.REMOVE_ALL_DELEGATIONS, new RemoveDelegationsPayload(true));
-        this.resetAdjustVotesActive();
       }
+
+      // reset votes state
+      this.resetAdjustVotesActive();
+      this.resetDynamicState();
 
       // detect changes
       this.cdRef.detectChanges();
+    } else {
+      log.debug("User delegation hasn't been changed!");
     }
   }
 
@@ -382,13 +401,26 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     return this.allValidatorCollectedFeesMap.get(address) ?? new BigNumber(0);
   }
 
-  userDelegationHasNotChanged(): boolean {
-    return Array.from(this.userDelegationDetailsMap.values()).every(vote => this.userDynamicDelegationDetailsMap.get(vote.address)?.equal(vote) ?? false);
+  userDelegationHasChanged(): boolean {
+    if (this.userDelegationDetailsMap.size != this.userDynamicDelegationDetailsMap.size) return true;
+
+    // iterate user dynamic delegations and compare to user delegations
+    for (const userDelegation of Array.from(this.userDelegationDetailsMap.values())) {
+      const userDynamicDelegation = this.userDynamicDelegationDetailsMap.get(userDelegation.address)
+
+      // if user delegation for prep address don't exist or is not equal to user dynamic delegation return true
+      if (!userDynamicDelegation || !userDelegation.percentage.eq(userDynamicDelegation)) {
+        return false
+      }
+    }
+
+    return true;
   }
 
   userAllocatedVotesPercent(): BigNumber {
     if (this.userLoggedIn()) {
-      return Array.from(this.userDynamicDelegationDetailsMap.values()).reduce((res, vote) => res = res.plus(vote.percentage), new BigNumber(0));
+      return Array.from(this.userDynamicDelegationDetailsMap.values()).reduce(
+          (res, vote) => res.plus(vote), new BigNumber(0));
     }
 
     return new BigNumber(0);
@@ -404,11 +436,10 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   userPrepDelegationPercent(address: string): BigNumber {
     if (this.adjustActive()) {
-      return this.userDynamicDelegationDetailsMap.get(address)?.percentage ?? new BigNumber(0);
+      return this.userDynamicDelegationDetailsMap.get(address) ?? new BigNumber(0);
     } else {
       return this.userDelegationDetailsMap.get(address)?.percentage ?? new BigNumber(0);
     }
-
   }
 
   isPrepOmmContributor(address: string): boolean {
@@ -424,7 +455,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   adjustActive(): boolean {
-    return this.adjustVotesActive || (this.isMobile() && this.adjustVotesActiveMobile);
+    return (!this.isMobile() && this.adjustVotesActive) || (this.isMobile() && this.adjustVotesActiveMobile);
   }
   isMobile(): boolean {
     return this.deviceService.isMobile();
@@ -436,6 +467,13 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   userLoggedIn(): boolean {
     return this.userWallet != undefined;
+  }
+
+  private handleIsbOmmVotesActiveChange(newValue: boolean, oldValue: boolean): void {
+    if (newValue != oldValue) {
+      this.resetDynamicState();
+      this.resetAdjustVotesActive();
+    }
   }
 
   private resetAdjustVotesActive(): void {

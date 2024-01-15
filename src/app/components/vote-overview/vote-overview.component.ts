@@ -112,13 +112,10 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
   }
 
   private getDaoFundsSicxBalance(): BigNumber {
-    return this.daoFundBalances.balances.reduce(
-        (undefined, current) => current.token.symbol == SICX.symbol ? current.balance : new BigNumber(0), new BigNumber(0));
+    return this.daoFundBalances.balances.find((tokenBalance) => tokenBalance.token.symbol == SICX.symbol)?.balance ?? new BigNumber(0);
   }
 
   private getTokenUsdPrice(token: Irc2Token): BigNumber {
-    const tokenPrice = this.tokenToUsdPriceMap.get(token.symbol);
-
     if (token.symbol === SICX.symbol) {
       const icxPrice = this.tokenToUsdPriceMap.get(ICX.symbol) ?? new BigNumber(0);
       return convertICXToSICXPrice(icxPrice, this.sicxTodayRate) ?? new BigNumber(0);
