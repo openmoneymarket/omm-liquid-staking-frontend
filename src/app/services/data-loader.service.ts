@@ -353,10 +353,10 @@ export class DataLoaderService {
     }
   }
 
-  public async loadUserAccumulatedFee(): Promise<void> {
+  public async loadUserClaimableFee(): Promise<void> {
     try {
-      const amount = await this.scoreService.getUserAccumulatedOmmRewards();
-      this.stateChangeService.userAccumulatedFeeUpdate(amount);
+      const amount = await this.scoreService.getUserClaimableFee();
+      this.stateChangeService.userClaimableFeeUpdate(amount);
     } catch (e) {
       log.error("Error in loadUserAccumulatedFee:");
       log.error(e);
@@ -661,7 +661,7 @@ export class DataLoaderService {
       this.loadUserLockedOmm(),
       this.loadUserOmmTokenBalanceDetails(),
       this.loadUserDelegationWorkingbOmmBalance(),
-      this.loadUserAccumulatedFee(),
+      this.loadUserClaimableFee(),
       this.loadUserCollectedFees(),
       this.loadUserbOmmBalance(),
       this.loadUserValidatorBommDelegation(),

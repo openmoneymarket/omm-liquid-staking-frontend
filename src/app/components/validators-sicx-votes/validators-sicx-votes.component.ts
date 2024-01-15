@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -28,6 +27,8 @@ import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import log from "loglevel";
+import {toNDecimalRoundedDownPercentString} from "../../common/utils";
 
 @Component({
   selector: 'app-validators-sicx-votes',
@@ -43,8 +44,10 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   _isSIcxVotesActive = false;
   @Input({ required: true }) set isSIcxVotesActive(value: boolean) {
+    const oldValue = this._isSIcxVotesActive;
     this._isSIcxVotesActive = value
-    this.resetAdjustVotesActive();
+
+    this.handleIsSIcxVotesActiveChange(value, oldValue);
   }
   @Input({ required: true }) searchSubject$!: Observable<string>;
   ready = false;
@@ -131,10 +134,10 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.userTokenBalanceSub = this.stateChangeService.userTokenBalanceUpdate$.subscribe((value) => {
       if (value.token.symbol === SICX.symbol) {
         this.userSicxBalance = value.amount;
-      }
 
-      // detect changes
-      this.cdRef.detectChanges();
+        // detect changes
+        this.cdRef.detectChanges();
+      }
     })
   }
 
@@ -210,13 +213,21 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
-    const inputAmount = +usLocale.from((<HTMLInputElement>e.target).value);
+    const element: HTMLInputElement = (<HTMLInputElement>e.target);
+    const inputAmount: number = +usLocale.from(element.value);
+
+    let delegationPercentage = new BigNumber(0);
 
     if (!inputAmount || inputAmount <= 0) {
+      // handle invalid amount by resetting to 0
       this.actualDynUserDelegationPercentage.set(address, new BigNumber(0));
     } else {
-      this.actualDynUserDelegationPercentage.set(address, new BigNumber(inputAmount).dividedBy(100));
+      delegationPercentage = new BigNumber(inputAmount).dividedBy(100);
+      this.actualDynUserDelegationPercentage.set(address, delegationPercentage);
     }
+
+    // write value to the element because [value] does not trigger on change if number is equal to previous
+    element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, true);
 
     // detect changes
     this.cdRef.detectChanges();
@@ -225,12 +236,12 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   onConfirmClick(e: MouseEvent) {
     e.stopPropagation();
 
-    if (!this.userDelegationHasNotChanged()) {
+    if (this.userDelegationHasChanged()) {
       if (this.userAllocatedVotesPercent().eq(1)) {
         // update delegations
         const payload = new UpdateDelegationPayload(
             Array.from(this.actualDynUserDelegationPercentage.entries())
-                .filter(([address, value]) => value.gt(0))
+                .filter(([, value]) => value.gt(0))
                 .map(([address, value]) => {
               return new YourPrepVote(
                   address,
@@ -242,15 +253,19 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
             this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
-        this.resetAdjustVotesActive();
       } else if (this.userAllocatedVotesPercent().eq(0)) {
         // remove delegations
         this.stateChangeService.modalUpdate(ModalType.REMOVE_ALL_DELEGATIONS, new RemoveDelegationsPayload(false));
-        this.resetAdjustVotesActive();
       }
+
+      // reset votes state
+      this.resetAdjustVotesActive();
+      this.resetDynamicState();
 
       // detect changes
       this.cdRef.detectChanges();
+    } else {
+      log.debug("User delegation hasn't been changed!");
     }
   }
 
@@ -280,9 +295,22 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.cdRef.detectChanges();
   }
 
-  userDelegationHasNotChanged(): boolean {
-    return this.actualUserDelegationPercentage.size == this.actualDynUserDelegationPercentage.size
-        && Array.from(this.actualUserDelegationPercentage.entries()).every(([k, v]) => this.actualDynUserDelegationPercentage.get(k)?.eq(v) ?? false);
+  userDelegationHasChanged(): boolean {
+    if (this.actualUserDelegationPercentage.size != this.actualDynUserDelegationPercentage.size) {
+      return true;
+    }
+
+    // iterate user dynamic delegations and compare to user delegations
+    for (const [prepaAddress, dynamicDelegation] of this.actualDynUserDelegationPercentage.entries()) {
+      const userDelegation = this.actualUserDelegationPercentage.get(prepaAddress);
+
+      // if user delegation for prep address don't exist or is not equal to user dynamic delegation return true
+      if (!userDelegation || !userDelegation.eq(dynamicDelegation)) {
+        return false
+      }
+    }
+
+    return true;
   }
 
   userAllocatedVotesPercent(): BigNumber {
@@ -303,7 +331,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   prepSicxDelegation(address: string): BigNumber {
     if (this.todaySicxRate.gt(0)) {
-      return this.actualPrepDelegations.get(address)?.multipliedBy(this.todaySicxRate) ?? new BigNumber(0);
+      return this.actualPrepDelegations.get(address)?.dividedBy(this.todaySicxRate) ?? new BigNumber(0);
     }
 
     return new BigNumber(0);
@@ -342,7 +370,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   adjustActive(): boolean {
-    return this.adjustVotesActive || (this.isMobile() && this.adjustVotesActiveMobile);
+    return (!this.isMobile() && this.adjustVotesActive) || (this.isMobile() && this.adjustVotesActiveMobile);
   }
 
   private toggleAdjustVotesActive(mobile = false): void {
@@ -359,6 +387,13 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   userLoggedIn(): boolean {
     return this.userWallet != undefined;
+  }
+
+  private handleIsSIcxVotesActiveChange(newValue: boolean, oldValue: boolean): void {
+    if (newValue != oldValue) {
+      this.resetDynamicState();
+      this.resetAdjustVotesActive();
+    }
   }
 
   private resetAdjustVotesActive(): void {

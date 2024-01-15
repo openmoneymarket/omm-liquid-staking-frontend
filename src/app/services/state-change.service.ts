@@ -55,7 +55,7 @@ export class StateChangeService {
   private lockedOmmActionSucceeded = new ReplaySubject<boolean>(1);
   lockedOmmActionSucceeded$: Observable<boolean> = this.lockedOmmActionSucceeded.asObservable();
 
-  private userTokenBalanceUpdate = new ReplaySubject<ITokenBalanceUpdate>(1);
+  private userTokenBalanceUpdate = new ReplaySubject<ITokenBalanceUpdate>(supportedTokens.length);
   userTokenBalanceUpdate$ = this.userTokenBalanceUpdate.asObservable();
 
   private loginChange = new ReplaySubject<Wallet | undefined>(1);
@@ -115,8 +115,8 @@ export class StateChangeService {
   private userDelegationWorkingbOmmChange = new ReplaySubject<BigNumber>(1);
   userDelegationWorkingbOmmChange$ = this.userDelegationWorkingbOmmChange.asObservable();
 
-  private userAccumulatedFeeChange = new ReplaySubject<BigNumber>(1);
-  userAccumulatedFeeChange$ = this.userAccumulatedFeeChange.asObservable();
+  private userClaimableFeeChange = new ReplaySubject<BigNumber>(1);
+  userClaimableFeeChange$ = this.userClaimableFeeChange.asObservable();
 
   private userValidatorCollectedFeeChange = new ReplaySubject<BigNumber>(1);
   userValidatorCollectedFeeChange$ = this.userValidatorCollectedFeeChange.asObservable();
@@ -224,7 +224,6 @@ export class StateChangeService {
   }
 
 
-
   public prepBommDelegationUpdate(value: BigNumber): void {
     this.prepBommDelegationChange.next(value);
   }
@@ -276,8 +275,8 @@ export class StateChangeService {
     this.undelegatedIcxChange.next(value);
   }
 
-  public userAccumulatedFeeUpdate(value: BigNumber): void {
-    this.userAccumulatedFeeChange.next(value);
+  public userClaimableFeeUpdate(value: BigNumber): void {
+    this.userClaimableFeeChange.next(value);
   }
 
   public userValidatorCollectedFeeUpdate(value: BigNumber): void {
@@ -379,7 +378,7 @@ export class StateChangeService {
   }
 
   public updateUserTokenBalance(balance: BigNumber, token: Irc2Token): void {
-    this.storeService.activeWallet!.irc2TokenBalancesMap.set(token.symbol, balance);
+    this.storeService.activeWallet?.irc2TokenBalancesMap.set(token.symbol, balance);
     this.userTokenBalanceUpdate.next({ token, amount: balance })
   }
 

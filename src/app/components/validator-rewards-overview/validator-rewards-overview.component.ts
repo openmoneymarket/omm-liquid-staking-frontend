@@ -127,8 +127,6 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe(value => {
       this.userValidatorCollectedFee = value;
 
-      console.log("this.userValidatorCollectedFee = ", this.userValidatorCollectedFee.toString());
-
       // Detect changes
       this.cdRef.detectChanges();
     })
@@ -227,7 +225,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserAccumulatedFeeChange(): void {
-    this.userAccumulatedFeeSub = this.stateChangeService.userAccumulatedFeeChange$.subscribe(fee => {
+    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(fee => {
       this.userAccumulatedFee = fee;
 
       // Detect changes

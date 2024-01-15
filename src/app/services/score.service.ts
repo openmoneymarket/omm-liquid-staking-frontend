@@ -392,23 +392,23 @@ export class ScoreService {
 
 
   /**
-   * @description Get user accumulated OMM rewards amount
+   * @description Get user (validator) claimable fee OMM rewards amount
    * @return BigNumber
    */
-  public async getUserAccumulatedOmmRewards(): Promise<BigNumber> {
+  public async getUserClaimableFee(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
-    log.debug("Executing getUserAccumulatedOmmRewards...");
+    log.debug("Executing getUserClaimableFee...");
 
     const params = {
-      address: this.storeService.userWalletAddress(),
+      user: this.storeService.userWalletAddress(),
     };
 
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
-        ScoreMethodNames.GET_ACCUMULATED_FEE, params, IconTransactionType.READ);
+        ScoreMethodNames.GET_CLAIMABLE_FEE, params, IconTransactionType.READ);
 
     const res = await this.iconApiService.iconService.call(tx).execute();
 
-    log.debug("getUserAccumulatedOmmRewards: ", res);
+    log.debug("getUserClaimableFee: ", res);
 
     return hexToNormalisedNumber(res);
   }
