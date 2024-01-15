@@ -79,7 +79,7 @@ export class VoteComponent implements OnDestroy {
 
       // user specific data
       if (this.storeService.userLoggedIn()) {
-        this.dataLoaderService.loadUserAccumulatedFee();
+        this.dataLoaderService.loadUserClaimableFee();
         this.dataLoaderService.loadUserCollectedFees();
         this.dataLoaderService.loadUserValidatorBommDelegation();
       }

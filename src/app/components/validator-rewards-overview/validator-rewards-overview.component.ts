@@ -225,7 +225,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserAccumulatedFeeChange(): void {
-    this.userAccumulatedFeeSub = this.stateChangeService.userAccumulatedFeeChange$.subscribe(fee => {
+    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(fee => {
       this.userAccumulatedFee = fee;
 
       // Detect changes

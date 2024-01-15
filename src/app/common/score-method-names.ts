@@ -53,7 +53,7 @@ export class ScoreMethodNames {
      * FeeDistribution SCORE
      */
     public static GET_VALIDATOR_COLLECTED_FEE = "getValidatorCollectedFee";
-    public static GET_ACCUMULATED_FEE = "getAccumulatedFee";
+    public static GET_CLAIMABLE_FEE = "getClaimableFee";
     public static CLAIM_REWARDS = "claimRewards";
     public static GET_COLLECTED_FEE = "getCollectedFee";
     public static GET_ALL_COLLECTED_FEES = "getAllCollectedFees";
