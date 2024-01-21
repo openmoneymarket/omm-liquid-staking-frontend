@@ -29,6 +29,10 @@ export class ClaimIcxModalComponent {
     return this.claimIcxPayload?.claimableAmount ?? new BigNumber(0);
   }
 
+  getUserIcxBalance(): BigNumber {
+    return this.claimIcxPayload?.userIcxBalance ?? new BigNumber(0);
+  }
+
   getAfterClaimIcxAmount(): BigNumber {
     return this.claimIcxPayload?.afterClaimIcxAmount ?? new BigNumber(0);
   }

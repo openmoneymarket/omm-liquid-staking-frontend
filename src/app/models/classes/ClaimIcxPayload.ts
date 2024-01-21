@@ -14,12 +14,13 @@ export class ClaimIcxPayload implements IActionPayload {
 
     // amount of ICX being staked
     claimableAmount: BigNumber;
-
+    userIcxBalance: BigNumber;
     afterClaimIcxAmount: BigNumber;
 
     constructor(claimableAmount: BigNumber, userIcxBalance: BigNumber) {
         this.claimableAmount = claimableAmount;
         this.afterClaimIcxAmount = claimableAmount.plus(userIcxBalance);
+        this.userIcxBalance = userIcxBalance;
     }
 
     sendTxMessage(): string {

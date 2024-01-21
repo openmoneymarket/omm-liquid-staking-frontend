@@ -393,7 +393,7 @@ export class ScoreService {
 
   /**
    * @description Get user (validator) claimable fee OMM rewards amount
-   * @return BigNumber
+   * @return BigNumber - Amount of claimable sICX
    */
   public async getUserClaimableFee(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
@@ -415,7 +415,7 @@ export class ScoreService {
 
   /**
    * @description Get logged in user (validator) collected/earned rewards
-   * @return BigNumber
+   * @return BigNumber - Amount of sIcx fees collected by validator/user
    */
   public async getValidatorCollectedFees(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
