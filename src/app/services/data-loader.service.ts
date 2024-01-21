@@ -567,7 +567,7 @@ export class DataLoaderService {
     }
   }
 
-  public async loadPrepList(start = 1, end = 100): Promise<void> {
+  public async loadPrepList(start = 1, end = 200): Promise<void> {
     try {
       const prepList = await this.scoreService.getListOfPreps(start, end);
 
