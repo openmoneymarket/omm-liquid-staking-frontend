@@ -70,14 +70,15 @@
                                 <div class="grid-cell">
                                     <dl class="metadata">
                                         <dt>bOMM delegation</dt>
-                                        <dd *ngIf="prepBommDdelegation(prep.address).gt(0)">{{prepBommDdelegation(prep.address) | RndDwn | usFormat}} bOMM</dd>
-                                        <dd *ngIf="!prepBommDdelegation(prep.address).gt(0)">-</dd>
+                                        <dd *ngIf="prepBommDelegation(prep.address).gt(0)">{{prepBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</dd>
+                                        <dd *ngIf="!prepBommDelegation(prep.address).gt(0)">-</dd>
                                     </dl>
                                 </div>
                                 <div class="grid-cell">
                                     <dl class="metadata">
                                         <dt>Total earned</dt>
-                                        <dd>??? ICX</dd>
+                                        <dd *ngIf="prepCollectedFees(prep.address).gt(0)" class="label">{{prepCollectedFees(prep.address) | RndDwn | usFormat}} sICX</dd>
+                                        <dd *ngIf="!prepCollectedFees(prep.address).gt(0)" class="label">-</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -121,11 +122,11 @@
                 <span *ngIf="!userBommDelegation(prep.address).gt(0)" class="label">-</span>
             </td>
             <td>{{prepBommDelegationPercent(prep.address) | rndDwnNPerc: 2}}<br>
-                <span *ngIf="prepBommDdelegation(prep.address).gt(0)" class="label">{{prepBommDdelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
-                <span *ngIf="!prepBommDdelegation(prep.address).gt(0)" class="label">-</span>
+                <span *ngIf="prepBommDelegation(prep.address).gt(0)" class="label">{{prepBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
+                <span *ngIf="!prepBommDelegation(prep.address).gt(0)" class="label">-</span>
             </td>
             <td>{{prepCollectedFeesPercent(prep.address) | rndDwnNPerc: 2}}<br>
-                <span *ngIf="prepCollectedFees(prep.address).gt(0)" class="label">{{prepCollectedFees(prep.address) | RndDwn | usFormat}} ICX</span>
+                <span *ngIf="prepCollectedFees(prep.address).gt(0)" class="label">{{prepCollectedFees(prep.address) | RndDwn | usFormat}} sICX</span>
                 <span *ngIf="!prepCollectedFees(prep.address).gt(0)" class="label">-</span>
             </td>
         </tr>

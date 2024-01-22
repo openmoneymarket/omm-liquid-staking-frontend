@@ -33,9 +33,9 @@ export abstract class Mapper {
   public static mapPrepDelegationsRecordToMap(actualPrepDelegations: Record<PrepAddress, HexString>): Map<PrepAddress, BigNumber> {
     const res = new Map<PrepAddress, BigNumber>();
 
-    for (const prepAddress in actualPrepDelegations) {
+    Object.keys(actualPrepDelegations).forEach((prepAddress: PrepAddress) => {
       res.set(prepAddress, hexToNormalisedNumber(actualPrepDelegations[prepAddress]));
-    }
+    })
 
     return res;
   }

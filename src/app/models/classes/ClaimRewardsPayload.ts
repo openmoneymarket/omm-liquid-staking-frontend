@@ -15,14 +15,14 @@ export class ClaimRewardsPayload implements IActionPayload {
     // amount of ICX being staked
     claimableAmount: BigNumber;
 
-    afterClaimIcxAmount: BigNumber;
+    afterClaimSicxAmount: BigNumber;
 
-    userIcxBalance: BigNumber
+    userSicxBalance: BigNumber
 
-    constructor(claimableAmount: BigNumber, userIcxBalance: BigNumber) {
+    constructor(claimableAmount: BigNumber, userSicxBalance: BigNumber) {
         this.claimableAmount = claimableAmount;
-        this.afterClaimIcxAmount = claimableAmount.plus(userIcxBalance);
-        this.userIcxBalance = userIcxBalance;
+        this.afterClaimSicxAmount = claimableAmount.plus(userSicxBalance);
+        this.userSicxBalance = userSicxBalance;
     }
 
     sendTxMessage(): string {

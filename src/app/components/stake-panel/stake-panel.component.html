@@ -8,7 +8,11 @@
                 <div class="grid-cell">
                     <h3>Stake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-green" (click)="onIcxBalanceClick($event)"><span class="value-wallet-icx">{{userIcxBalance | RndDwn | usFormat: true}}</span> ICX</a></p></div>
+                <div class="grid-cell" *ngIf="userLoggedIn()">
+                    <p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-green" (click)="onIcxBalanceClick($event)">
+                        <span class="value-wallet-icx">{{userIcxBalance | RndDwn | usFormat: true}}</span> ICX</a>
+                    </p>
+                </div>
             </div>
             <!-- Swap from -->
             <div class="grid grid-center input-asset stake">
@@ -30,7 +34,9 @@
             <!-- Swap to -->
             <div class="grid grid-center">
                 <div class="grid-cell"><label for="swap-to">Receive</label></div>
-                <div class="grid-cell"><p class="label text-right">Wallet: {{userSicxBalance | RndDwn | usFormat: true}} sICX</p></div>
+                <div class="grid-cell" *ngIf="userLoggedIn()">
+                    <p class="label text-right">Wallet: {{userSicxBalance | RndDwn | usFormat: true}} sICX</p>
+                </div>
             </div>
             <div class="grid grid-center input-asset unstake">
                 <div class="grid-cell">

@@ -26,16 +26,16 @@ export class ClaimRewardsModalComponent {
   ) {
   }
 
-  getUserIcxbalance(): BigNumber {
-    return this.payload?.userIcxBalance ?? new BigNumber(0);
+  getUserSicxbalance(): BigNumber {
+    return this.payload?.userSicxBalance ?? new BigNumber(0);
   }
 
   getClaimableAmount(): BigNumber {
     return this.payload?.claimableAmount ?? new BigNumber(0);
   }
 
-  getAfterClaimIcxAmount(): BigNumber {
-    return this.payload?.afterClaimIcxAmount ?? new BigNumber(0);
+  getAfterClaimSicxAmount(): BigNumber {
+    return this.payload?.afterClaimSicxAmount ?? new BigNumber(0);
   }
 
   onCancelClick(e: MouseEvent): void {

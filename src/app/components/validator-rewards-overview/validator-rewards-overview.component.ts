@@ -7,7 +7,7 @@ import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
 import {ModalType} from "../../models/enums/ModalType";
 import {ClaimRewardsPayload} from "../../models/classes/ClaimRewardsPayload";
-import {ICX} from "../../common/constants";
+import {ICX, SICX} from "../../common/constants";
 import {Calculations} from "../../common/calculations";
 import {Address, PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
 import {convertICXTosICX} from "../../common/utils";
@@ -39,8 +39,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   undelegatedIcx = new BigNumber(0);
 
   // User values
-  userAccumulatedFee = new BigNumber(0);
-  userValidatorCollectedFee = new BigNumber(0);
+  userAccumulatedFeeInSicx = new BigNumber(0);
+  userValidatorCollectedFeeInSicx = new BigNumber(0);
   userValidatorPrepBommDelegation = new BigNumber(0);
   userDelegationWorkingbOmmBalance = new BigNumber(0);
   userWallet: Wallet | undefined;
@@ -101,8 +101,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private resetUserStateValues(): void {
-    this.userAccumulatedFee = new BigNumber(0);
-    this.userValidatorCollectedFee = new BigNumber(0);
+    this.userAccumulatedFeeInSicx = new BigNumber(0);
+    this.userValidatorCollectedFeeInSicx = new BigNumber(0);
     this.userValidatorPrepBommDelegation = new BigNumber(0);
     this.userDelegationWorkingbOmmBalance = new BigNumber(0)
   }
@@ -125,7 +125,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   private subscribeToUserCollectedFeeChange(): void {
     this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe(value => {
-      this.userValidatorCollectedFee = value;
+      this.userValidatorCollectedFeeInSicx = value;
 
       // Detect changes
       this.cdRef.detectChanges();
@@ -225,8 +225,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserAccumulatedFeeChange(): void {
-    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(fee => {
-      this.userAccumulatedFee = fee;
+    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(feeInSicx => {
+      this.userAccumulatedFeeInSicx = feeInSicx;
 
       // Detect changes
       this.cdRef.detectChanges();
@@ -265,11 +265,15 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
+
   onClaimRewardsClick(e: MouseEvent): void {
     e.stopPropagation();
 
-    if (this.userLoggedIn() && this.userAccumulatedFee.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_REWARDS, new ClaimRewardsPayload(this.userAccumulatedFee, this.getUserTokenBalance(ICX)));
+    if (this.userLoggedIn() && this.userAccumulatedFeeInSicx.gt(0)) {
+      this.stateChangeService.modalUpdate(ModalType.CLAIM_REWARDS, new ClaimRewardsPayload(
+          this.userAccumulatedFeeInSicx,
+          this.getUserTokenBalance(SICX)
+      ));
     }
   }
 
@@ -286,8 +290,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   shouldShowValidatorSection(): boolean {
-    return this.userAccumulatedFee.gt(0)
-        || this.userValidatorCollectedFee.gt(0)
+    return this.userAccumulatedFeeInSicx.gt(0)
+        || this.userValidatorCollectedFeeInSicx.gt(0)
         || this.userValidatorPrepBommDelegation.gt(0)
         || this.icxDelegation.gt(0)
   }

@@ -393,7 +393,7 @@ export class ScoreService {
 
   /**
    * @description Get user (validator) claimable fee OMM rewards amount
-   * @return BigNumber
+   * @return BigNumber - Amount of claimable sICX
    */
   public async getUserClaimableFee(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
@@ -415,7 +415,7 @@ export class ScoreService {
 
   /**
    * @description Get logged in user (validator) collected/earned rewards
-   * @return BigNumber
+   * @return BigNumber - Amount of sIcx fees collected by validator/user
    */
   public async getValidatorCollectedFees(): Promise<BigNumber> {
     this.checkerService.checkUserLoggedInAndAllAddressesLoaded();
@@ -444,11 +444,9 @@ export class ScoreService {
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
         ScoreMethodNames.GET_ALL_COLLECTED_FEES, {}, IconTransactionType.READ);
 
-    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+    const res: Record<PrepAddress, HexString> = (await this.iconApiService.iconService.call(tx).execute()) as Record<PrepAddress, HexString>;
 
-    log.debug("getAllValidatorsCollectedFees: ", res);
-
-    return Mapper.mapPrepDelegationsRecordToMap(res);
+    return Mapper.mapPrepDelegationsRecordToMap(res)
   }
 
   /**

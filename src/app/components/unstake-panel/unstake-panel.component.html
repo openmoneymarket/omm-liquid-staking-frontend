@@ -7,7 +7,10 @@
                 <div class="grid-cell">
                     <h3>Unstake</h3>
                 </div>
-                <div class="grid-cell"><p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple" (click)="onSicxBalanceClick($event)"><span class="value-wallet-sicx" >{{userSicxBalance | RndDwn | usFormat: true}}</span> sICX</a></p></div>
+                <div class="grid-cell" *ngIf="userLoggedIn()">
+                    <p class="label text-right">Wallet: <a href="javascript:void(0);" class="text-purple" (click)="onSicxBalanceClick($event)"><span class="value-wallet-sicx" >{{userSicxBalance | RndDwn | usFormat: true}}</span> sICX</a>
+                    </p>
+                </div>
             </div>
 
             <div class="grid grid-center input-asset stake">

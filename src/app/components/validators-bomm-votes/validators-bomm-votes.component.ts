@@ -309,19 +309,24 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
             this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
+
+        // reset votes state
+        this.resetAdjustVotesActive();
+        this.resetDynamicState();
+
+        // detect changes
+        this.cdRef.detectChanges();
       } else if (this.userAllocatedVotesPercent().eq(0)) {
         // remove delegations
         this.stateChangeService.modalUpdate(ModalType.REMOVE_ALL_DELEGATIONS, new RemoveDelegationsPayload(true));
+
+        // reset votes state
+        this.resetAdjustVotesActive();
+        this.resetDynamicState();
+
+        // detect changes
+        this.cdRef.detectChanges();
       }
-
-      // reset votes state
-      this.resetAdjustVotesActive();
-      this.resetDynamicState();
-
-      // detect changes
-      this.cdRef.detectChanges();
-    } else {
-      log.debug("User delegation hasn't been changed!");
     }
   }
 
@@ -376,7 +381,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   prepCollectedFeesPercent(address: string): BigNumber {
-    if (this.prepCollectedFees(address).gt(0)) {
+    if (this.prepCollectedFees(address).gt(0) && this.totalAllValidatorCollectedFees.gt(0)) {
       return (this.prepCollectedFees(address)).dividedBy(this.totalAllValidatorCollectedFees);
     } else {
       return new BigNumber(0);
@@ -387,7 +392,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     return this.prepsBommDelegationsInIcxMap.get(address) ?? new BigNumber(0);
   }
 
-  prepBommDdelegation(address: string): BigNumber {
+  prepBommDelegation(address: string): BigNumber {
     const icxDelegation = this.prepsBommDelegationsInIcxMap.get(address);
 
     if (icxDelegation && this.delegationPower.gt(0)) {
@@ -402,19 +407,17 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   userDelegationHasChanged(): boolean {
-    if (this.userDelegationDetailsMap.size != this.userDynamicDelegationDetailsMap.size) return true;
-
     // iterate user dynamic delegations and compare to user delegations
     for (const userDelegation of Array.from(this.userDelegationDetailsMap.values())) {
       const userDynamicDelegation = this.userDynamicDelegationDetailsMap.get(userDelegation.address)
 
-      // if user delegation for prep address don't exist or is not equal to user dynamic delegation return true
-      if (!userDynamicDelegation || !userDelegation.percentage.eq(userDynamicDelegation)) {
-        return false
+      // if dynamic user delegation for prep address don't exist or is not equal to user delegation return true
+      if (userDynamicDelegation == undefined || (!userDelegation.percentage.eq(userDynamicDelegation))) {
+        return true;
       }
     }
 
-    return true;
+    return false;
   }
 
   userAllocatedVotesPercent(): BigNumber {
