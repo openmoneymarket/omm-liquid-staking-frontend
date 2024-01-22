@@ -8,7 +8,7 @@ import {ReloaderService} from "./reloader.service";
 import {ICON_BLOCK_INTERVAL, ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
 import BigNumber from "bignumber.js";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {TokenSymbol} from "../models/Types/ModalTypes";
+import {PrepAddress, TokenSymbol} from "../models/Types/ModalTypes";
 import {lastValueFrom, take} from "rxjs";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
@@ -518,7 +518,7 @@ export class DataLoaderService {
 
   public async loadAllValidatorsCollectedFees(): Promise<void> {
     try {
-      const res = await this.scoreService.getAllValidatorsCollectedFees();
+      const res: Map<PrepAddress, BigNumber> = await this.scoreService.getAllValidatorsCollectedFees();
       this.stateChangeService.allValidatorsCollectedFeesUpdate(res);
     } catch (e) {
       log.error("Error in loadAllValidatorsCollectedFees:");

@@ -444,11 +444,9 @@ export class ScoreService {
     const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.FeeDistribution,
         ScoreMethodNames.GET_ALL_COLLECTED_FEES, {}, IconTransactionType.READ);
 
-    const res: Record<PrepAddress, HexString> = await this.iconApiService.iconService.call(tx).execute();
+    const res: Record<PrepAddress, HexString> = (await this.iconApiService.iconService.call(tx).execute()) as Record<PrepAddress, HexString>;
 
-    log.debug("getAllValidatorsCollectedFees: ", res);
-
-    return Mapper.mapPrepDelegationsRecordToMap(res);
+    return Mapper.mapPrepDelegationsRecordToMap(res)
   }
 
   /**

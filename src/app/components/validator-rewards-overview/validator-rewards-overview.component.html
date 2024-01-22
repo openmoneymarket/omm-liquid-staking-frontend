@@ -9,13 +9,13 @@
     <!-- Your liquidity -->
     <div id="your-liquidity" class="grid panel">
         <!-- Claim rewards -->
-        <div class="grid-cell text-center border-right" [ngStyle]="!userAccumulatedFeeInIcx.gt(0) | hide">
-            <p class="reward-amount">{{userAccumulatedFeeInIcx | RndDwn | usFormat}} ICX</p>
+        <div class="grid-cell text-center border-right" [ngStyle]="!userAccumulatedFeeInSicx.gt(0) | hide">
+            <p class="reward-amount">{{userAccumulatedFeeInSicx | RndDwn | usFormat}} sICX</p>
             <a href="javascript:void(0);" class="button modal-trigger" style="margin-top: 5px;" data-modal="modal-claim-rewards"
                (click)="onClaimRewardsClick($event)">Claim rewards</a>
         </div>
 
-        <div class="grid-cell text-center border-right" [ngStyle]="userAccumulatedFeeInIcx.gt(0) | hide">
+        <div class="grid-cell text-center border-right" [ngStyle]="userAccumulatedFeeInSicx.gt(0) | hide">
             <p style="margin-top: 25px;" class="label">No rewards to claim</p>
         </div>
 
@@ -23,9 +23,9 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>Total earned</dt>
-                <dd *ngIf="userValidatorCollectedFeeInIcx.plus(userAccumulatedFeeInIcx).gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFeeInIcx.plus(userAccumulatedFeeInIcx) | RndDwn | usFormat}} <span class="label">ICX</span><br>
-                    <span class="label">${{userValidatorCollectedFeeInIcx.plus(userAccumulatedFeeInIcx).multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
-                <dd *ngIf="!(userValidatorCollectedFeeInIcx.plus(userAccumulatedFeeInIcx).gt(0) && icxUsdPrice().gt(0))">-</dd>
+                <dd *ngIf="userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx) | RndDwn | usFormat}} <span class="label">sICX</span><br>
+                    <span class="label">${{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
+                <dd *ngIf="!(userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && icxUsdPrice().gt(0))">-</dd>
 
             </dl>
         </div>

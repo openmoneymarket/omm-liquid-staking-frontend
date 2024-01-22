@@ -253,19 +253,24 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
             this.userDelegationWorkingbOmmBalance.gt(0)
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
+
+        // reset votes state
+        this.resetAdjustVotesActive();
+        this.resetDynamicState();
+
+        // detect changes
+        this.cdRef.detectChanges();
       } else if (this.userAllocatedVotesPercent().eq(0)) {
         // remove delegations
         this.stateChangeService.modalUpdate(ModalType.REMOVE_ALL_DELEGATIONS, new RemoveDelegationsPayload(false));
+
+        // reset votes state
+        this.resetAdjustVotesActive();
+        this.resetDynamicState();
+
+        // detect changes
+        this.cdRef.detectChanges();
       }
-
-      // reset votes state
-      this.resetAdjustVotesActive();
-      this.resetDynamicState();
-
-      // detect changes
-      this.cdRef.detectChanges();
-    } else {
-      log.debug("User delegation hasn't been changed!");
     }
   }
 
@@ -296,21 +301,17 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   userDelegationHasChanged(): boolean {
-    if (this.actualUserDelegationPercentage.size != this.actualDynUserDelegationPercentage.size) {
-      return true;
-    }
-
     // iterate user dynamic delegations and compare to user delegations
-    for (const [prepaAddress, dynamicDelegation] of this.actualDynUserDelegationPercentage.entries()) {
-      const userDelegation = this.actualUserDelegationPercentage.get(prepaAddress);
+    for (const [prepaAddress, userDelegation] of this.actualUserDelegationPercentage.entries()) {
+      const dynamicDelegation = this.actualDynUserDelegationPercentage.get(prepaAddress);
 
-      // if user delegation for prep address don't exist or is not equal to user dynamic delegation return true
-      if (!userDelegation || !userDelegation.eq(dynamicDelegation)) {
-        return false
+      // if dynamic user delegation for prep address don't exist or is not equal to user delegation return true
+      if (dynamicDelegation == undefined || (!userDelegation.eq(dynamicDelegation))) {
+        return true;
       }
     }
 
-    return true;
+    return false;
   }
 
   userAllocatedVotesPercent(): BigNumber {
