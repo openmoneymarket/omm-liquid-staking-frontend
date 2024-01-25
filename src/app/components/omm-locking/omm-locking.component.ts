@@ -15,6 +15,7 @@ import {
 import {LockDate} from "../../models/enums/LockDate";
 import {Calculations} from "../../common/calculations";
 import {
+  DEFAULT_INPUT_DELAY_MS,
   getLockDateFromMilliseconds,
   LOCKED_UNTIL_DATE_OPTIONS,
   lockedDatesToMilliseconds
@@ -259,7 +260,7 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   onLockedOmmInputLostFocus(e: KeyboardEvent | ClipboardEvent | FocusEvent): void {
     this.delay(() => {
       this.processLockedOmmInput(e);
-    }, 650 );
+    }, DEFAULT_INPUT_DELAY_MS );
   }
 
   processLockedOmmInput(e: KeyboardEvent | ClipboardEvent | FocusEvent): void {
