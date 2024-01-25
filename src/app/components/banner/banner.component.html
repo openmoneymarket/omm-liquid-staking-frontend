@@ -1,0 +1,15 @@
+<div [ngStyle]="!showBanner | hide"  class="banner">
+  <div class="grid grid-center">
+    <div class="grid-cell">
+      <p class="label" #bannerContent>
+        Omm has retired the money markets and is now a <a href="https://docs.omm.finance/reference/liquid-staking-pivot" target="_blank">liquid staking protocol</a>. To withdraw your money from the markets, go to <a href="https://markets.omm.finance/" target="_blank">markets.omm.finance</a>
+      </p>
+    </div>
+    <div class="grid-cell text-right close">
+      <a href="javascript:void(0);" (click)="onBannerExitClick()">
+        <img src="assets/img/icon/cross.svg" alt="">
+      </a>
+    </div>
+  </div>
+
+</div>

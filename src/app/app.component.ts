@@ -9,6 +9,7 @@ import {DataLoaderService} from "./services/data-loader.service";
 import {ModalType} from "./models/enums/ModalType";
 import {StateChangeService} from "./services/state-change.service";
 import {Subscription} from "rxjs";
+import {BannerComponent} from "./components/banner/banner.component";
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ import {Subscription} from "rxjs";
         HeaderComponent,
         MainComponent,
         ModalContainerComponent,
+        BannerComponent,
     ],
   standalone: true
 })
