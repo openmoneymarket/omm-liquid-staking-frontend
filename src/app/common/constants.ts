@@ -2,7 +2,6 @@ import {Times} from "../models/classes/Times";
 import {LockDate} from "../models/enums/LockDate";
 import BigNumber from "bignumber.js";
 import {Irc2Token} from "../models/classes/Irc2Token";
-import {environment} from "../../environments/environment";
 
 // TOKENS
 
@@ -35,8 +34,6 @@ export const SEVEN_DAYS_IN_BLOCK_HEIGHT = 302400;
 export const defaultPrepLogoUrl = "assets/img/icon/profile.svg";
 
 export const ommForumDomain = "forum.omm.finance";
-
-export const ommBannerExitKey = "omm-bnr-closed5";
 
 export const contributorsMap = new Map([
     ["hxfba37e91ccc13ec1dab115811f73e429cde44d48", true], // ICX_Station
@@ -107,3 +104,4 @@ export function getLockDateFromMilliseconds(milliseconds: BigNumber): LockDate {
 // 1 year lockup = 0.25 veOMM per 1 OMM staked
 // 2 year lockup = 0.5 veOMM per 1 OMM staked
 // 4 year lockup = 1 veOMM per 1 OMM staked
+

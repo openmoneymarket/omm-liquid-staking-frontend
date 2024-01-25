@@ -4,6 +4,18 @@ import {environment} from "../../environments/environment";
 import {UserUnstakeData} from "../models/classes/UserUnstakeInfo";
 import IconService from "icon-sdk-js";
 
+export function hashStringToUniqueId(data: string): number {
+    let hash = 0, i, chr;
+    if (data.length === 0) return hash;
+    for (i = 0; i < data.length; i++) {
+        chr = data.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+
+    return hash;
+}
+
 export function numToUsLocaleString(num: BigNumber | string): string {
     const dp = new BigNumber(num).dp() ?? 0;
     if (typeof num === "string") {
