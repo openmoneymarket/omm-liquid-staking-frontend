@@ -4,7 +4,12 @@ import {Observable, Subscription} from "rxjs";
 import {StateChangeService} from "../../services/state-change.service";
 import {YourPrepVote} from "../../models/classes/YourPrepVote";
 import BigNumber from "bignumber.js";
-import {contributorsMap, defaultPrepLogoUrl, prepsOfferingIncentiveMap} from "../../common/constants";
+import {
+  contributorsMap,
+  defaultPrepLogoUrl,
+  prepsOfferingIncentiveMap,
+  VALIDATOR_INPUT_DELAY_MS
+} from "../../common/constants";
 import {Prep, PrepList} from "../../models/classes/Preps";
 import {DeviceDetectorService} from "ngx-device-detector";
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
@@ -265,7 +270,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   onDelegationInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
     this.delay(() => {
       this.processDelegationInput(e, address);
-    }, 650 );
+    }, VALIDATOR_INPUT_DELAY_MS );
   }
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {

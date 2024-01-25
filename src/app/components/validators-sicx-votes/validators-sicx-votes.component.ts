@@ -19,7 +19,13 @@ import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {UpdateDelegationPayload} from "../../models/classes/updateDelegationPayload";
 import {ModalType} from "../../models/enums/ModalType";
 import {RemoveDelegationsPayload} from "../../models/classes/removeDelegationsPayload";
-import {contributorsMap, defaultPrepLogoUrl, prepsOfferingIncentiveMap, SICX} from "../../common/constants";
+import {
+  contributorsMap,
+  defaultPrepLogoUrl,
+  prepsOfferingIncentiveMap,
+  SICX,
+  VALIDATOR_INPUT_DELAY_MS
+} from "../../common/constants";
 import {usLocale} from "../../common/formats";
 import {YourPrepVote} from "../../models/classes/YourPrepVote";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
@@ -209,7 +215,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   onDelegationInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
     this.delay(() => {
       this.processDelegationInput(e, address);
-    }, 650 );
+    }, VALIDATOR_INPUT_DELAY_MS );
   }
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
