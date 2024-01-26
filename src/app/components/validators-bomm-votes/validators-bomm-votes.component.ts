@@ -87,6 +87,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   userDelegationDetailsSub?: Subscription;
   userDelegationWorkingbOmmSub?: Subscription;
   prepListChangeSub?: Subscription;
+  topPrepChangeSub?: Subscription;
   delegationOmmTotalWorkingSupplySub?: Subscription;
   undelegatedIcxSub?: Subscription;
   prepsBommDelegationsSub?: Subscription;
@@ -110,6 +111,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.userDelegationDetailsSub?.unsubscribe();
     this.userDelegationWorkingbOmmSub?.unsubscribe();
     this.prepListChangeSub?.unsubscribe();
+    this.topPrepChangeSub?.unsubscribe();
     this.delegationOmmTotalWorkingSupplySub?.unsubscribe();
     this.prepsBommDelegationsSub?.unsubscribe();
     this.searchSubjectSub?.unsubscribe();

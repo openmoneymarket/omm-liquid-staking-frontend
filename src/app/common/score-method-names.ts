@@ -120,7 +120,7 @@ export class ScoreMethodNames {
     */
     public static GET_TODAY_RATE = "getTodayRate";
     public static GET_TOTAL_STAKE = "getTotalStake";
-    public static GET_PREP_TOP_LIST = "getTopPreps";
+    public static GET_TOP_PREPS = "getTopPreps";
     public static CLAIM_UNSTAKED_ICX = "claimUnstakedICX";
     public static STAKE_ICX = "stakeICX";
     public static UNSTAKE_sICX = "unstake";
