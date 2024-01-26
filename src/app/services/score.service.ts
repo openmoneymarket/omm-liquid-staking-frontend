@@ -866,7 +866,7 @@ export class ScoreService {
    * @description Get list of PReps
    * @return  Returns the status of all registered P-Rep candidates in descending order by delegated ICX amount
    */
-  public async getListOfPreps(startRanking = 1, endRanking = 100): Promise<PrepList> {
+  public async getListOfPreps(startRanking = 1, endRanking = 200): Promise<PrepList> {
     const params = {
       startRanking: IconConverter.toHex(startRanking),
       endRanking: IconConverter.toHex(endRanking)
@@ -877,8 +877,19 @@ export class ScoreService {
 
     const prepList = await this.iconApiService.iconService.call(tx).execute();
 
-
     return Mapper.mapPrepList(prepList);
+  }
+
+  /**
+   * @description Get list of top preps from Staking contract
+   * Preps with 90%+ productivity and less than 10% commission are eligible for OMM delegation
+   * @return  Returns an array of top preps in staking contract
+   */
+  public async getTopPreps(): Promise<PrepAddress[]> {
+    const tx = this.iconApiService.buildTransaction("",  this.storeService.allAddresses!.systemContract.Staking,
+        ScoreMethodNames.GET_TOP_PREPS, {}, IconTransactionType.READ);
+
+    return this.iconApiService.iconService.call(tx).execute();
   }
 
   /**

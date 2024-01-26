@@ -195,8 +195,8 @@ export class DataLoaderService {
       this.checkerService.checkAllAddressesLoaded();
 
       const [ommBalance, sIcxBalance] = await Promise.all([
-        this.scoreService.getTokenBalance(OMM, this.storeService.allAddresses?.systemContract.DaoFund!),
-        this.scoreService.getTokenBalance(SICX, this.storeService.allAddresses?.systemContract.DaoFund!)
+        this.scoreService.getTokenBalance(OMM, this.storeService.allAddresses!.systemContract.DaoFund),
+        this.scoreService.getTokenBalance(SICX, this.storeService.allAddresses!.systemContract.DaoFund)
       ]);
 
       this.stateChangeService.daoFundBalanceUpdate({
@@ -569,7 +569,13 @@ export class DataLoaderService {
 
   public async loadPrepList(start = 1, end = 200): Promise<void> {
     try {
-      const prepList = await this.scoreService.getListOfPreps(start, end);
+      const [prepList, topPrepList] = await Promise.all([
+        this.scoreService.getListOfPreps(start, end),
+        this.scoreService.getTopPreps(),
+      ])
+
+      // filter out preps which are not in topPrepList
+      prepList.preps = prepList.preps.filter(prep => topPrepList.includes(prep.address))
 
       // set logos
       try {
