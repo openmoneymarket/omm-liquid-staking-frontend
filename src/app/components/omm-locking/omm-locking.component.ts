@@ -38,7 +38,7 @@ import {VotingPowerOverviewComponent} from "../voting-power-overview/voting-powe
   selector: 'app-omm-locking',
   standalone: true,
   imports: [
-      CommonModule,
+    CommonModule,
     OmmLockSliderComponent,
     UsFormatPipe,
     HideElementPipe,

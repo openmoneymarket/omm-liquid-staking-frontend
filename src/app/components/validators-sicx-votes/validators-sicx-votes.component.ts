@@ -33,7 +33,6 @@ import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import log from "loglevel";
 import {toNDecimalRoundedDownPercentString} from "../../common/utils";
 
 @Component({
@@ -401,6 +400,10 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   userLoggedIn(): boolean {
     return this.userWallet != undefined;
+  }
+
+  shouldShowUserDelegations(): boolean {
+    return this.userLoggedIn() && (this.userSicxBalance.gt(0) || this.actualUserDelegationPercentage.size > 0);
   }
 
   private handleIsSIcxVotesActiveChange(newValue: boolean, oldValue: boolean): void {

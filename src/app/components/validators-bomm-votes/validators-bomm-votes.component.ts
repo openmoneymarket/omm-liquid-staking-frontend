@@ -486,6 +486,10 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     return this.userWallet != undefined;
   }
 
+  shouldShowUserDelegations(): boolean {
+    return this.userLoggedIn() && (this.userDelegationWorkingbOmmBalance.gt(0) || this.userDelegationDetails.length > 0);
+  }
+
   private handleIsbOmmVotesActiveChange(newValue: boolean, oldValue: boolean): void {
     if (newValue != oldValue) {
       this.resetDynamicState();

@@ -2,8 +2,9 @@
     <thead>
     <tr>
         <th>Rank</th>
-        <th>Name<a href="javascript:void(0);" class="mobile-adjust" [ngStyle]="(adjustVotesActiveMobile || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
-        </a><span class="mobile-adjust-options" [ngStyle]="!adjustVotesActiveMobile | hide">
+        <th>Name<a href="javascript:void(0);" class="mobile-adjust" [ngStyle]="(adjustVotesActiveMobile || !shouldShowUserDelegations()) | hide" (click)="onAdjustVotesClick($event, true)">Edit<img src="assets/img/icon/edit.svg" alt="">
+        </a>
+            <span class="mobile-adjust-options" [ngStyle]="!adjustVotesActiveMobile | hide">
                 <a href="javascript:void(0);" class="text-red mobile-adjust-cancel" (click)="onCancelAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
                 <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm" (click)="onConfirmClick($event)">
                     <ng-container *ngIf="userAllocatedVotesPercent().eq(1) || userAllocatedVotesPercent().eq(0)">Confirm</ng-container>
@@ -16,9 +17,11 @@
                             <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
                         </div>
                     </span>
-                </a></span></th>
-        <th class="text-right" [ngStyle]="!(userLoggedIn() && userDelegationWorkingbOmmBalance.gt(0)) | hide">
-            <a href="javascript:void(0);" class="adjust-votes" [ngStyle]="(adjustVotesActive || !userLoggedIn()) | hide" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
+                </a>
+            </span>
+        </th>
+        <th class="text-right" [ngStyle]="!shouldShowUserDelegations() | hide">
+            <a href="javascript:void(0);" class="adjust-votes" [ngStyle]="(adjustVotesActive || !shouldShowUserDelegations()) | hide" (click)="onAdjustVotesClick($event)">Edit<img src="assets/img/icon/edit.svg" alt="">
             </a><span class="adjust-options" [ngStyle]="!adjustVotesActive | hide">
                 <a href="javascript:void(0);" class="text-red adjust-cancel" (click)="onCancelAdjustVotesClick($event)">Cancel</a> <span class="label"> | </span>
                 <a href="javascript:void(0);" class="modal-trigger adjust-confirm" data-modal="modal-bomm-confirm" (click)="onConfirmClick($event)">
@@ -82,7 +85,7 @@
                                     </dl>
                                 </div>
                             </div>
-                            <div class="grid borrow-group" *ngIf="userLoggedIn() && userDelegationWorkingbOmmBalance.gt(0)">
+                            <div class="grid borrow-group" *ngIf="shouldShowUserDelegations()">
                                 <div class="grid-cell">
                                     <dl class="metadata">
                                         <dt>Your delegation</dt>
@@ -107,7 +110,7 @@
                 </div>
             </td>
 
-            <td *ngIf="userLoggedIn() && userDelegationWorkingbOmmBalance.gt(0)">
+            <td *ngIf="shouldShowUserDelegations()">
                 <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
                 <input type="text" name="" class="input-edit"
                        [ngStyle]="!adjustVotesActive | hide"
