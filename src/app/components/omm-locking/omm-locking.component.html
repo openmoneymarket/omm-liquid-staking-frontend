@@ -3,7 +3,9 @@
     <div class="grid">
         <div class="grid-cell">
             <h2>Voting power <span class="bomm-tooltip tooltip">
-                <span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
+                <span class="tooltip-item">
+                    <img src="assets/img/icon/question.svg" class="tooltip-icon" alt="">
+                </span>
                 <p class="bomm-tooltip-content tooltip-content">Lock up OMM to participate in governance and delegate votes to ICON validators.<br><br>A longer lock-up time gives you more bOMM voting power. 1 bOMM = 1 OMM locked for 4 years, and the amount decreases over time.</p>
             </span></h2>
         </div>
@@ -26,7 +28,7 @@
                             </h3>
                         </div>
                         <!-- Button -->
-                        <div class="grid-cell" *ngIf="userLoggedIn()">
+                        <div class="grid-cell"[ngStyle]="shouldHideLockSlider() | hide">
                             <p class="text-right {{lockAdjustActive ? 'hide' : ''}}">
                                 <a href="javascript:void(0);" class="button" id="boost-adjust" style="margin-top: 0;" (click)="onLockAdjustClick($event)">{{adjustLabel()}}</a>
                             </p>
