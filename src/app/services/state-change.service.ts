@@ -112,7 +112,7 @@ export class StateChangeService {
   private userOmmTokenBalanceDetailsChange = new ReplaySubject<OmmTokenBalanceDetails>(1);
   userOmmTokenBalanceDetailsChange$ = this.userOmmTokenBalanceDetailsChange.asObservable();
 
-  private userDelegationWorkingbOmmChange = new ReplaySubject<BigNumber>(1);
+  private userDelegationWorkingbOmmChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
   userDelegationWorkingbOmmChange$ = this.userDelegationWorkingbOmmChange.asObservable();
 
   private userClaimableFeeChange = new ReplaySubject<BigNumber>(1);

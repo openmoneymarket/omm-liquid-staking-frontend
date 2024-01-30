@@ -634,8 +634,8 @@ export class DataLoaderService {
 
   public async afterUserActionReload(): Promise<void> {
     // reload core and user data
-    this.loadCoreData();
-    this.loadUserSpecificData();
+    await this.loadCoreData();
+    await this.loadUserSpecificData();
   }
 
   public async loadCoreData(): Promise<void> {
