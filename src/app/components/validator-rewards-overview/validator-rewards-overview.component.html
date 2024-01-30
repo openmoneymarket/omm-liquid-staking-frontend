@@ -23,9 +23,9 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>Total earned</dt>
-                <dd *ngIf="userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && icxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx) | RndDwn | usFormat}} <span class="label">sICX</span><br>
-                    <span class="label">${{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).multipliedBy(icxUsdPrice()) | RndDwn | usFormat}}</span></dd>
-                <dd *ngIf="!(userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && icxUsdPrice().gt(0))">-</dd>
+                <dd *ngIf="userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && sicxUsdPrice().gt(0)" class="value-rewards-total">{{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx) | RndDwn | usFormat}} <span class="label">sICX</span><br>
+                    <span class="label">${{userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).multipliedBy(sicxUsdPrice()) | RndDwn | usFormat}}</span></dd>
+                <dd *ngIf="!(userValidatorCollectedFeeInSicx.plus(userAccumulatedFeeInSicx).gt(0) && sicxUsdPrice().gt(0))">-</dd>
 
             </dl>
         </div>
