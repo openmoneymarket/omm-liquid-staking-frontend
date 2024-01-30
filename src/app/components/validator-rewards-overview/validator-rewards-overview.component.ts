@@ -277,8 +277,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  icxUsdPrice(): BigNumber {
-    return this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0);
+  sicxUsdPrice(): BigNumber {
+    return convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0);
   }
 
   public userWalletAddress(): Address {
