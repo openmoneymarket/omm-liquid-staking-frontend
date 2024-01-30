@@ -300,6 +300,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     e.stopPropagation();
 
     if (this.userDelegationHasChanged()) {
+      // delegation has changed
       if (this.userAllocatedVotesPercent().eq(1)) {
         // update delegations
         const payload = new UpdateDelegationPayload(
@@ -334,6 +335,12 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
         // detect changes
         this.cdRef.detectChanges();
       }
+    } else {
+      // delegation has not changed
+
+      // reset votes state
+      this.resetAdjustVotesActive();
+      this.resetDynamicState();
     }
   }
 
