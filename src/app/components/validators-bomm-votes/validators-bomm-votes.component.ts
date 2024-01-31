@@ -27,7 +27,6 @@ import {IntersectionObserverDirective} from "../../directives/observe-visibility
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {toNDecimalRoundedDownPercentString} from "../../common/utils";
-import log from "loglevel";
 
 @Component({
   selector: 'app-validators-bomm-votes',
@@ -65,6 +64,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   delegationPower = new BigNumber(0);
   ommTotalDelegationPower = new BigNumber(0);
   prepList?: PrepList;
+  prepAddressList?: PrepAddress[];
   preps: Prep[] = [];
   prepsBommDelegationsInIcxMap = new Map<PrepAddress, BigNumber>;
   allValidatorCollectedFeesMap = new Map<PrepAddress, BigNumber>;
@@ -212,14 +212,47 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     });
   }
 
-  private subscribeToPrepListChange(): void {
-    this.prepListChangeSub = this.stateChangeService.prepListChange$.subscribe(value => {
-      this.prepList = value;
-      this.preps = value.preps;
+  private subscribeToUserDelegationDetailsChange(): void {
+    this.userDelegationDetailsSub = this.stateChangeService.userDelegationDetailsChange$.subscribe(value => {
+      this.userDelegationDetails = value;
+      this.userDelegationDetailsMap = new Map(value.map(v => [v.address, v]));
+      this.userDynamicDelegationDetailsMap = new Map(value.map(v => [v.address, v.percentage]));
+
+      // filter out non top preps from user delegation
+      this.filterOutNonTopPrepsFromUserDelegation();
 
       // detect changes
       this.cdRef.detectChanges();
     })
+  }
+
+  private subscribeToPrepListChange(): void {
+    this.prepListChangeSub = this.stateChangeService.prepListChange$.subscribe(value => {
+      this.prepList = value;
+      this.prepAddressList = value.preps.map(prep => prep.address);
+      this.preps = value.preps;
+
+      // filter out non top preps from user delegation
+      this.filterOutNonTopPrepsFromUserDelegation();
+
+      // detect changes
+      this.cdRef.detectChanges();
+    })
+  }
+
+  private filterOutNonTopPrepsFromUserDelegation(): void {
+    if (
+        this.prepList
+        && this.userDelegationDetails
+        && this.userDelegationDetailsMap
+        && this.prepAddressList && this.prepAddressList.length > 0
+        && this.userDynamicDelegationDetailsMap
+    ) {
+      const topPreps = this.prepAddressList;
+      this.userDelegationDetails = this.userDelegationDetails.filter(v => topPreps.includes(v.address));
+      this.userDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v]));
+      this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v.percentage]));
+    }
   }
 
   private subscribeToUserDelegationWorkingbOmmChange(): void {
@@ -236,17 +269,6 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
       this.undelegatedIcx = value;
       this.refreshValues();
-
-      // detect changes
-      this.cdRef.detectChanges();
-    })
-  }
-
-  private subscribeToUserDelegationDetailsChange(): void {
-    this.userDelegationDetailsSub = this.stateChangeService.userDelegationDetailsChange$.subscribe(value => {
-      this.userDelegationDetails = value;
-      this.userDelegationDetailsMap = new Map(value.map(v => [v.address, v]));
-      this.userDynamicDelegationDetailsMap = new Map(value.map(v => [v.address, v.percentage]));
 
       // detect changes
       this.cdRef.detectChanges();
