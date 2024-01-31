@@ -33,7 +33,7 @@ import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {toNDecimalRoundedDownPercentString} from "../../common/utils";
+import {filterMapByKeys, toNDecimalRoundedDownPercentString} from "../../common/utils";
 
 @Component({
   selector: 'app-validators-sicx-votes',
@@ -58,6 +58,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   ready = false;
 
   prepList?: PrepList;
+  prepAddressList?: PrepAddress[];
   preps: Prep[] = [];
   actualPrepDelegations = new Map<PrepAddress, BigNumber>(); // votes in ICX
   totalActualPrepDelegations = new BigNumber(0);
@@ -193,8 +194,11 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   private subscribeToActualUserDelegationPercentageChange(): void {
     this.actualUserDelegationPercentageSub = this.stateChangeService.actualUserDelegationPercentageChange$.subscribe(value => {
-      this.actualUserDelegationPercentage = value;
+      this.actualUserDelegationPercentage = value
       this.actualDynUserDelegationPercentage = new Map(Array.from(value.entries()).map(([k, v]) => [k, new BigNumber(v)]));
+
+      // filter out non top prep from user delegations
+      this.filterOutNonTopPrepsFromUserDelegation();
 
       // detect changes
       this.cdRef.detectChanges();
@@ -204,11 +208,22 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   subscribeToPrepListChange(): void {
     this.prepListChangeSub = this.stateChangeService.prepListChange$.subscribe(value => {
       this.prepList = value;
+      this.prepAddressList = value.preps.map(prep => prep.address);
       this.preps = value.preps;
+
+      // filter out non top prep from user delegations
+      this.filterOutNonTopPrepsFromUserDelegation();
 
       // detect changes
       this.cdRef.detectChanges();
     })
+  }
+
+  private filterOutNonTopPrepsFromUserDelegation(): void {
+    if (this.prepList && this.actualUserDelegationPercentage.size > 0 && this.prepList.preps.length > 0 && this.prepAddressList) {
+      this.actualUserDelegationPercentage = filterMapByKeys(this.actualUserDelegationPercentage, this.prepAddressList);
+      this.actualDynUserDelegationPercentage = new Map(Array.from(this.actualUserDelegationPercentage.entries()).map(([k, v]) => [k, new BigNumber(v)]));
+    }
   }
 
   onDelegationInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {

@@ -259,6 +259,18 @@ export function convertSecondsToDays(seconds: number, roundUp = false): number {
     }
 }
 
+export function filterMapByKeys<K, V>(originalMap: Map<K, V>, keysToKeep: K[]): Map<K, V> {
+    const filteredMap = new Map<K, V>();
+
+    keysToKeep.forEach(key => {
+        if (originalMap.has(key)) {
+            filteredMap.set(key, originalMap.get(key)!);
+        }
+    });
+
+    return filteredMap;
+}
+
 
 
 
