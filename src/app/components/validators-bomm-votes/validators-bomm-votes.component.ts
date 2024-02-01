@@ -443,6 +443,11 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   userDelegationHasChanged(): boolean {
+    // handle case where user does not have delegation yet
+    if (this.userDelegationDetailsMap.size == 0 && this.userDynamicDelegationDetailsMap.size > 0) {
+      return true;
+    }
+
     // iterate user dynamic delegations and compare to user delegations
     for (const userDelegation of Array.from(this.userDelegationDetailsMap.values())) {
       const userDynamicDelegation = this.userDynamicDelegationDetailsMap.get(userDelegation.address)
