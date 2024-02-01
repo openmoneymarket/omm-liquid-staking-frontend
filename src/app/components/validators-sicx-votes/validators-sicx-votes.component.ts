@@ -275,9 +275,8 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
 
-        // reset votes state
+        // reset adjust state
         this.resetAdjustVotesActive();
-        this.resetDynamicState();
 
         // detect changes
         this.cdRef.detectChanges();
@@ -285,9 +284,8 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
         // remove delegations
         this.stateChangeService.modalUpdate(ModalType.REMOVE_ALL_DELEGATIONS, new RemoveDelegationsPayload(false));
 
-        // reset votes state
+        // reset adjust state
         this.resetAdjustVotesActive();
-        this.resetDynamicState();
 
         // detect changes
         this.cdRef.detectChanges();
@@ -328,6 +326,11 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   userDelegationHasChanged(): boolean {
+    // handle case where user does not have delegation yet
+    if (this.actualUserDelegationPercentage.size == 0 && this.actualDynUserDelegationPercentage.size > 0) {
+      return true;
+    }
+
     // iterate user dynamic delegations and compare to user delegations
     for (const [prepaAddress, userDelegation] of this.actualUserDelegationPercentage.entries()) {
       const dynamicDelegation = this.actualDynUserDelegationPercentage.get(prepaAddress);
@@ -374,11 +377,7 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   userPrepDelegationPercent(address: string): BigNumber {
-    if (this.adjustActive()) {
-      return this.actualDynUserDelegationPercentage.get(address) ?? new BigNumber(0);
-    } else {
-      return this.actualUserDelegationPercentage.get(address) ?? new BigNumber(0);
-    }
+    return this.actualDynUserDelegationPercentage.get(address) ?? new BigNumber(0);
   }
 
   isPrepOmmContributor(address: string): boolean {
@@ -395,10 +394,6 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   prepAddress(index : number, prep: Prep) {
     return prep.address;
-  }
-
-  adjustActive(): boolean {
-    return (!this.isMobile() && this.adjustVotesActive) || (this.isMobile() && this.adjustVotesActiveMobile);
   }
 
   private toggleAdjustVotesActive(mobile = false): void {
