@@ -26,10 +26,10 @@
                     <div class="grid proposal-metadata border-top">
                         <div class="grid-cell">
                             <span class="label"><img [src]="proposal.getStatusImgSrc()">{{proposal.getProposalState(currentTimestampMicro)}}</span>
-                            <span class="label"><img src="assets/img/icon/chart.svg">{{proposal.getTotalVotePercentage() | rndDwnNPerc: 2 :  true}} voted</span>
+                            <span class="label"><img src="assets/img/icon/chart.svg">{{proposal.getTotalVotePercentage() | rndDwnNPerc: 2 :  DefaultValue.ZERO}} voted</span>
                             <span class="label"><img src="assets/img/icon/users.svg">{{proposal.forVoterCount.plus(proposal.againstVoterCount) | usFormat}} voters</span>
-                            <div class="green-square"></div><span class="label">{{proposal.getApprovedPercentage() | rndDwnNPerc: 2 :  true}}</span>
-                            <div class="purple-square"></div><span class="label">{{proposal.getRejectedPercentage() | rndDwnNPerc: 2 :  true}}</span>
+                            <div class="green-square"></div><span class="label">{{proposal.getApprovedPercentage() | rndDwnNPerc: 2 :  DefaultValue.ZERO}}</span>
+                            <div class="purple-square"></div><span class="label">{{proposal.getRejectedPercentage() | rndDwnNPerc: 2 :  DefaultValue.ZERO}}</span>
                         </div>
                     </div>
                 </div>

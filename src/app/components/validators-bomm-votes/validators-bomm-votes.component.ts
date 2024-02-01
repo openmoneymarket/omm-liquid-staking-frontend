@@ -27,6 +27,7 @@ import {IntersectionObserverDirective} from "../../directives/observe-visibility
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {toNDecimalRoundedDownPercentString} from "../../common/utils";
+import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
   selector: 'app-validators-bomm-votes',
@@ -299,20 +300,23 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
     const element: HTMLInputElement = (<HTMLInputElement>e.target);
-    const inputAmount: number = +usLocale.from(element.value);
+    const inputAmount: number = element.value ? +usLocale.from(element.value) : -1;
 
-    let delegationPercentage = new BigNumber(0);
+    let delegationPercentage = undefined;
 
-    if (!inputAmount || inputAmount <= 0) {
-      // handle invalid amount by resetting to 0
-      this.userDynamicDelegationDetailsMap.set(address, new BigNumber(0));
-    } else {
+    if (Number.isInteger(inputAmount) && inputAmount >= 0) {
       delegationPercentage = new BigNumber(inputAmount).dividedBy(100);
       this.userDynamicDelegationDetailsMap.set(address, delegationPercentage)
     }
 
-    // write value to the element because [value] does not trigger on change if number is equal to previous
-    element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, true);
+    if (delegationPercentage) {
+      // write value to the element because [value] does not trigger on change if number is equal to previous
+      element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, DefaultValuePercent.ZERO);
+    } else {
+      // clear delegation and element value if delegation percent is undefined
+      this.userDynamicDelegationDetailsMap.delete(address);
+      element.value = "";
+    }
 
     // detect changes
     this.cdRef.detectChanges();
@@ -342,7 +346,6 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
         // reset votes state
         this.resetAdjustVotesActive();
-        this.resetDynamicState();
 
         // detect changes
         this.cdRef.detectChanges();
@@ -352,7 +355,6 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
         // reset votes state
         this.resetAdjustVotesActive();
-        this.resetDynamicState();
 
         // detect changes
         this.cdRef.detectChanges();
@@ -471,19 +473,19 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   userBommDelegation(address: string): BigNumber {
-    if (this.userDelegationDetailsMap.size > 0 && this.userDelegationWorkingbOmmBalance.gt(0)) {
-      return this.userDelegationWorkingbOmmBalance.multipliedBy(this.userPrepDelegationPercent(address));
+    if (this.userDelegationDetailsMap.size > 0 && this.userDelegationWorkingbOmmBalance.gt(0) && this.userDynPrepDelegationPercent(address).gt(0)) {
+      return this.userDelegationWorkingbOmmBalance.multipliedBy(this.userDynPrepDelegationPercent(address));
     } else {
       return new BigNumber(0);
     }
   }
 
-  userPrepDelegationPercent(address: string): BigNumber {
-    if (this.adjustActive()) {
-      return this.userDynamicDelegationDetailsMap.get(address) ?? new BigNumber(0);
-    } else {
-      return this.userDelegationDetailsMap.get(address)?.percentage ?? new BigNumber(0);
-    }
+  userDynPrepDelegationPercent(address: string): BigNumber {
+    return this.userDynamicDelegationDetailsMap.get(address) ?? new BigNumber(-1);
+  }
+
+  userActualPrepDelegationPercent(address: string): BigNumber {
+    return this.userDelegationDetailsMap.get(address)?.percentage ?? new BigNumber(0);
   }
 
   isPrepOmmContributor(address: string): boolean {
@@ -528,4 +530,6 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.adjustVotesActive = false;
     this.adjustVotesActiveMobile = false;
   }
+
+  protected readonly DefaultValue = DefaultValuePercent;
 }

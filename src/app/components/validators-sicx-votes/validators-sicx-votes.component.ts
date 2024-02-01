@@ -34,6 +34,7 @@ import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {filterMapByKeys, toNDecimalRoundedDownPercentString} from "../../common/utils";
+import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
   selector: 'app-validators-sicx-votes',
@@ -234,20 +235,24 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
     const element: HTMLInputElement = (<HTMLInputElement>e.target);
-    const inputAmount: number = +usLocale.from(element.value);
+    const inputAmount: number = element.value ? +usLocale.from(element.value) : -1;
 
-    let delegationPercentage = new BigNumber(0);
+    let delegationPercentage = undefined;
 
-    if (!inputAmount || inputAmount <= 0) {
-      // handle invalid amount by resetting to 0
-      this.actualDynUserDelegationPercentage.set(address, new BigNumber(0));
-    } else {
+    if (Number.isInteger(inputAmount) && inputAmount >= 0) {
       delegationPercentage = new BigNumber(inputAmount).dividedBy(100);
       this.actualDynUserDelegationPercentage.set(address, delegationPercentage);
     }
 
-    // write value to the element because [value] does not trigger on change if number is equal to previous
-    element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, true);
+    if (delegationPercentage) {
+      // write value to the element because [value] does not trigger on change if number is equal to previous
+      element.value = toNDecimalRoundedDownPercentString(delegationPercentage, 2, DefaultValuePercent.ZERO);
+    } else {
+      // clear delegation and element value if delegation percent is undefined
+      this.actualDynUserDelegationPercentage.delete(address);
+      element.value = "";
+    }
+
 
     // detect changes
     this.cdRef.detectChanges();
@@ -353,8 +358,8 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
   }
 
   userSicxDelegation(address: string): BigNumber {
-    if (this.userSicxBalance.gt(0)) {
-      return this.userSicxBalance.multipliedBy(this.userPrepDelegationPercent(address));
+    if (this.userSicxBalance.gt(0) && this.userDynPrepDelegationPercent(address).gt(0)) {
+      return this.userSicxBalance.multipliedBy(this.userDynPrepDelegationPercent(address));
     } else {
       return new BigNumber(0);
     }
@@ -376,8 +381,12 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     return new BigNumber(0);
   }
 
-  userPrepDelegationPercent(address: string): BigNumber {
-    return this.actualDynUserDelegationPercentage.get(address) ?? new BigNumber(0);
+  userDynPrepDelegationPercent(address: string): BigNumber {
+    return this.actualDynUserDelegationPercentage.get(address) ?? new BigNumber(-1);
+  }
+
+  userActualPrepDelegationPercent(address: string): BigNumber {
+    return this.actualUserDelegationPercentage.get(address) ?? new BigNumber(0);
   }
 
   isPrepOmmContributor(address: string): boolean {
@@ -427,4 +436,6 @@ export class ValidatorsSicxVotesComponent extends BaseClass implements OnInit, O
     this.adjustVotesActive = false;
     this.adjustVotesActiveMobile = false;
   }
+
+  protected readonly DefaultValue = DefaultValuePercent;
 }
