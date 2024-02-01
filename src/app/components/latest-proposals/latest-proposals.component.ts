@@ -7,6 +7,7 @@ import {StateChangeService} from "../../services/state-change.service";
 import {timestampNowMicroseconds} from "../../common/utils";
 import {Router, RouterLink} from "@angular/router";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
+import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
   selector: 'app-latest-proposals',
@@ -57,4 +58,5 @@ export class LatestProposalsComponent implements OnInit, OnDestroy {
     return this.storeService.userLoggedIn();
   }
 
+  protected readonly DefaultValue = DefaultValuePercent;
 }

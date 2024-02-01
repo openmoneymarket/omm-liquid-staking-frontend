@@ -3,6 +3,7 @@ import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
 import {environment} from "../../environments/environment";
 import {UserUnstakeData} from "../models/classes/UserUnstakeInfo";
 import IconService from "icon-sdk-js";
+import {DefaultValuePercent} from "../models/enums/DefaultValuePercent";
 
 export function hashStringToUniqueId(data: string): number {
     let hash = 0, i, chr;
@@ -130,8 +131,15 @@ export function hexToNormalisedNumber(value: BigNumber | string, decimals: numbe
     }
 }
 
-export function toNDecimalRoundedDownPercentString(num?: BigNumber | string | number, decimals = 0, defaultZero = false): string {
-    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultZero ? "0%" : "-"; }
+export function toNDecimalRoundedDownPercentString(
+    num?: BigNumber | string | number,
+    decimals = 0,
+    defaultValue = DefaultValuePercent.MINUS_SIGN,
+    keepZero= false
+): string {
+    if (num && +num == 0 && keepZero) { return "0%" }
+
+    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultValue }
 
     // convert in to percentage
     num = new BigNumber(num).multipliedBy(new BigNumber("100"));

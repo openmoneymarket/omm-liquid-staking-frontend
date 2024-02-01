@@ -11,10 +11,10 @@
                     <span class="tooltip active" *ngIf="!userAllocatedVotesPercent().eq(1) && !userAllocatedVotesPercent().eq(0)">
                         <span class="tooltip-item">Confirm</span>
                         <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().lte(1)| hide">
-                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : DefaultValue.ZERO}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
                         </div>
                         <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().gte(1) || userAllocatedVotesPercent().eq(0)  | hide">
-                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : DefaultValue.ZERO}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
                         </div>
                     </span>
                 </a>
@@ -29,10 +29,10 @@
                     <span class="tooltip active" *ngIf="!userAllocatedVotesPercent().eq(1) && !userAllocatedVotesPercent().eq(0)">
                         <span class="tooltip-item">Confirm</span>
                         <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().lte(1)| hide">
-                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : DefaultValue.ZERO}}</span> of your votes. Remove {{userAllocatedVotesPercent().minus(1) | rndDwnNPerc: 2}} to continue.</p>
                         </div>
                         <div class="tooltip-content" [ngStyle]="userAllocatedVotesPercent().gte(1) || userAllocatedVotesPercent().eq(0)  | hide">
-                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : true}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
+                            <p>You've allocated <span class="text-red">{{userAllocatedVotesPercent() | rndDwnNPerc: 2 : DefaultValue.ZERO}}</span> of your votes. Allocate {{userAllocatedVotesPercent().minus(1).abs() | rndDwnNPerc: 2}} to continue.</p>
                         </div>
                     </span>
                 </a>
@@ -93,9 +93,9 @@
                                             <span *ngIf="userBommDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActiveMobile | hide">{{userBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
                                             <span *ngIf="!userBommDelegation(prep.address).gt(0)" class="input-amount" [ngStyle]="adjustVotesActiveMobile | hide">-</span>
 
-                                            <input type="text" name="" placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}" class="text-center input-edit"
+                                            <input type="text" name="" placeholder="{{userActualPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : DefaultValue.ZERO}}" class="text-center input-edit"
                                                    [ngStyle]="!adjustVotesActiveMobile | hide"
-                                                   [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
+                                                   [value]="userDynPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : DefaultValue.EMPTY : true"
                                                    (keyup)="onDelegationInputKeyUp($event, prep.address)"
                                                    (blur)="processDelegationInput($event, prep.address)"
                                                    (paste)="processDelegationInput($event, prep.address)"
@@ -111,11 +111,11 @@
             </td>
 
             <td *ngIf="shouldShowUserDelegations()">
-                <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
+                <span class="input-amount" [ngStyle]="adjustVotesActive | hide">{{userDynPrepDelegationPercent(prep.address) | rndDwnNPerc: 2}}</span>
                 <input type="text" name="" class="input-edit"
                        [ngStyle]="!adjustVotesActive | hide"
-                       placeholder="{{userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true}}"
-                       [value]="userPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : true"
+                       placeholder="{{userActualPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : DefaultValue.ZERO}}"
+                       [value]="userDynPrepDelegationPercent(prep.address) | rndDwnNPerc: 2 : DefaultValue.EMPTY : true"
                        (keyup)="onDelegationInputKeyUp($event, prep.address)"
                        (blur)="processDelegationInput($event, prep.address)"
                        (paste)="processDelegationInput($event, prep.address)"

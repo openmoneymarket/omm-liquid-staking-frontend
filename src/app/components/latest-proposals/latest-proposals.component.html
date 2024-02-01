@@ -18,8 +18,8 @@
 
                 <div class="grid proposal-metadata border-top">
                     <img class="time" [src]="proposal.getStatusImgSrc()" alt=""><span class="label">{{proposal.getProposalState(currentTimestampMicro, true)}}</span>
-                    <div class="green-square"></div><span class="label">{{proposal.getApprovedPercentage() | rndDwnNPerc: 0 : true}}</span>
-                    <div class="purple-square"></div><span class="label">{{proposal.getRejectedPercentage() | rndDwnNPerc: 0 : true}}</span>
+                    <div class="green-square"></div><span class="label">{{proposal.getApprovedPercentage() | rndDwnNPerc: 0 : DefaultValue.ZERO}}</span>
+                    <div class="purple-square"></div><span class="label">{{proposal.getRejectedPercentage() | rndDwnNPerc: 0 : DefaultValue.ZERO}}</span>
                 </div>
             </a>
         </ng-container>

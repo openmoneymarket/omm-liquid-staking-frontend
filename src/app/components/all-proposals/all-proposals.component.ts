@@ -8,6 +8,7 @@ import {Router, RouterLink} from "@angular/router";
 import {timestampNowMicroseconds} from "../../common/utils";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
+import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
   selector: 'app-all-proposals',
@@ -16,6 +17,8 @@ import {UsFormatPipe} from "../../pipes/us-format.pipe";
   templateUrl: './all-proposals.component.html'
 })
 export class AllProposalsComponent implements OnInit, OnDestroy {
+
+  DefaultValue = DefaultValuePercent
 
   proposalList: Proposal[] = []
   currentTimestampMicro = timestampNowMicroseconds();

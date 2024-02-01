@@ -17,6 +17,7 @@ import log from "loglevel";
 import {RouterLink} from "@angular/router";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
+import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
   selector: 'app-proposal',
@@ -189,4 +190,5 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
 
+    protected readonly DefaultValue = DefaultValuePercent;
 }
