@@ -75,13 +75,13 @@ a::selection {
 /* Placeholder text colour */
 
 ::-webkit-input-placeholder {
-	color: #7a8294;
+	color: #d3d9e7;
 }
 :-ms-input-placeholder {
-	color: #7a8294;
+	color: #d3d9e7;
 }
 ::placeholder {
-	color: #7a8294;
+	color: #d3d9e7;
 }
 
 /*
