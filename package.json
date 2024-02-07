@@ -1,7 +1,11 @@
 {
-  "author": "Robi M.",
+  "author": "R0bi7",
   "name": "omm-liquid-staking-dapp",
-  "version": "0.0.1",
+  "repository": "https://github.com/ommfinance/omm-liquid-staking-frontend",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve --configuration development",
