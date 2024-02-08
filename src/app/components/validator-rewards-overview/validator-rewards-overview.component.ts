@@ -111,12 +111,16 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
       this.undelegatedIcx = value;
       this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
     })
   }
 
   private subscribeToTokenPricesChange(): void {
     this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
       this.tokenPrices = value;
+      this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
@@ -126,6 +130,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   private subscribeToUserCollectedFeeChange(): void {
     this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe(value => {
       this.userValidatorCollectedFeeInSicx = value;
+      this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
@@ -205,6 +210,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userValidatorPrepBommDelegationSub = this.stateChangeService.prepBommDelegationChange$.subscribe(value => {
       this.userValidatorPrepBommDelegation = value;
 
+      this.refreshValues();
+
       // Detect changes
       this.cdRef.detectChanges();
     });
@@ -227,6 +234,8 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   private subscribeToUserAccumulatedFeeChange(): void {
     this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(feeInSicx => {
       this.userAccumulatedFeeInSicx = feeInSicx;
+
+      this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();

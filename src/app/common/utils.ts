@@ -19,6 +19,7 @@ export function hashStringToUniqueId(data: string): number {
 
 export function numToUsLocaleString(num: BigNumber | string): string {
     const dp = new BigNumber(num).dp() ?? 0;
+
     if (typeof num === "string") {
         return (+num).toLocaleString('en-US', {
             minimumFractionDigits: dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION,
