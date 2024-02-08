@@ -34,7 +34,10 @@
         <div class="grid-cell text-center">
             <dl class="metadata">
                 <dt>bOMM delegation</dt>
-                <dd *ngIf="userValidatorPrepBommDelegation.gt(0)">{{userValidatorPrepBommDelegation | RndDwn | usFormat}} <span class="label">bOMM</span><br><span class="label">{{bOMMdelegationIcx | RndDwn | usFormat}} ICX</span></dd>
+                <dd *ngIf="userValidatorPrepBommDelegation.gt(0)">
+                    {{userValidatorPrepBommDelegation | RndDwn | usFormat}} <span class="label">bOMM</span><br>
+                    <span class="label">{{bOMMdelegationIcx | RndDwn | usFormat}} ICX</span>
+                </dd>
                 <dd *ngIf="!userValidatorPrepBommDelegation.gt(0)">-</dd>
             </dl>
         </div>
