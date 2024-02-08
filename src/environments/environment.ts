@@ -3,7 +3,7 @@ import {Network} from "../app/models/enums/Network";
 export const environment = {
     production: true,
     iconRpcUrl: "https://ctz.solidwallet.io/api/v3",
-    ommRestApi: "https://api.omm.finance/api/v1",
+    ommRestApi: "https://urchin-app-b47uz.ondigitalocean.app/api/v1",
     iconDebugRpcUrl: "https://ctz.solidwallet.io/api/v3d",
     BALANCED_DEX_SCORE: "cxa0af3165c08318e988cb30993b3048335b94af6c",
     ledgerBip32Path: "44'/4801368'/0'/0'",
