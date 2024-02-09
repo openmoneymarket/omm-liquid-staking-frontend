@@ -94,8 +94,8 @@ export class StateChangeService {
   private feeDistributed7DChange = new ReplaySubject<BigNumber>(1);
   public feeDistributed7DChange$ = this.feeDistributed7DChange.asObservable();
 
-  private unstakingTimeInSecondsChange = new ReplaySubject<BigNumber>(1);
-  public unstakingTimeInSecondsChange$ = this.unstakingTimeInSecondsChange.asObservable();
+  private avgUnstakingTimeInSecondsChange = new ReplaySubject<BigNumber>(1);
+  public avgUnstakingTimeInSecondsChange$ = this.avgUnstakingTimeInSecondsChange.asObservable();
 
   private daoFundBalanceChange = new BehaviorSubject<IDaoFundBalance>({ balances: [] });
   public daoFundBalanceChange$ = this.daoFundBalanceChange.asObservable();
@@ -156,6 +156,9 @@ export class StateChangeService {
 
   private prepBommDelegationChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
   prepBommDelegationChange$ = this.prepBommDelegationChange.asObservable();
+
+  private maxUnstakeLockPeriodChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  maxUnstakeLockPeriodChange$ = this.maxUnstakeLockPeriodChange.asObservable();
 
   private actualPrepDelegationsChange = new BehaviorSubject(new Map<PrepAddress, BigNumber>());
   actualPrepDelegationsChange$ = this.actualPrepDelegationsChange.asObservable();
@@ -226,6 +229,10 @@ export class StateChangeService {
 
   public prepBommDelegationUpdate(value: BigNumber): void {
     this.prepBommDelegationChange.next(value);
+  }
+
+  public maxUnstakeLockPeriodUpdate(value: BigNumber): void {
+    this.maxUnstakeLockPeriodChange.next(value);
   }
 
   public voteDurationUpdate(value: BigNumber): void {
@@ -311,8 +318,8 @@ export class StateChangeService {
     this.feeDistributed7DChange.next(value);
   }
 
-  public unstakingTimeUpdate(value: BigNumber): void {
-    this.unstakingTimeInSecondsChange.next(value);
+  public avgUnstakingTimeUpdate(value: BigNumber): void {
+    this.avgUnstakingTimeInSecondsChange.next(value);
   }
 
   public sicxHoldersUpdate(value: BigNumber): void {

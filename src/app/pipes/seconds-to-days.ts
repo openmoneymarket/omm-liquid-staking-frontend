@@ -8,10 +8,10 @@ import {convertSecondsToDays} from "../common/utils";
 })
 export class SecondsToDaysPipe implements PipeTransform {
 
-  transform(seconds: BigNumber | number): string {
+  transform(seconds: BigNumber | number, addAppendix = true): string {
     if (+seconds == 0) return "-";
 
-    return `${convertSecondsToDays(+seconds, true)} days`
+    return `${convertSecondsToDays(+seconds, true)}${addAppendix ? ' days' : ''}`
   }
 
 }

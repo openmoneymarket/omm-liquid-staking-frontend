@@ -21,7 +21,7 @@ import {CreateProposal, Proposal} from "../models/classes/Proposal";
 import {ILockedOmm} from "../models/interfaces/ILockedOmm";
 import {DelegationPreference} from "../models/classes/DelegationPreference";
 import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {BALANCED_SICX_POOL_ID, OMM, SICX} from "../common/constants";
+import {BALANCED_SICX_POOL_ID, ICON_BLOCK_INTERVAL, OMM, SICX} from "../common/constants";
 import {IUserUnstakeInfo} from "../models/interfaces/IUserUnstakeInfo";
 import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
 import {BalancedDexFees} from "../models/classes/BalancedDexFees";
@@ -29,6 +29,7 @@ import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
 import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
 import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
+import {IUnstakeLockPeriod} from "../models/interfaces/IUnstakeLockPeriod";
 
 
 @Injectable({
@@ -859,7 +860,18 @@ export class ScoreService {
     return hexToNormalisedNumber(amount);
   }
 
+  /**
+   * @description Estimate unstake lock period in blocks based on IISS
+   * @return  Returns number of seconds until unstake
+   */
+  public async estimateUnstakeLockPeriod(): Promise<BigNumber> {
+    const tx = this.iconApiService.buildTransaction("",  environment.IISS_API,
+        ScoreMethodNames.ESTIMATE_UNSTAKE_LOCK_PERIOD, {}, IconTransactionType.READ);
 
+    const res: IUnstakeLockPeriod = await this.iconApiService.iconService.call(tx).execute();
+
+    return Mapper.mapUnstakeLockPeriod(res).multipliedBy(ICON_BLOCK_INTERVAL);
+  }
 
 
   /**

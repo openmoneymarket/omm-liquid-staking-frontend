@@ -285,7 +285,7 @@ export class DataLoaderService {
     })
   }
 
-  public async loadUnstakingTime(): Promise<void> {
+  public async loadAvgUnstakingTime(): Promise<void> {
     try {
       const method = "UnstakingUpdate"
       const limit = 10;
@@ -311,7 +311,7 @@ export class DataLoaderService {
 
       log.debug("avgUnstakingTimeInSeconds: ", avgUnstakingTimeInSeconds.toString());
 
-      this.stateChangeService.unstakingTimeUpdate(avgUnstakingTimeInSeconds);
+      this.stateChangeService.avgUnstakingTimeUpdate(avgUnstakingTimeInSeconds);
     } catch (e) {
       log.error("Error in loadUnstakingTime:");
       log.error(e);
@@ -379,6 +379,16 @@ export class DataLoaderService {
       this.stateChangeService.prepBommDelegationUpdate(amount);
     } catch (e) {
       log.error("Error in loadUserValidatorBommDelegation:");
+      log.error(e);
+    }
+  }
+
+  public async loadMaxUnstakeLockPeriod(): Promise<void> {
+    try {
+      const maxUnstakeLockPeriodInSec = await this.scoreService.estimateUnstakeLockPeriod();
+      this.stateChangeService.maxUnstakeLockPeriodUpdate(maxUnstakeLockPeriodInSec);
+    } catch (e) {
+      log.error("Error in loadMaxUnstakeLockPeriod:");
       log.error(e);
     }
   }
@@ -684,9 +694,10 @@ export class DataLoaderService {
    * Load core data async without awaiting
    */
   public loadCoreAsyncData(): void {
+    this.loadMaxUnstakeLockPeriod();
     this.loadStakingFeePercentage();
     this.loadLiquidStakingStatsHistory();
-    this.loadUnstakingTime();
+    this.loadAvgUnstakingTime();
     this.loadFeesDistributed7D();
     this.loadlDaoFundTokens();
     this.loadTotalValidatorRewards();
