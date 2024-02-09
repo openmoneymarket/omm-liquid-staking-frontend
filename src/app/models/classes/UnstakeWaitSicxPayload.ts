@@ -17,12 +17,14 @@ export class UnstakeWaitSicxPayload implements IActionPayload {
     // amount of sICX being unstaked
     receiveIcxAmount: BigNumber;
 
-    unstakingTimeInSeconds: BigNumber;
+    avgUnstakingTimeInSeconds: BigNumber;
+    maxUnstakingTimeInSeconds: BigNumber;
 
-    constructor(unstakeSicxAmount: BigNumber, receiveIcxAmount: BigNumber, unstakingTimeInSeconds: BigNumber) {
+    constructor(unstakeSicxAmount: BigNumber, receiveIcxAmount: BigNumber, avgUnstakingTimeInSeconds: BigNumber, maxUnstakingTimeInSeconds: BigNumber) {
         this.unstakeSicxAmount = unstakeSicxAmount;
         this.receiveIcxAmount = receiveIcxAmount;
-        this.unstakingTimeInSeconds = unstakingTimeInSeconds;
+        this.avgUnstakingTimeInSeconds = avgUnstakingTimeInSeconds;
+        this.maxUnstakingTimeInSeconds = maxUnstakingTimeInSeconds;
     }
 
     sendTxMessage(): string {

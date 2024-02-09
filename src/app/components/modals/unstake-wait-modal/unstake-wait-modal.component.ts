@@ -7,6 +7,7 @@ import {TransactionDispatcherService} from "../../../services/transaction-dispat
 import {ScoreService} from "../../../services/score.service";
 import BigNumber from "bignumber.js";
 import {SecondsToDaysPipe} from "../../../pipes/seconds-to-days";
+import {convertSecondsToDays} from "../../../common/utils";
 
 @Component({
   selector: 'app-unstake-wait-modal',
@@ -35,8 +36,17 @@ export class UnstakeWaitModalComponent {
     return this.unstakeWaitSicxPayload?.receiveIcxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";
   }
 
-  getUnstakingTimeInSeconds(): BigNumber {
-    return this.unstakeWaitSicxPayload?.unstakingTimeInSeconds ?? new BigNumber(0);
+  getAvgUnstakingTimeInSeconds(): BigNumber {
+    return this.unstakeWaitSicxPayload?.avgUnstakingTimeInSeconds ?? new BigNumber(0);
+  }
+
+  getMaxUnstakingTimeInSeconds(): BigNumber {
+    return this.unstakeWaitSicxPayload?.maxUnstakingTimeInSeconds ?? new BigNumber(0);
+  }
+
+  unstakingTimesAreEqual(): boolean {
+    return convertSecondsToDays(+this.getAvgUnstakingTimeInSeconds(), true)
+        == convertSecondsToDays(+this.getMaxUnstakingTimeInSeconds(), true);
   }
 
   onCancelClick(e: MouseEvent): void {

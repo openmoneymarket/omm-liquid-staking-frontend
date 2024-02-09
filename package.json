@@ -14,9 +14,12 @@
     "build:prod": "ng build --configuration production",
     "build:dev": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:verify": "prettier --check \"src/**/*.ts\"",
     "test": "ng test",
     "test:dev": "ng test --configuration development",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +39,7 @@
     "loglevel": "^1.8.1",
     "ngx-device-detector": "^6.0.1",
     "ngx-toastr": "^17.0.2",
+    "prettier": "^3.2.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

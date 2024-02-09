@@ -260,6 +260,21 @@ export function convertSecondsToDHM(seconds: number): string {
     return res;
 }
 
+export function convertSecondsToDH(seconds: number): string {
+    let res = "";
+
+    const days = Math.floor(seconds / (24 * 60 * 60));
+    seconds -= days * 24 * 60 * 60;
+
+    if (days > 0) res += `${days}d`;
+
+    const hours = Math.floor(seconds / (60 * 60));
+
+    if (hours > 0) res += ` ${hours}h`;
+
+    return res;
+}
+
 export function convertSecondsToDays(seconds: number, roundUp = false): number {
     if (roundUp) {
         return Math.ceil(seconds / (24 * 60 * 60));

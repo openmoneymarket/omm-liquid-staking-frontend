@@ -151,6 +151,7 @@ export class ScoreMethodNames {
     */
     public static GET_PREPS = "getPReps";
     public static GET_PREP = "getPRep";
+    public static ESTIMATE_UNSTAKE_LOCK_PERIOD = "estimateUnstakeLockPeriod";
 
     public static GET_NAME = "name";
 }

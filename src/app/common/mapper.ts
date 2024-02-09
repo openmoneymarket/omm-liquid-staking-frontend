@@ -19,6 +19,7 @@ import {PoolStats, PoolStatsInterface} from "../models/classes/PoolStats";
 import {Address, HexString, PrepAddress} from "../models/Types/ModalTypes";
 import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
 import {LiquidStakingStats} from "../models/classes/LiquidStakingStats";
+import {IUnstakeLockPeriod} from "../models/interfaces/IUnstakeLockPeriod";
 
 export abstract class Mapper {
 
@@ -136,6 +137,10 @@ export abstract class Mapper {
     log.debug("mapUserOmmTokenBalanceDetails after: ", res);
 
     return res;
+  }
+
+  public static mapUnstakeLockPeriod(value: IUnstakeLockPeriod): BigNumber {
+    return hexToBigNumber(value.unstakeLockPeriod);
   }
 
   public static mapPrepList(prepList: PrepList): PrepList {
