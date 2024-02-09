@@ -108,7 +108,10 @@
                                         </p>
 									</div>
 								</span></dt>
-                        <dd><span class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays}}</span></dd>
+                        <dd>
+                            <span *ngIf="unstakingTimesAreEqual()" class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays: true}}</span>
+                            <span *ngIf="!unstakingTimesAreEqual()" class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays: false}}-{{maxUnstakingTimeInSeconds | secToDays: true}}</span>
+                        </dd>
                     </dl>
                 </div>
                 <div class="grid-cell text-center">
