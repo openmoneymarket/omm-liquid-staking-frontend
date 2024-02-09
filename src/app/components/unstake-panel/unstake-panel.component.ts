@@ -13,7 +13,7 @@ import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
 import {ChartService} from "../../services/chart.service";
 import {usLocale} from "../../common/formats";
-import {convertSICXToICX} from "../../common/utils";
+import {convertSecondsToDays, convertSICXToICX} from "../../common/utils";
 import {BaseClass} from "../../models/classes/BaseClass";
 import {ModalType} from "../../models/enums/ModalType";
 import {StateChangeService} from "../../services/state-change.service";
@@ -477,6 +477,11 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
         }
       })
     }
+  }
+
+  unstakingTimesAreEqual(): boolean {
+    return convertSecondsToDays(+this.avgUnstakingTimeInSeconds, true)
+        == convertSecondsToDays(+this.maxUnstakingTimeInSeconds, true);
   }
 
   unstakeWaitIsActive(): boolean {
