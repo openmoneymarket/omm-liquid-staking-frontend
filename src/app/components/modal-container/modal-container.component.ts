@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Subscription} from "rxjs";
 import {StateChangeService} from "../../services/state-change.service";
@@ -48,6 +48,7 @@ import {SubmitVoteModalComponent} from "../modals/submit-vote-modal/submit-vote-
     SubmitVoteModalComponent
   ],
   templateUrl: './modal-container.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalContainerComponent implements OnInit, OnDestroy {
 
@@ -70,7 +71,10 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
 
   activeModal: ModalType = ModalType.UNDEFINED;
 
-  constructor(private stateChangeService: StateChangeService) {
+  constructor(
+      private stateChangeService: StateChangeService,
+      private cdRef: ChangeDetectorRef,
+  ) {
 
   }
   ngOnInit(): void {
@@ -110,6 +114,9 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
       }
 
       this.activeModal = modalType;
+
+      // detect any new changes
+      this.cdRef.detectChanges();
     });
   }
 
@@ -125,6 +132,9 @@ export class ModalContainerComponent implements OnInit, OnDestroy {
     this.updateDelegationPayload = undefined;
     this.removeDelegationsPayload = undefined;
     this.governanceVotePayload = undefined;
+
+    // detect any new changes
+    this.cdRef.detectChanges();
   }
 
   isModalActive(type: ModalType): boolean {

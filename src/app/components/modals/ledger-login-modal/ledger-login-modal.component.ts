@@ -1,12 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {Wallet} from "../../../models/classes/Wallet";
 import log from "loglevel";
 import {LEDGER_NOT_DETECTED} from "../../../common/messages";
 import {LedgerService} from "../../../services/ledger.service";
 import {NotificationService} from "../../../services/notification.service";
 import {LoginService} from "../../../services/login.service";
-import {ModalType} from "../../../models/enums/ModalType";
 import {StateChangeService} from "../../../services/state-change.service";
 import {UsFormatPipe} from "../../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
@@ -17,17 +16,22 @@ import {ShortenAddressPipePipe} from "../../../pipes/shorten-address";
   selector: 'app-ledger-login-modal',
   standalone: true,
   imports: [CommonModule, UsFormatPipe, ShortenAddressPipePipe],
-  templateUrl: './ledger-login-modal.component.html'
+  templateUrl: './ledger-login-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LedgerLoginModalComponent implements OnInit {
 
+  loading = false;
   _active = false;
   @Input({ required: true }) set active(value: boolean) {
+    const prevValue = this._active;
     this._active = value;
 
-    if (value) {
+    if (!prevValue && value) {
       this.onSignInLedgerClick();
     }
+
+    this.cdRef.detectChanges();
   }
 
   // window on which user is on (e.g. 1st = [0, 1, 2, 3, 4])
@@ -40,10 +44,12 @@ export class LedgerLoginModalComponent implements OnInit {
 
   ledgerWallets: Wallet[] = [];
 
+
   constructor(private ledgerService: LedgerService,
               private notificationService: NotificationService,
               private loginService: LoginService,
-              private stateChangeService: StateChangeService) {
+              private stateChangeService: StateChangeService,
+              private cdRef: ChangeDetectorRef) {
 
   }
 
@@ -64,7 +70,11 @@ export class LedgerLoginModalComponent implements OnInit {
     this.activeLedgerAddressPageList = [0, 1, 2, 3, 4];
     this.selectedLedgerAddressPage = 0;
     this.ledgerWallets = [];
+
+    // detect new changes
+    this.cdRef.detectChanges()
   }
+
   ledgerIcxBalance(wallet: Wallet): BigNumber {
     return wallet.irc2TokenBalancesMap.get(ICX.symbol) ?? new BigNumber("0");
   }
@@ -116,17 +126,35 @@ export class LedgerLoginModalComponent implements OnInit {
   }
 
   fetchLedgerWallets(): void {
-    this.stateChangeService.modalUpdate(ModalType.LOADING);
+    this.showLoading()
 
     this.ledgerService.getLedgerWallets(this.selectedLedgerAddressPage).then(wallets => {
       this.ledgerWallets = wallets;
 
-      this.stateChangeService.modalUpdate(ModalType.LEDGER_LOGIN);
+      this.hideLoading();
+
+      // detect new changes
+      this.cdRef.detectChanges()
     }).catch(e => {
+      this.hideLoading();
       this.stateChangeService.hideActiveModal();
       log.error(e);
       this.notificationService.showNewNotification(LEDGER_NOT_DETECTED);
     });
+  }
+
+  showLoading(): void {
+    this.loading = true;
+
+    // detect new changes
+    this.cdRef.detectChanges()
+  }
+
+  hideLoading(): void {
+    this.loading = false;
+
+    // detect new changes
+    this.cdRef.detectChanges()
   }
 
   get active(): boolean {

@@ -19,7 +19,9 @@ export class SignInModalComponent {
               private stateChangeService: StateChangeService) {
   }
 
-  onSignInIconexClick(): void {
+  onSignInIconexClick(event: MouseEvent): void {
+    event.stopPropagation();
+
     this.stateChangeService.hideActiveModal();
 
     // if user has wallet extension request account address
@@ -33,7 +35,9 @@ export class SignInModalComponent {
     }
   }
 
-  onSignInLedgerClick(): void {
+  onSignInLedgerClick(event: MouseEvent): void {
+    event.stopPropagation();
+
     this.stateChangeService.modalUpdate(ModalType.LEDGER_LOGIN);
   }
 }

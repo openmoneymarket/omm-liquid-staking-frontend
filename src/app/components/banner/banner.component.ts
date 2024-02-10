@@ -30,9 +30,7 @@ export class BannerComponent implements  AfterViewInit {
 
   ngAfterViewInit(): void {
     const contentHash = this.getContentHash();
-    console.log("contentHash:", contentHash);
     const wasSameBannerClosed = this.localstorageService.get(contentHash) ?? false;
-    console.log("wasSameBannerClosed:", wasSameBannerClosed);
     this.showBanner = !wasSameBannerClosed && environment.SHOW_BANNER;
     this.cdRef.detectChanges();
   }
@@ -40,14 +38,10 @@ export class BannerComponent implements  AfterViewInit {
   private getContentHash(): string {
     const bannerDescription = this.bannerContentEl?.innerHTML;
 
-    console.log("bannerDescription:", bannerDescription);
-
     return bannerDescription ? hashStringToUniqueId(bannerDescription).toString() : "#######";
   }
 
   onBannerExitClick(): void {
-    const contentHash = this.getContentHash();
-    console.log("onBannerExitClick contentHash=", contentHash);
     this.localstorageService.set(this.getContentHash(), true);
     this.showBanner = false;
   }
