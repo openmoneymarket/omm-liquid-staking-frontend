@@ -6,14 +6,14 @@ import {YourPrepVote} from "../../models/classes/YourPrepVote";
 import BigNumber from "bignumber.js";
 import {
   contributorsMap,
-  defaultPrepLogoUrl,
+  defaultPrepLogoUrl, ICX,
   prepsOfferingIncentiveMap,
   VALIDATOR_INPUT_DELAY_MS
 } from "../../common/constants";
 import {Prep, PrepList} from "../../models/classes/Preps";
 import {DeviceDetectorService} from "ngx-device-detector";
 import {HideElementPipe} from "../../pipes/hide-element-pipe";
-import {PrepAddress} from "../../models/Types/ModalTypes";
+import {PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
 import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
 import {UsFormatPipe} from "../../pipes/us-format.pipe";
 import {BaseClass} from "../../models/classes/BaseClass";
@@ -26,7 +26,7 @@ import {Wallet} from "../../models/classes/Wallet";
 import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
 import {IntersectionStatus} from "../../directives/from-intersection-observer";
 import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {toNDecimalRoundedDownPercentString} from "../../common/utils";
+import {convertICXTosICX, toNDecimalRoundedDownPercentString} from "../../common/utils";
 import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
 
 @Component({
@@ -75,6 +75,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   undelegatedIcx = new BigNumber(0);
   totalSicxAmount = new BigNumber(0);
   todaySicxRate: BigNumber = new BigNumber(0);
+  tokenPrices = new Map<TokenSymbol, BigNumber>();
 
   // User variables
   userDelegationDetails: YourPrepVote[] = [];
@@ -96,6 +97,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   totalSicxAmountSub?: Subscription;
   todayRateSub?: Subscription;
   loginSub?: Subscription;
+  tokenPricesSub?: Subscription;
 
   constructor(private stateChangeService: StateChangeService,
               private deviceService: DeviceDetectorService,
@@ -108,6 +110,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   ngOnDestroy(): void {
+    this.tokenPricesSub?.unsubscribe();
     this.allValidatorsCollectedFeesSub?.unsubscribe();
     this.userDelegationDetailsSub?.unsubscribe();
     this.userDelegationWorkingbOmmSub?.unsubscribe();
@@ -134,6 +137,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.subscribeToDelegationbOmmTotalWorkingSupplyChange();
     this.subscribeToTotalSicxAmountChange();
     this.subscribeToSicxTodayRateChange();
+    this.subscribeToTokenPricesChange();
   }
 
   private resetUserState(): void {
@@ -145,6 +149,16 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   private resetDynamicState(): void {
     this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v.percentage]));
+  }
+
+  private subscribeToTokenPricesChange(): void {
+    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+      this.tokenPrices = value;
+      this.refreshValues();
+
+      // Detect changes
+      this.cdRef.detectChanges();
+    })
   }
 
   private subscribeToUserLoginChange(): void {
@@ -408,6 +422,10 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
       this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
     }
+  }
+
+  sicxUsdPrice(): BigNumber {
+    return convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0);
   }
 
   prepBommDelegationPercent(address: string): BigNumber {
