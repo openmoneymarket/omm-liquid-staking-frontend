@@ -10,6 +10,7 @@ import {TransactionResultService} from "./transaction-result.service";
 import {IconexId} from "../models/enums/IconexId";
 import {WalletType} from "../models/enums/WalletType";
 import {ModalPayload} from "../models/Types/ModalTypes";
+import {StateChangeService} from "./state-change.service";
 
 const { IconConverter } = IconService;
 
@@ -28,7 +29,8 @@ export class TransactionDispatcherService {
     private ledgerService: LedgerService,
     private notificationService: NotificationService,
     private iconApiService: IconApiService,
-    private transactionResultService: TransactionResultService
+    private transactionResultService: TransactionResultService,
+    private stateChangeService: StateChangeService
   ) { }
 
   /**
@@ -50,7 +52,6 @@ export class TransactionDispatcherService {
       this.storeService.lastModalPayload = modalPayload;
 
       if (this.storeService.activeWallet?.type == WalletType.ICON) {
-
         // save notification to be shown when Iconex sends tx
         this.notificationService.setNotificationToShow(modalPayload.sendTxMessage())
 
@@ -62,6 +63,9 @@ export class TransactionDispatcherService {
           getProperties: () => signedRawTx,
           getSignature: () => signedRawTx.signature,
         });
+
+        // hide active modal after tx has been successfully sent
+        this.stateChangeService.hideActiveModal();
 
         // show send tx message (shown on tx commit)
         this.notificationService.showNewNotification(modalPayload.sendTxMessage(), txHash);

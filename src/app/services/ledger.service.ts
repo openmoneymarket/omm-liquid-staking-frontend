@@ -18,6 +18,7 @@ import {LedgerIcxBaseData} from "../models/interfaces/LedgerIcxBaseData";
 import {Wallet} from "../models/classes/Wallet";
 import {WalletType} from "../models/enums/WalletType";
 import {ICX} from "../common/constants";
+import {LocalStorageService} from "./local-storage.service";
 
 
 @Injectable({
@@ -33,7 +34,8 @@ export class LedgerService {
   constructor(
     private notificationService: NotificationService,
     private storeService: StoreService,
-    private iconApiService: IconApiService
+    private iconApiService: IconApiService,
+    private localStorageService: LocalStorageService
     ) { }
 
   async signIn(): Promise<LedgerIcxBaseData | undefined> {
@@ -68,6 +70,13 @@ export class LedgerService {
         const path = `${environment.ledgerBip32Path}/${i}'`;
         const { address } = await this.icx.getAddress(path, false, true);
 
+        if (i == index * this.LIST_NUM) {
+          const localStorageWallets = await this.getWalletsPageFromLocalStorage(index, address);
+          if (localStorageWallets) {
+            return localStorageWallets;
+          }
+        }
+
         const wallet = new Wallet(address, WalletType.LEDGER, path);
         const icxBalance = await this.iconApiService.getIcxBalance(address);
         wallet.irc2TokenBalancesMap.set(ICX.symbol, icxBalance);
@@ -75,10 +84,42 @@ export class LedgerService {
         walletList.push(wallet);
       }
 
+      // save wallets in localstorage
+      this.saveWalletsPageToLocalStorage(index, walletList);
+
       return walletList;
     } catch (e) {
       log.error("getLedgerWallets error: ", e);
       throw e;
+    }
+  }
+
+  saveWalletsPageToLocalStorage(index: number, walletList: Wallet[]): void {
+    if (walletList.length > 0) {
+      this.localStorageService.set(`${index}-${walletList[0].address}`, JSON.stringify(walletList));
+    }
+  }
+
+  async getWalletsPageFromLocalStorage(index: number, address: string): Promise<Wallet[] | undefined> {
+    const walletsJsonString = this.localStorageService.get(`${index}-${address}`);
+
+    if (walletsJsonString) {
+      try {
+        const wallets = JSON.parse(walletsJsonString) as Wallet[];
+
+        return Promise.all(wallets.map(async (wallet) => {
+          const newWallet = new Wallet(wallet.address, WalletType.LEDGER, wallet.ledgerPath);
+          const icxBalance = await this.iconApiService.getIcxBalance(newWallet.address);
+          newWallet.irc2TokenBalancesMap.set(ICX.symbol, icxBalance);
+
+          return newWallet;
+        }))
+      } catch (e) {
+        log.error(`[getWalletsPageFromLocalStorage] Failed to parse wallets from localstorage!`);
+        return Promise.resolve(undefined);
+      }
+    } else {
+      return Promise.resolve(undefined);
     }
   }
 
@@ -90,6 +131,7 @@ export class LedgerService {
     try {
       await this.initialiseTransport();
 
+      // show confirmation notification
       this.notificationService.showNewNotification(LEDGER_PLEASE_CONFIRM);
 
       const rawTx = { ...rawTransaction };
@@ -99,6 +141,9 @@ export class LedgerService {
       const signedData = await this.icx.signTransaction(this.storeService.activeWallet.ledgerPath, phraseToSign);
       const { signedRawTxBase64 } = signedData;
       log.info("Ledger signTransaction result: ", signedData);
+
+      // hide notifications
+      this.notificationService.hideAll();
 
       return {
         ...rawTx,

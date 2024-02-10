@@ -19,16 +19,19 @@ export function hashStringToUniqueId(data: string): number {
 
 export function numToUsLocaleString(num: BigNumber | string): string {
     const dp = new BigNumber(num).dp() ?? 0;
+    const value = +num;
+    const minimumFractionDigits = value > 100 ? 0 : (dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION);
+    const maximumFractionDigits = value > 100 ? 0 : DEFAULT_ROUNDING_PRECISION;
 
     if (typeof num === "string") {
         return (+num).toLocaleString('en-US', {
-            minimumFractionDigits: dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION,
-            maximumFractionDigits: DEFAULT_ROUNDING_PRECISION
+            minimumFractionDigits: minimumFractionDigits,
+            maximumFractionDigits: maximumFractionDigits
         });
     } else {
         return num.toNumber().toLocaleString('en-US', {
-            minimumFractionDigits: dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION,
-            maximumFractionDigits: DEFAULT_ROUNDING_PRECISION
+            minimumFractionDigits: minimumFractionDigits,
+            maximumFractionDigits: maximumFractionDigits
         });
     }
 }

@@ -128,7 +128,7 @@
                 <span *ngIf="prepBommDelegation(prep.address).gt(0)" class="label">{{prepBommDelegation(prep.address) | RndDwn | usFormat}} bOMM</span>
                 <span *ngIf="!prepBommDelegation(prep.address).gt(0)" class="label">-</span>
             </td>
-            <td>{{prepCollectedFeesPercent(prep.address) | rndDwnNPerc: 2}}<br>
+            <td>{{prepCollectedFees(prep.address).gt(0) ? "$" + (prepCollectedFees(prep.address).multipliedBy(sicxUsdPrice()) | RndDwn | usFormat) : "-"}}<br>
                 <span *ngIf="prepCollectedFees(prep.address).gt(0)" class="label">{{prepCollectedFees(prep.address) | RndDwn | usFormat}} sICX</span>
                 <span *ngIf="!prepCollectedFees(prep.address).gt(0)" class="label">-</span>
             </td>

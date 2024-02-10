@@ -55,7 +55,14 @@
                 </div>
             </div>
 
-            <p id="wait-text" class="text-center label {{unstakeWaitIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Join the unstaking queue to receive your ICX within {{avgUnstakingTimeInSeconds | secToDays}}.</p>
+            <p id="wait-text" class="text-center label {{unstakeWaitIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">
+                <ng-container *ngIf="unstakingTimesAreEqual()">
+                    Join the unstaking queue to receive your ICX within {{maxUnstakingTimeInSeconds | secToDays: true}}.
+                </ng-container>
+                <ng-container *ngIf="!unstakingTimesAreEqual()">
+                    Join the unstaking queue to receive your ICX within {{avgUnstakingTimeInSeconds | secToDays: false}}-{{maxUnstakingTimeInSeconds | secToDays: true}}.
+                </ng-container>
+            </p>
 
             <p id="instant-text" class="text-center label {{unstakeInstantIsActive() ? '' : 'hide'}}" style="margin-top: 5px; margin-bottom: 8px;">Pay a {{balancedDexFees?.icxTotal | rndDwnNPerc}} fee to swap your sICX for ICX.</p>
 
@@ -96,12 +103,15 @@
                         <dt>Unstaking time <span id="p-rep-tooltip" class="tooltip">
 									<span class="tooltip-item"><img src="assets/img/icon/question.svg" class="tooltip-icon" alt=""></span>
 									<div class="tooltip-content">
-										<p>The last unstaking request took {{avgUnstakingTimeInSeconds | SecToDh}}<br>
+										<p>The last unstaking request took <span class="text-bold">{{avgUnstakingTimeInSeconds | SecToDh}}</span>.<br>
                                             The maximum unstaking time is currently <span class="text-bold">{{maxUnstakingTimeInSeconds | SecToDh}}</span>.
                                         </p>
 									</div>
 								</span></dt>
-                        <dd><span class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays}}</span></dd>
+                        <dd>
+                            <span *ngIf="unstakingTimesAreEqual()" class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays: true}}</span>
+                            <span *ngIf="!unstakingTimesAreEqual()" class="value-liquidity-apy-4">{{avgUnstakingTimeInSeconds | secToDays: false}}-{{maxUnstakingTimeInSeconds | secToDays: true}}</span>
+                        </dd>
                     </dl>
                 </div>
                 <div class="grid-cell text-center">

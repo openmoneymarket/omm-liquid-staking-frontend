@@ -41,4 +41,8 @@ export class NotificationService {
       this.notifierService.clear(lastToast.toastId);
     }
   }
+
+  hideAll(): void {
+    this.notifierService.clear();
+  }
 }
