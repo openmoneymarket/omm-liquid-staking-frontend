@@ -1,9 +1,9 @@
-import {ScoreParamType, ScorePayloadParamType} from "../classes/ScoreParamType";
+import { ScoreParamType, ScorePayloadParamType } from "../classes/ScoreParamType";
 
 export interface IScoreParameter {
-  default?: any,
-  name: string,
-  type: ScoreParamType
+  default?: any;
+  name: string;
+  type: ScoreParamType;
 }
 
 export interface IScoreParameterValue extends IScoreParameter {
@@ -17,7 +17,7 @@ export interface IScorePayloadParameter {
 
 export function scorePayloadParameterToString(params: IScorePayloadParameter[]): string {
   const res = "";
-  params.forEach(param => res + param.type.toString() + param.value);
+  params.forEach((param) => res + param.type.toString() + param.value);
   return res;
 }
 
@@ -28,7 +28,7 @@ export function scoreParamToPayloadParam(param: ScoreParamType): ScorePayloadPar
     case ScoreParamType.ADDRESS:
       return ScorePayloadParamType.ADDRESS;
     case ScoreParamType.BYTES:
-      return ScorePayloadParamType.BYTES
+      return ScorePayloadParamType.BYTES;
     default:
       throw new Error("Unsupported ScoreParamType!");
   }

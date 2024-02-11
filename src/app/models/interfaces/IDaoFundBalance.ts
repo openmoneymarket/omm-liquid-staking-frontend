@@ -1,5 +1,5 @@
-import {ITokenBalance} from "./ITokenBalance";
+import { ITokenBalance } from "./ITokenBalance";
 
 export interface IDaoFundBalance {
-    balances: ITokenBalance[];
+  balances: ITokenBalance[];
 }

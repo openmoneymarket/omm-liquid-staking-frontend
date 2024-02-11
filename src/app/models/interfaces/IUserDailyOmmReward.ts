@@ -16,6 +16,3 @@ export interface IUserDailyOmmReward {
   oUSDS: string;
   obnUSD: string;
 }
-
-
-

@@ -1,30 +1,29 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UnstakeInstantSicxPayload} from "../../../models/classes/UnstakeInstantSicxPayload";
-import {StateChangeService} from "../../../services/state-change.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
-import {ScoreService} from "../../../services/score.service";
-import {ModalType} from "../../../models/enums/ModalType";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { UnstakeInstantSicxPayload } from "../../../models/classes/UnstakeInstantSicxPayload";
+import { StateChangeService } from "../../../services/state-change.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
+import { ScoreService } from "../../../services/score.service";
+import { ModalType } from "../../../models/enums/ModalType";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
 
 @Component({
-  selector: 'app-unstake-instant-modal',
+  selector: "app-unstake-instant-modal",
   standalone: true,
   imports: [CommonModule, UsFormatPipe],
-  templateUrl: './unstake-instant-modal.component.html'
+  templateUrl: "./unstake-instant-modal.component.html",
 })
 export class UnstakeInstantModalComponent {
-
   @Input({ required: true }) active!: boolean;
 
   @Input() unstakeInstantSicxPayload: UnstakeInstantSicxPayload | undefined;
 
-  constructor(private stateChangeService: StateChangeService,
-              private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService,
-  ) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private transactionDispatcher: TransactionDispatcherService,
+    private scoreService: ScoreService,
+  ) {}
 
   getUnstakeSicxAmount(): string {
     return this.unstakeInstantSicxPayload?.unstakeSicxAmount?.toFixed(2, BigNumber.ROUND_DOWN) ?? "0";

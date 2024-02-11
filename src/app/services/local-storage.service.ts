@@ -1,16 +1,15 @@
-import { Injectable } from '@angular/core';
-import {Subject} from "rxjs";
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LocalStorageService {
-
   localStorage: Storage;
   changes$ = new Subject();
 
   constructor() {
-    this.localStorage   = window.localStorage;
+    this.localStorage = window.localStorage;
   }
 
   get(key: string): any {
@@ -25,9 +24,9 @@ export class LocalStorageService {
     if (this.isLocalStorageSupported) {
       this.localStorage.setItem(key, JSON.stringify(value));
       this.changes$.next({
-        type: 'set',
+        type: "set",
         key,
-        value
+        value,
       });
       return true;
     }
@@ -38,8 +37,8 @@ export class LocalStorageService {
     if (this.isLocalStorageSupported) {
       this.localStorage.removeItem(key);
       this.changes$.next({
-        type: 'remove',
-        key
+        type: "remove",
+        key,
       });
       return true;
     }
@@ -49,5 +48,4 @@ export class LocalStorageService {
   get isLocalStorageSupported(): boolean {
     return !!this.localStorage;
   }
-
 }

@@ -2,19 +2,19 @@ export interface IRewardWorkingTotal {
   "OMM/IUSDC": string;
   "OMM/USDS": string;
   "OMM/sICX": string;
-  "bOMM": string;
-  "dBALN": string;
-  "dICX": string;
-  "dIUSDC": string;
-  "dOMM": string;
-  "dUSDS": string;
-  "dbnUSD": string;
-  "oBALN": string;
-  "oICX": string;
-  "oIUSDC": string;
-  "oOMM": string;
-  "oUSDS": string;
-  "obnUSD": string;
+  bOMM: string;
+  dBALN: string;
+  dICX: string;
+  dIUSDC: string;
+  dOMM: string;
+  dUSDS: string;
+  dbnUSD: string;
+  oBALN: string;
+  oICX: string;
+  oIUSDC: string;
+  oOMM: string;
+  oUSDS: string;
+  obnUSD: string;
 }
 
 // Example
@@ -36,4 +36,3 @@ export interface IRewardWorkingTotal {
 //   "oUSDS": "0x0",
 //   "obnUSD": "0x0"
 // }
-

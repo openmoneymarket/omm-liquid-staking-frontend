@@ -1,25 +1,25 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {StakeOverviewComponent} from "../stake-overview/stake-overview.component";
-import {BaseClass} from "../../models/classes/BaseClass";
-import {StateChangeService} from "../../services/state-change.service";
-import {Subscription, timer} from "rxjs";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {isBrowserTabActive} from "../../common/utils";
-import {DATA_REFRESH_INTERVAL} from "../../common/constants";
-import {DollarUsLocalePipe} from "../../pipes/dollar-us-locale.pipe";
-import {StakePanelComponent} from "../stake-panel/stake-panel.component";
-import {UnstakePanelComponent} from "../unstake-panel/unstake-panel.component";
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {DataLoaderService} from "../../services/data-loader.service";
-import {Wallet} from "../../models/classes/Wallet";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { StakeOverviewComponent } from "../stake-overview/stake-overview.component";
+import { BaseClass } from "../../models/classes/BaseClass";
+import { StateChangeService } from "../../services/state-change.service";
+import { Subscription, timer } from "rxjs";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { isBrowserTabActive } from "../../common/utils";
+import { DATA_REFRESH_INTERVAL } from "../../common/constants";
+import { DollarUsLocalePipe } from "../../pipes/dollar-us-locale.pipe";
+import { StakePanelComponent } from "../stake-panel/stake-panel.component";
+import { UnstakePanelComponent } from "../unstake-panel/unstake-panel.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { DataLoaderService } from "../../services/data-loader.service";
+import { Wallet } from "../../models/classes/Wallet";
 
 @Component({
-  selector: 'app-stake',
+  selector: "app-stake",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    style: "display: contents"
+    style: "display: contents",
   },
   imports: [
     CommonModule,
@@ -27,11 +27,11 @@ import {Wallet} from "../../models/classes/Wallet";
     UsFormatPipe,
     DollarUsLocalePipe,
     StakePanelComponent,
-    UnstakePanelComponent],
-  templateUrl: './stake.component.html'
+    UnstakePanelComponent,
+  ],
+  templateUrl: "./stake.component.html",
 })
 export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
-
   private stakeActive = true;
 
   private userWallet: Wallet | undefined;
@@ -40,9 +40,11 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
   userLoginSub?: Subscription;
   dataRefreshPollingIntervalSub?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService,
-              private dataLoaderService: DataLoaderService,
-              private cdRef: ChangeDetectorRef) {
+  constructor(
+    private stateChangeService: StateChangeService,
+    private dataLoaderService: DataLoaderService,
+    private cdRef: ChangeDetectorRef,
+  ) {
     super();
     this.initDataRefreshPollingInterval();
   }
@@ -58,7 +60,7 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
   }
 
   subscribeToUserLoginChange(): void {
-    this.userLoginSub = this.stateChangeService.loginChange$.subscribe(value => {
+    this.userLoginSub = this.stateChangeService.loginChange$.subscribe((value) => {
       this.userWallet = value;
 
       // Detect changes
@@ -67,12 +69,14 @@ export class StakeComponent extends BaseClass implements OnDestroy, OnInit {
   }
 
   initDataRefreshPollingInterval(): void {
-    this.dataRefreshPollingIntervalSub = timer(DATA_REFRESH_INTERVAL, DATA_REFRESH_INTERVAL).pipe(takeUntilDestroyed()).subscribe(() => {
-      this.refreshData();
+    this.dataRefreshPollingIntervalSub = timer(DATA_REFRESH_INTERVAL, DATA_REFRESH_INTERVAL)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.refreshData();
 
-      // Detect changes
-      this.cdRef.detectChanges();
-    })
+        // Detect changes
+        this.cdRef.detectChanges();
+      });
   }
 
   private refreshData(): void {

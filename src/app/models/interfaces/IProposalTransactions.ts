@@ -1,7 +1,7 @@
-import {IScorePayloadParameter} from "./IScoreParameter";
+import { IScorePayloadParameter } from "./IScoreParameter";
 
 export interface IProposalTransactions {
-  address: string,
-  method: string,
-  parameters: IScorePayloadParameter[]
+  address: string;
+  method: string;
+  parameters: IScorePayloadParameter[];
 }

@@ -1,30 +1,29 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {StateChangeService} from "../../../services/state-change.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
-import {ScoreService} from "../../../services/score.service";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { StateChangeService } from "../../../services/state-change.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
+import { ScoreService } from "../../../services/score.service";
 import BigNumber from "bignumber.js";
-import {ClaimRewardsPayload} from "../../../models/classes/ClaimRewardsPayload";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
+import { ClaimRewardsPayload } from "../../../models/classes/ClaimRewardsPayload";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
+import { RndDwnPipePipe } from "../../../pipes/round-down.pipe";
 
 @Component({
-  selector: 'app-claim-rewards-modal',
+  selector: "app-claim-rewards-modal",
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
-  templateUrl: './claim-rewards-modal.component.html'
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
+  templateUrl: "./claim-rewards-modal.component.html",
 })
 export class ClaimRewardsModalComponent {
-
   @Input({ required: true }) active!: boolean;
 
   @Input() payload: ClaimRewardsPayload | undefined;
 
-  constructor(private stateChangeService: StateChangeService,
-              private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService,
-  ) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private transactionDispatcher: TransactionDispatcherService,
+    private scoreService: ScoreService,
+  ) {}
 
   getUserSicxbalance(): BigNumber {
     return this.payload?.userSicxBalance ?? new BigNumber(0);

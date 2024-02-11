@@ -73,7 +73,7 @@
                         </div>
                         <div class="grid-cell text-right">
                             <p class="label text-red boost-message hide">You'll need to pay a 50% fee to unlock OMM early.</p>
-                            <p class="label locked-default" [ngStyle]="(isLockAdjustActive() || userLockedOmmBalance == 0) | hide">{{userHasLockedOmm() ? unlockedOnLockedUntilLabel() : "Lock up until"}} {{timestampInMillisecondsToPrettyDate(lockDate())}}</p>
+                            <p class="label locked-default" [ngStyle]="(isLockAdjustActive() || userLockedOmmBalance === 0) | hide">{{userHasLockedOmm() ? unlockedOnLockedUntilLabel() : "Lock up until"}} {{timestampInMillisecondsToPrettyDate(lockDate())}}</p>
                             <div class="locked-adjust" [ngStyle]="!isLockAdjustActive() | hide" (clickOutside)="dropdownOpen = false">
                                 <p>
                                     <span class="label">{{unlockedOnLockedUntilLabel()}} </span> <a class="dropdown time-selector" (click)="onLockedDateDropdownClick()">

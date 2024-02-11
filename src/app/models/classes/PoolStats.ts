@@ -1,10 +1,18 @@
 import BigNumber from "bignumber.js";
 
 export class PoolStats {
-
-  constructor(base: BigNumber, quote: BigNumber, baseToken: string, quoteToken: string, totalSupply: BigNumber, price: BigNumber,
-              name: string,
-              baseDecimals: BigNumber, quoteDecimals: BigNumber, minQuote: BigNumber) {
+  constructor(
+    base: BigNumber,
+    quote: BigNumber,
+    baseToken: string,
+    quoteToken: string,
+    totalSupply: BigNumber,
+    price: BigNumber,
+    name: string,
+    baseDecimals: BigNumber,
+    quoteDecimals: BigNumber,
+    minQuote: BigNumber,
+  ) {
     this.base = base;
     this.quote = quote;
     this.baseToken = baseToken;
@@ -28,11 +36,11 @@ export class PoolStats {
   minQuote: BigNumber;
 
   public static getPoolPrecision(baseDecimals: BigNumber, quoteDecimals: BigNumber): BigNumber {
-    return (baseDecimals.plus(quoteDecimals)).dividedBy(new BigNumber("2"));
+    return baseDecimals.plus(quoteDecimals).dividedBy(new BigNumber("2"));
   }
 
   getPrecision(): BigNumber {
-    return (this.baseDecimals.plus(this.quoteDecimals)).dividedBy(new BigNumber("2"));
+    return this.baseDecimals.plus(this.quoteDecimals).dividedBy(new BigNumber("2"));
   }
 }
 
@@ -49,7 +57,6 @@ export interface PoolStatsInterface {
   min_quote: BigNumber;
 }
 
-
 // Example response for pool_id = 5
 // {
 //   "base":"0x3635c9adc5dea00000",
@@ -63,4 +70,3 @@ export interface PoolStatsInterface {
 //   "quote_decimals":"0x6",
 //   "min_quote":"0x0"
 // }
-

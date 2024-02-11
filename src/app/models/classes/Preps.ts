@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import {defaultPrepLogoUrl} from "../../common/constants";
+import { defaultPrepLogoUrl } from "../../common/constants";
 
 export class PrepList {
   prepAddressToNameMap: Map<string, string>;
@@ -10,19 +10,24 @@ export class PrepList {
   avgIRep: BigNumber;
   preps: Prep[];
 
-
-  constructor(totalDelegated: BigNumber, totalStake: BigNumber, preps: Prep[], avgIRep: BigNumber, totalPower: BigNumber) {
+  constructor(
+    totalDelegated: BigNumber,
+    totalStake: BigNumber,
+    preps: Prep[],
+    avgIRep: BigNumber,
+    totalPower: BigNumber,
+  ) {
     this.avgIRep = avgIRep;
     this.totalDelegated = totalDelegated;
     this.totalStake = totalStake;
     this.preps = preps;
     this.totalPower = totalPower;
     this.prepAddressToNameMap = new Map<string, string>();
-    preps.forEach(prep => {
+    preps.forEach((prep) => {
       this.prepAddressToNameMap.set(prep.address, prep.name);
     });
     this.prepAddressToLogoUrlMap = new Map<string, string>();
-    preps.forEach(prep => {
+    preps.forEach((prep) => {
       this.prepAddressToLogoUrlMap.set(prep.address, prep.logoUrl);
     });
   }
@@ -38,9 +43,16 @@ export class Prep {
   logoUrl = defaultPrepLogoUrl;
   power: BigNumber;
 
-
-  constructor(address: string, name: string, stake: BigNumber, delegated: BigNumber, irep: BigNumber, details: string, power: BigNumber,
-              logoUrl: string = defaultPrepLogoUrl) {
+  constructor(
+    address: string,
+    name: string,
+    stake: BigNumber,
+    delegated: BigNumber,
+    irep: BigNumber,
+    details: string,
+    power: BigNumber,
+    logoUrl: string = defaultPrepLogoUrl,
+  ) {
     this.address = address;
     this.name = name;
     this.stake = stake;
@@ -54,5 +66,4 @@ export class Prep {
   setLogoUrl(logoUrl: string | undefined): void {
     this.logoUrl = logoUrl ? logoUrl : defaultPrepLogoUrl;
   }
-
 }

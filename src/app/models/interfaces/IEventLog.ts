@@ -1,4 +1,4 @@
 export interface IEventLog {
-    method: string;
-    indexed: string;
+  method: string;
+  indexed: string;
 }

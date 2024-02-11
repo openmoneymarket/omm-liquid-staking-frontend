@@ -1,5 +1,5 @@
-import {HexString} from "../Types/ModalTypes";
+import { HexString } from "../Types/ModalTypes";
 
 export interface IUnstakeLockPeriod {
-    unstakeLockPeriod: HexString
+  unstakeLockPeriod: HexString;
 }

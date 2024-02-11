@@ -1,22 +1,24 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {Subscription} from "rxjs";
-import {StateChangeService} from "../../services/state-change.service";
-import {LockedOmm} from "../../models/classes/LockedOmm";
-import {OmmTokenBalanceDetails} from "../../models/classes/OmmTokenBalanceDetails";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Subscription } from "rxjs";
+import { StateChangeService } from "../../services/state-change.service";
+import { LockedOmm } from "../../models/classes/LockedOmm";
+import { OmmTokenBalanceDetails } from "../../models/classes/OmmTokenBalanceDetails";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
 import log from "loglevel";
 
 declare var noUiSlider: any;
 @Component({
-  selector: 'app-omm-lock-slider',
+  selector: "app-omm-lock-slider",
   standalone: true,
   imports: [CommonModule, HideElementPipe],
-  templateUrl: './omm-lock-slider.component.html'
+  templateUrl: "./omm-lock-slider.component.html",
 })
 export class OmmLockSliderComponent implements OnInit, OnDestroy {
-
-  private lockOmmSlider!: any; @ViewChild("lckSlider", { static: true})set d(sliderStake: ElementRef) {this.lockOmmSlider = sliderStake.nativeElement; }
+  private lockOmmSlider!: any;
+  @ViewChild("lckSlider", { static: true }) set d(sliderStake: ElementRef) {
+    this.lockOmmSlider = sliderStake.nativeElement;
+  }
 
   _lockAdjustActive!: boolean;
   @Input({ required: true }) set lockAdjustActive(value: boolean) {
@@ -39,8 +41,7 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
   userOmmTokenBalanceDetailsSub?: Subscription;
   afterUserDataReload?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService) {
-  }
+  constructor(private stateChangeService: StateChangeService) {}
 
   ngOnInit(): void {
     this.resetUserValues();
@@ -79,20 +80,22 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
   }
 
   subscribeToUserLockedOmmChange(): void {
-    this.userLockedOmmBalanceSub = this.stateChangeService.userLockedOmmChange$.subscribe(lockedOmm => {
-        this.userLockedOmm = lockedOmm;
-        this.userLockedOmmBalance = lockedOmm.amount.toNumber();
+    this.userLockedOmmBalanceSub = this.stateChangeService.userLockedOmmChange$.subscribe((lockedOmm) => {
+      this.userLockedOmm = lockedOmm;
+      this.userLockedOmmBalance = lockedOmm.amount.toNumber();
 
-        this.refreshSlider();
+      this.refreshSlider();
     });
   }
 
   subscribeTouUerOmmTokenBalanceDetailsChange(): void {
-    this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(value => {
-      this.userOmmTokenBalanceDetails = value;
+    this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(
+      (value) => {
+        this.userOmmTokenBalanceDetails = value;
 
-      this.refreshSlider();
-    })
+        this.refreshSlider();
+      },
+    );
   }
 
   public refreshSlider(): void {
@@ -111,10 +114,9 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
   public updateSliderValues(sliderMax: number, startingValue: number): void {
     log.debug(`updateSliderValues... sliderMax: ${sliderMax}, startingValue: ${startingValue}`);
     if (this.sliderInitialised) {
-
       this.lockOmmSlider.noUiSlider?.updateOptions({
         start: [startingValue],
-        range: { min: 0, max: sliderMax > 0 ? sliderMax : 1 }
+        range: { min: 0, max: sliderMax > 0 ? sliderMax : 1 },
       });
 
       this.lockOmmSlider.noUiSlider.set(startingValue);
@@ -128,10 +130,10 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
     noUiSlider.create(this.lockOmmSlider, {
       start: startingValue,
       padding: 0,
-      connect: 'lower',
+      connect: "lower",
       range: {
         min: [0],
-        max: [max === 0 ? 1 : max]
+        max: [max === 0 ? 1 : max],
       },
       step: 1,
     });
@@ -143,7 +145,7 @@ export class OmmLockSliderComponent implements OnInit, OnDestroy {
 
   private initSliderUpdateHandler(): void {
     // On stake slider update
-    this.lockOmmSlider.noUiSlider.on('update', (values: any, handle: any) => {
+    this.lockOmmSlider.noUiSlider.on("update", (values: any, handle: any) => {
       const value = +values[handle];
 
       // forbid slider value going below users locked Omm balance

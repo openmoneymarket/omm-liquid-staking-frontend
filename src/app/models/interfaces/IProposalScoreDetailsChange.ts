@@ -1,7 +1,6 @@
-import BigNumber from "bignumber.js";
-import {IProposalScoreDetails} from "./IProposalScoreDetails";
+import { IProposalScoreDetails } from "./IProposalScoreDetails";
 
 export interface IProposalScoreDetailsChange {
-    proposalId: string;
-    proposalScoreDetails: IProposalScoreDetails[];
+  proposalId: string;
+  proposalScoreDetails: IProposalScoreDetails[];
 }

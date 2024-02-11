@@ -24,7 +24,7 @@ export class Utils {
   public static splitPath(path: string): any[] {
     const result: number[] = [];
     const components = path.split("/");
-    components.forEach(element => {
+    components.forEach((element) => {
       let num = parseInt(element, 10);
       if (isNaN(num)) {
         return; // FIXME shouldn't it throws instead?
@@ -37,17 +37,11 @@ export class Utils {
     return result;
   }
 
-  public static eachSeries<A>(
-    arr: A[],
-    fun: (arg0: A) => Promise<any>,
-  ): Promise<any> {
+  public static eachSeries<A>(arr: A[], fun: (arg0: A) => Promise<any>): Promise<any> {
     return arr.reduce((p, e) => p.then(() => fun(e)), Promise.resolve());
   }
 
-  public static foreach<T, A>(
-    arr: T[],
-    callback: (arg0: T, arg1: number) => Promise<A>,
-  ): Promise<A[]> {
+  public static foreach<T, A>(arr: T[], callback: (arg0: T, arg1: number) => Promise<A>): Promise<A[]> {
     function iterate(index: number, array: string | any[], result: A[]): any {
       if (index >= array.length) {
         return result;
@@ -61,10 +55,7 @@ export class Utils {
     return Promise.resolve().then(() => iterate(0, arr, []));
   }
 
-  public static doIf(
-    condition: boolean,
-    callback: () => any | Promise<any>,
-  ): Promise<void> {
+  public static doIf(condition: boolean, callback: () => any | Promise<any>): Promise<void> {
     return Promise.resolve().then(() => {
       if (condition) {
         return callback();
@@ -72,15 +63,12 @@ export class Utils {
     });
   }
 
-  public static asyncWhile<T>(
-    predicate: () => boolean,
-    callback: () => Promise<T>,
-  ): Promise<Array<T>> {
+  public static asyncWhile<T>(predicate: () => boolean, callback: () => Promise<T>): Promise<Array<T>> {
     function iterate(result: T[]): any {
       if (!predicate()) {
         return result;
       } else {
-        return callback().then(res => {
+        return callback().then((res) => {
           result.push(res);
           return iterate(result);
         });
@@ -90,12 +78,13 @@ export class Utils {
   }
 
   public static hexToBase64(hexString: string): string {
-    return btoa(hexString.match(/\w{2}/g)!!
-      .map((a) =>  {
-        return String.fromCharCode(parseInt(a, 16));
-      }).join(""),
+    return btoa(
+      hexString
+        .match(/\w{2}/g)!!
+        .map((a) => {
+          return String.fromCharCode(parseInt(a, 16));
+        })
+        .join(""),
     );
   }
-
 }
-

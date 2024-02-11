@@ -1,11 +1,10 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'scoreParam',
-  standalone: true
+  name: "scoreParam",
+  standalone: true,
 })
 export class ScoreParamPipe implements PipeTransform {
-
   transform(parameter: string): string {
     switch (parameter) {
       case "_address":
@@ -13,10 +12,9 @@ export class ScoreParamPipe implements PipeTransform {
       case "_data":
         return "Data";
       case "_value":
-        return "Token"
+        return "Token";
       default:
         return parameter;
     }
   }
-
 }

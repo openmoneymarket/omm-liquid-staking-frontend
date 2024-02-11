@@ -1,46 +1,45 @@
-import {Injectable} from '@angular/core';
-import {ScoreService} from './score.service';
-import {StoreService} from './store.service';
-import {StateChangeService} from "./state-change.service";
+import { Injectable } from "@angular/core";
+import { ScoreService } from "./score.service";
+import { StoreService } from "./store.service";
+import { StateChangeService } from "./state-change.service";
 import log from "loglevel";
-import {CheckerService} from "./checker.service";
-import {ReloaderService} from "./reloader.service";
-import {ICON_BLOCK_INTERVAL, ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens} from "../common/constants";
+import { CheckerService } from "./checker.service";
+import { ReloaderService } from "./reloader.service";
+import { ICON_BLOCK_INTERVAL, ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens } from "../common/constants";
 import BigNumber from "bignumber.js";
-import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {PrepAddress, TokenSymbol} from "../models/Types/ModalTypes";
-import {lastValueFrom, take} from "rxjs";
-import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
-import {IEventLog} from "../models/interfaces/IEventLog";
-import {dateToDateOnlyIsoString, hexToBigNumber, hexToNormalisedNumber} from "../common/utils";
-import {Vote} from "../models/classes/Vote";
-import {Proposal} from "../models/classes/Proposal";
-import {IScoreParameter, IScoreParameterValue} from "../models/interfaces/IScoreParameter";
-import {IconApiService} from "./icon-api.service";
-import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
-import {Mapper} from "../common/mapper";
-import {LiquidStakingStatsHistoryService} from "./liquid-staking-stats-history.service";
+import { AllAddresses } from "../models/interfaces/AllAddresses";
+import { PrepAddress, TokenSymbol } from "../models/Types/ModalTypes";
+import { lastValueFrom, take } from "rxjs";
+import { environment } from "../../environments/environment";
+import { HttpClient } from "@angular/common/http";
+import { IEventLog } from "../models/interfaces/IEventLog";
+import { dateToDateOnlyIsoString, hexToBigNumber, hexToNormalisedNumber } from "../common/utils";
+import { Vote } from "../models/classes/Vote";
+import { Proposal } from "../models/classes/Proposal";
+import { IScoreParameter, IScoreParameterValue } from "../models/interfaces/IScoreParameter";
+import { IconApiService } from "./icon-api.service";
+import { IProposalScoreDetails } from "../models/interfaces/IProposalScoreDetails";
+import { Mapper } from "../common/mapper";
+import { LiquidStakingStatsHistoryService } from "./liquid-staking-stats-history.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class DataLoaderService {
-
   /**
    * A Service responsible for loading data and consequently triggering the state change
    */
 
-  constructor(private scoreService: ScoreService,
-              private storeService: StoreService,
-              private stateChangeService: StateChangeService,
-              private checkerService: CheckerService,
-              private reloaderService: ReloaderService,
-              private iconApi: IconApiService,
-              private http: HttpClient,
-              private liquidStakingStatsService: LiquidStakingStatsHistoryService) {
-
-  }
+  constructor(
+    private scoreService: ScoreService,
+    private storeService: StoreService,
+    private stateChangeService: StateChangeService,
+    private checkerService: CheckerService,
+    private reloaderService: ReloaderService,
+    private iconApi: IconApiService,
+    private http: HttpClient,
+    private liquidStakingStatsService: LiquidStakingStatsHistoryService,
+  ) {}
 
   public loadAllScoreAddresses(): Promise<void> {
     return this.scoreService.getAllScoreAddresses().then((allAddresses: AllAddresses) => {
@@ -51,8 +50,8 @@ export class DataLoaderService {
 
   public async loadAllUserAssetsBalances(): Promise<void> {
     try {
-      await Promise.all(supportedTokens.map(
-        async (token) => {
+      await Promise.all(
+        supportedTokens.map(async (token) => {
           try {
             const balance = await this.scoreService.getUserTokenBalance(token);
             // commit the change
@@ -61,7 +60,8 @@ export class DataLoaderService {
             log.error("Failed to fetch balance for " + token);
             log.error(e);
           }
-      }));
+        }),
+      );
     } catch (e) {
       log.debug("Failed to fetch all user asset balances!");
     }
@@ -122,8 +122,8 @@ export class DataLoaderService {
       const todaySicxRate: BigNumber = await this.scoreService.getTodayRate();
       this.stateChangeService.sicxTodayRateUpdate(todaySicxRate);
     } catch (e) {
-          log.error("Error in loadTodaySicxRate:");
-          log.error(e);
+      log.error("Error in loadTodaySicxRate:");
+      log.error(e);
     }
   }
 
@@ -196,14 +196,14 @@ export class DataLoaderService {
 
       const [ommBalance, sIcxBalance] = await Promise.all([
         this.scoreService.getTokenBalance(OMM, this.storeService.allAddresses!.systemContract.DaoFund),
-        this.scoreService.getTokenBalance(SICX, this.storeService.allAddresses!.systemContract.DaoFund)
+        this.scoreService.getTokenBalance(SICX, this.storeService.allAddresses!.systemContract.DaoFund),
       ]);
 
       this.stateChangeService.daoFundBalanceUpdate({
         balances: [
           { token: OMM, balance: ommBalance },
-          { token: SICX, balance: sIcxBalance }
-        ]
+          { token: SICX, balance: sIcxBalance },
+        ],
       });
     } catch (e) {
       log.error("Error in loadlDaoFundTokens:");
@@ -215,7 +215,7 @@ export class DataLoaderService {
     try {
       const sicx = this.storeService.allAddresses!.collateral.sICX;
       const url = `${environment.trackerUrl}/api/v1/transactions/token-holders/token-contract/${sicx}?limit=10&skip=0`;
-      const res =  await lastValueFrom(this.http.get<any>(url, {observe: 'response'}));
+      const res = await lastValueFrom(this.http.get<any>(url, { observe: "response" }));
       const sicxHoldersAmount = res.headers.get("X-Total-Count");
       this.stateChangeService.sicxHoldersUpdate(new BigNumber(sicxHoldersAmount ?? 0));
     } catch (e) {
@@ -226,7 +226,9 @@ export class DataLoaderService {
 
   public async loadDelegationbOmmWorkingTotalSupply(): Promise<void> {
     try {
-      this.stateChangeService.delegationbOmmTotalWorkingSupplyUpdate((await this.scoreService.getDelegationWorkingTotalSupplyOfbOmm()));
+      this.stateChangeService.delegationbOmmTotalWorkingSupplyUpdate(
+        await this.scoreService.getDelegationWorkingTotalSupplyOfbOmm(),
+      );
     } catch (e) {
       log.error("Error in loadDelegationbOmmWorkingTotalSupply:");
       log.error(e);
@@ -235,7 +237,7 @@ export class DataLoaderService {
 
   public async loadUndelegatedIcx(): Promise<void> {
     try {
-      this.stateChangeService.undelegatedIcxUpdate((await this.scoreService.getUndelegatedIcx()));
+      this.stateChangeService.undelegatedIcxUpdate(await this.scoreService.getUndelegatedIcx());
     } catch (e) {
       log.error("Error in loadUndelegatedIcx:");
       log.error(e);
@@ -245,24 +247,23 @@ export class DataLoaderService {
   public async loadFeesDistributed7D(): Promise<void> {
     this.stateChangeService.lastBlockHeightChange$.pipe(take(1)).subscribe(async (lastBlockHeight) => {
       try {
-        const method = "FeeDistributed"
+        const method = "FeeDistributed";
         const limit = 100;
-        let skip = 0
+        let skip = 0;
         let totalFees = new BigNumber(0);
         const ommFeeDistScoreAddress = this.storeService.allAddresses?.systemContract.FeeDistribution;
         const blockStart = lastBlockHeight.height - SEVEN_DAYS_IN_BLOCK_HEIGHT;
         let totalCount = undefined;
 
         do {
-          const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&skip=${skip}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
-          const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
+          const url = `${environment.trackerUrl}/api/v1/logs?limit=${limit}&skip=${skip}&address=${ommFeeDistScoreAddress}&block_start=${blockStart}&block_end=${lastBlockHeight.height}&method=${method}`;
+          const res = await lastValueFrom(this.http.get<IEventLog[]>(url, { observe: "response" }));
 
           if (totalCount == undefined) {
             totalCount = parseInt(res.headers.get("X-Total-Count") ?? "0");
           }
 
-
-          res.body?.forEach(eventLog => {
+          res.body?.forEach((eventLog) => {
             if (eventLog.method == method) {
               const indexed = JSON.parse(eventLog.indexed);
               totalFees = totalFees.plus(hexToNormalisedNumber(indexed[1]));
@@ -282,21 +283,21 @@ export class DataLoaderService {
         log.error("Error in loadFeesCollected7D:");
         log.error(e);
       }
-    })
+    });
   }
 
   public async loadAvgUnstakingTime(): Promise<void> {
     try {
-      const method = "UnstakingUpdate"
+      const method = "UnstakingUpdate";
       const limit = 10;
       const stakingScore = this.storeService.allAddresses?.systemContract.Staking;
 
-      const url =`${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${stakingScore}&method=${method}`;
-      const res =  await lastValueFrom(this.http.get<IEventLog[]>(url, {observe: 'response'}));
+      const url = `${environment.trackerUrl}/api/v1/logs?limit=${limit}&address=${stakingScore}&method=${method}`;
+      const res = await lastValueFrom(this.http.get<IEventLog[]>(url, { observe: "response" }));
 
       const unstakingTimesInBlock: BigNumber[] = [];
 
-      res.body?.forEach(eventLog => {
+      res.body?.forEach((eventLog) => {
         if (eventLog.method == method) {
           const indexed = JSON.parse(eventLog.indexed);
           const currentBlockHeight = hexToBigNumber(indexed[1]);
@@ -306,7 +307,9 @@ export class DataLoaderService {
         }
       });
 
-      const avgUnstakingTimeInBlock = unstakingTimesInBlock.reduce((prev, curr) => prev.plus(curr), new BigNumber(0)).dividedBy(unstakingTimesInBlock.length);
+      const avgUnstakingTimeInBlock = unstakingTimesInBlock
+        .reduce((prev, curr) => prev.plus(curr), new BigNumber(0))
+        .dividedBy(unstakingTimesInBlock.length);
       const avgUnstakingTimeInSeconds = avgUnstakingTimeInBlock.multipliedBy(ICON_BLOCK_INTERVAL);
 
       log.debug("avgUnstakingTimeInSeconds: ", avgUnstakingTimeInSeconds.toString());
@@ -408,30 +411,32 @@ export class DataLoaderService {
   public async loadUserProposalVotes(): Promise<void> {
     // when proposal list is loaded, load all user votes for proposals which have not yet passed
     this.stateChangeService.proposalListChange$.pipe(take(1)).subscribe(async (proposalList) => {
-      await Promise.all(proposalList.map( async (proposal) => {
-        try {
-          // make sure proposal is not over
-          if (!proposal.proposalIsOver()) {
-            try {
-              // fetch user voting weight for proposal
-              const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
-              this.stateChangeService.userVotingWeightForProposalUpdate(proposal.id, votingWeight);
-            } catch (e) {
-              log.error(e);
+      await Promise.all(
+        proposalList.map(async (proposal) => {
+          try {
+            // make sure proposal is not over
+            if (!proposal.proposalIsOver()) {
+              try {
+                // fetch user voting weight for proposal
+                const votingWeight = await this.scoreService.getUserVotingWeight(proposal.voteSnapshot);
+                this.stateChangeService.userVotingWeightForProposalUpdate(proposal.id, votingWeight);
+              } catch (e) {
+                log.error(e);
+              }
             }
-          }
 
-          const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
+            const vote: Vote = await this.scoreService.getVotesOfUsers(proposal.id);
 
-          if (!vote.voteIsEmpty()) {
-            this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
+            if (!vote.voteIsEmpty()) {
+              this.stateChangeService.userProposalVotesUpdate(proposal.id, vote);
+            }
+          } catch (e) {
+            log.error("Failed to get user vote for proposal ", proposal);
+            log.error(e);
           }
-        } catch (e) {
-          log.error("Failed to get user vote for proposal ", proposal);
-          log.error(e);
-        }
-      }));
-    })
+        }),
+      );
+    });
   }
 
   public async loadAsyncContractOptions(proposal: Proposal): Promise<void> {
@@ -442,22 +447,26 @@ export class DataLoaderService {
         const proposalScoreDetails: IProposalScoreDetails[] = [];
 
         // fetch transactions contract name, methods and api
-        Promise.all(proposal.transactions.map(async (transaction) => {
-          const name = await this.scoreService.getContractName(transaction.address);
-          const method = transaction.method;
-          const scoreApi = await this.iconApi.getScoreApi(transaction.address);
-          const methodParams: IScoreParameter[] = scoreApi.getMethod(method).inputs;
-          const parameters: IScoreParameterValue[] = new Array<IScoreParameterValue>();
-          // combine method params and value in single object
-          transaction.parameters.forEach((param, index) => parameters.push({ value: param.value, ...methodParams[index] }));
+        Promise.all(
+          proposal.transactions.map(async (transaction) => {
+            const name = await this.scoreService.getContractName(transaction.address);
+            const method = transaction.method;
+            const scoreApi = await this.iconApi.getScoreApi(transaction.address);
+            const methodParams: IScoreParameter[] = scoreApi.getMethod(method).inputs;
+            const parameters: IScoreParameterValue[] = new Array<IScoreParameterValue>();
+            // combine method params and value in single object
+            transaction.parameters.forEach((param, index) =>
+              parameters.push({ value: param.value, ...methodParams[index] }),
+            );
 
-          proposalScoreDetails.push({
-            address: transaction.address,
-            name,
-            method,
-            parameters
-          });
-        }));
+            proposalScoreDetails.push({
+              address: transaction.address,
+              name,
+              method,
+              parameters,
+            });
+          }),
+        );
 
         this.stateChangeService.proposalScoreDetailsUpdate(proposal.id, proposalScoreDetails);
       }
@@ -465,7 +474,6 @@ export class DataLoaderService {
       log.error("Failed to loadAsyncContractOptions...");
       console.error(e);
     }
-
   }
 
   public async loadUserbOmmBalance(): Promise<void> {
@@ -582,15 +590,15 @@ export class DataLoaderService {
       const [prepList, topPrepList] = await Promise.all([
         this.scoreService.getListOfPreps(start, end),
         this.scoreService.getTopPreps(),
-      ])
+      ]);
 
       // filter out preps which are not in topPrepList
-      prepList.preps = prepList.preps.filter(prep => topPrepList.includes(prep.address))
+      prepList.preps = prepList.preps.filter((prep) => topPrepList.includes(prep.address));
 
       // set logos
       try {
         let logoUrl;
-        prepList.preps?.forEach(prep => {
+        prepList.preps?.forEach((prep) => {
           logoUrl = environment.production ? `https://iconwat.ch/logos/${prep.address}.png` : "assets/img/logo/icx.svg";
           prepList.prepAddressToLogoUrlMap.set(prep.address, logoUrl);
           prep.setLogoUrl(logoUrl);
@@ -608,7 +616,6 @@ export class DataLoaderService {
 
   public async loadLiquidStakingStatsHistory(): Promise<void> {
     try {
-
       // load liquid staking stats history from local storage
       const liquidStakingStatsPersisted = this.liquidStakingStatsService.getLiquidStakingStatsFromLocalStorage();
       let liquidStakingStats = liquidStakingStatsPersisted?.data;
@@ -616,7 +623,9 @@ export class DataLoaderService {
       // if liquid staking stats history did not exist in local storage fetch from backend API
       if (!liquidStakingStatsPersisted || !liquidStakingStats) {
         log.debug("liquidStakingStats does not exists in localstorage!");
-        liquidStakingStats = Mapper.mapLiquidStakingStats([...(await this.liquidStakingStatsService.getLiquidStakingStatsHistory()).docs]);
+        liquidStakingStats = Mapper.mapLiquidStakingStats([
+          ...(await this.liquidStakingStatsService.getLiquidStakingStatsHistory()).docs,
+        ]);
         this.liquidStakingStatsService.persistLiquidStakingStatsHistoryInLocalStorage(liquidStakingStats);
       } else {
         log.debug("liquidStakingStats exists!");
@@ -625,9 +634,14 @@ export class DataLoaderService {
         // check if loaded liquid staking stats history is up to date and re-load if not
         if (liquidStakingStatsPersisted.to !== nowDate) {
           log.debug("liquidStakingStats exists but with old date (older than 365 days)!!");
-          liquidStakingStats = Mapper.mapLiquidStakingStats([...(await this.liquidStakingStatsService.getLiquidStakingStatsHistoryFromTo(
-              liquidStakingStatsPersisted.to, nowDate
-          )).docs]);
+          liquidStakingStats = Mapper.mapLiquidStakingStats([
+            ...(
+              await this.liquidStakingStatsService.getLiquidStakingStatsHistoryFromTo(
+                liquidStakingStatsPersisted.to,
+                nowDate,
+              )
+            ).docs,
+          ]);
           this.liquidStakingStatsService.persistLiquidStakingStatsHistoryInLocalStorage(liquidStakingStats, true);
           liquidStakingStats = this.liquidStakingStatsService.getLiquidStakingStatsFromLocalStorage()!.data;
         }
@@ -640,7 +654,6 @@ export class DataLoaderService {
       this.stateChangeService.liquidStakingStatsUpdate(undefined);
     }
   }
-
 
   public async afterUserActionReload(): Promise<void> {
     // reload core and user data

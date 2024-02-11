@@ -39,7 +39,7 @@
                 </span>
             <br>Your delegation</th>
         <th class="text-right">bOMM delegation</th>
-        <th class="text-right">Total earned</th>
+        <th class="text-right">Rewards claimed</th>
     </tr>
     </thead>
     <tbody>
@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="grid-cell">
                                     <dl class="metadata">
-                                        <dt>Total earned</dt>
+                                        <dt>Rewards claimed</dt>
                                         <dd *ngIf="prepCollectedFees(prep.address).gt(0)" class="label">{{prepCollectedFees(prep.address) | RndDwn | usFormat}} sICX</dd>
                                         <dd *ngIf="!prepCollectedFees(prep.address).gt(0)" class="label">-</dd>
                                     </dl>

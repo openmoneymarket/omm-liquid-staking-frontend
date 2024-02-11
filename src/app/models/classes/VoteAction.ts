@@ -1,6 +1,6 @@
-import {YourPrepVote} from "./YourPrepVote";
+import { YourPrepVote } from "./YourPrepVote";
 
-export class VoteAction{
+export class VoteAction {
   yourVotesPrepList: YourPrepVote[];
 
   constructor(yourVotesPrepList: YourPrepVote[]) {

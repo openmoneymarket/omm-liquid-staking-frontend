@@ -1,11 +1,10 @@
-import {ModalType} from "../enums/ModalType";
-import {AssetAction} from "./AssetAction";
-import {StakingAction} from "./StakingAction";
-import {VoteAction} from "./VoteAction";
-import {GovernanceVotePayload} from "./GovernanceVotePayload";
-import {OmmLockingPayload} from "./OmmLockingPayload";
-import {ManageStakedIcxAction} from "./ManageStakedIcxAction";
-
+import { ModalType } from "../enums/ModalType";
+import { AssetAction } from "./AssetAction";
+import { StakingAction } from "./StakingAction";
+import { VoteAction } from "./VoteAction";
+import { GovernanceVotePayload } from "./GovernanceVotePayload";
+import { OmmLockingPayload } from "./OmmLockingPayload";
+import { ManageStakedIcxAction } from "./ManageStakedIcxAction";
 
 export class ModalAction {
   modalType: ModalType;
@@ -16,8 +15,15 @@ export class ModalAction {
   lockingOmmAction?: OmmLockingPayload;
   manageStakedIcxAction?: ManageStakedIcxAction;
 
-  constructor(modalType: ModalType, assetAction?: AssetAction, stakingAction?: StakingAction, voteAction?: VoteAction,
-              governanceAction?: GovernanceVotePayload, lockingOmmAction?: OmmLockingPayload, manageStakedIcxAction?: ManageStakedIcxAction) {
+  constructor(
+    modalType: ModalType,
+    assetAction?: AssetAction,
+    stakingAction?: StakingAction,
+    voteAction?: VoteAction,
+    governanceAction?: GovernanceVotePayload,
+    lockingOmmAction?: OmmLockingPayload,
+    manageStakedIcxAction?: ManageStakedIcxAction,
+  ) {
     this.modalType = modalType;
     this.assetAction = assetAction;
     this.stakingAction = stakingAction;
@@ -41,5 +47,5 @@ export class ModalActionsResult {
 export enum ModalStatus {
   SUCCESS,
   FAILED,
-  CANCELLED
+  CANCELLED,
 }

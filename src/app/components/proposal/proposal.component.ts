@@ -1,32 +1,31 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import BigNumber from "bignumber.js";
-import {Vote} from "../../models/classes/Vote";
-import {IProposalScoreDetails} from "../../models/interfaces/IProposalScoreDetails";
-import {Proposal} from "../../models/classes/Proposal";
-import {timestampNowMicroseconds} from "../../common/utils";
-import {StateChangeService} from "../../services/state-change.service";
-import {Subscription} from "rxjs";
-import {StoreService} from "../../services/store.service";
-import {ModalType} from "../../models/enums/ModalType";
-import {GovernanceVotePayload} from "../../models/classes/GovernanceVotePayload";
-import {LoadingComponent} from "../loading/loading.component";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {DataLoaderService} from "../../services/data-loader.service";
+import { Vote } from "../../models/classes/Vote";
+import { IProposalScoreDetails } from "../../models/interfaces/IProposalScoreDetails";
+import { Proposal } from "../../models/classes/Proposal";
+import { timestampNowMicroseconds } from "../../common/utils";
+import { StateChangeService } from "../../services/state-change.service";
+import { Subscription } from "rxjs";
+import { StoreService } from "../../services/store.service";
+import { ModalType } from "../../models/enums/ModalType";
+import { GovernanceVotePayload } from "../../models/classes/GovernanceVotePayload";
+import { LoadingComponent } from "../loading/loading.component";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { DataLoaderService } from "../../services/data-loader.service";
 import log from "loglevel";
-import {RouterLink} from "@angular/router";
-import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
-import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
+import { RouterLink } from "@angular/router";
+import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
+import { RndDwnNPercPipe } from "../../pipes/round-down-percent.pipe";
+import { DefaultValuePercent } from "../../models/enums/DefaultValuePercent";
 
 @Component({
-  selector: 'app-proposal',
+  selector: "app-proposal",
   standalone: true,
   imports: [CommonModule, LoadingComponent, RndDwnPipePipe, UsFormatPipe, RouterLink, RndDwnPipePipe, RndDwnNPercPipe],
-  templateUrl: './proposal.component.html'
+  templateUrl: "./proposal.component.html",
 })
 export class ProposalComponent implements OnInit, OnDestroy {
-
   proposalId!: string;
   @Input()
   set id(proposalId: string) {
@@ -45,11 +44,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
   loginSub?: Subscription;
   proposalScoreDetailsSub?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService,
-              private storeService: StoreService,
-              private dataLoaderService: DataLoaderService) {
-
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private storeService: StoreService,
+    private dataLoaderService: DataLoaderService,
+  ) {}
 
   ngOnInit(): void {
     this.registerSubscriptions();
@@ -70,12 +69,12 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   subscribeToProposalScoreDetailsChange(): void {
-    this.proposalScoreDetailsSub = this.stateChangeService.proposalScoreDetailsChange$.subscribe(res => {
+    this.proposalScoreDetailsSub = this.stateChangeService.proposalScoreDetailsChange$.subscribe((res) => {
       if (res.proposalId == this.proposalId) {
         log.debug("this.proposalScoreDetails = res.proposalScoreDetails;");
         this.proposalScoreDetails = res.proposalScoreDetails;
       }
-    })
+    });
   }
 
   subscribeToLoginChange(): void {
@@ -89,7 +88,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   subscribeToUserProposalVoteChange(): void {
     this.userVoteChangeSub = this.stateChangeService.userProposalVotesChange$.subscribe((change) => {
-      if (change && this.activeProposal &&  change.proposalId == this.activeProposal?.id) {
+      if (change && this.activeProposal && change.proposalId == this.activeProposal?.id) {
         this.userVote = this.storeService.userProposalVotes.get(this.proposalId);
       }
     });
@@ -97,7 +96,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   subscribeToProposalListChange(): void {
     this.proposalListSub = this.stateChangeService.proposalListChange$.subscribe((proposalList) => {
-      this.activeProposal = proposalList.find(proposal => proposal.id == this.proposalId);
+      this.activeProposal = proposalList.find((proposal) => proposal.id == this.proposalId);
       this.userVote = this.storeService.userProposalVotes.get(this.proposalId);
 
       if (this.activeProposal && !this.proposalScoreDetails) {
@@ -137,8 +136,10 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   isVoteValid(): boolean {
     if (this.userVote) {
-      return (this.userVote.against.isFinite() && !this.userVote.against.isZero()) ||
-          (this.userVote.for.isFinite() && !this.userVote.for.isZero());
+      return (
+        (this.userVote.against.isFinite() && !this.userVote.against.isZero()) ||
+        (this.userVote.for.isFinite() && !this.userVote.for.isZero())
+      );
     } else {
       return false;
     }
@@ -189,6 +190,5 @@ export class ProposalComponent implements OnInit, OnDestroy {
     return this.storeService.userLoggedIn();
   }
 
-
-    protected readonly DefaultValue = DefaultValuePercent;
+  protected readonly DefaultValue = DefaultValuePercent;
 }

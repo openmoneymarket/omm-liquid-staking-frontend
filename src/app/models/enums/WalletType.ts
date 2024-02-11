@@ -1,4 +1,4 @@
 export enum WalletType {
-    ICON,
-    LEDGER
+  ICON,
+  LEDGER,
 }

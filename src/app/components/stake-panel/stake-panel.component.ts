@@ -6,33 +6,33 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild
-} from '@angular/core';
-import {CommonModule} from '@angular/common';
+  ViewChild,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {ModalType} from "../../models/enums/ModalType";
-import {StakeIcxPayload} from "../../models/classes/StakeIcxPayload";
-import {StateChangeService} from "../../services/state-change.service";
-import {usLocale} from "../../common/formats";
-import {convertICXTosICX, convertICXToSICXPrice, convertSICXToICX} from "../../common/utils";
-import {BaseClass} from "../../models/classes/BaseClass";
-import {DollarUsLocalePipe} from "../../pipes/dollar-us-locale.pipe";
-import {ChartService} from "../../services/chart.service";
-import {UserUnstakeInfo} from "../../models/classes/UserUnstakeInfo";
-import {Subscription} from "rxjs";
-import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
-import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
-import {Wallet} from "../../models/classes/Wallet";
-import {Address, TokenSymbol} from "../../models/Types/ModalTypes";
-import {ICX, MIN_ICX_BALANCE_KEPT, ONE, SICX} from "../../common/constants";
-import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { ModalType } from "../../models/enums/ModalType";
+import { StakeIcxPayload } from "../../models/classes/StakeIcxPayload";
+import { StateChangeService } from "../../services/state-change.service";
+import { usLocale } from "../../common/formats";
+import { convertICXTosICX, convertICXToSICXPrice, convertSICXToICX } from "../../common/utils";
+import { BaseClass } from "../../models/classes/BaseClass";
+import { DollarUsLocalePipe } from "../../pipes/dollar-us-locale.pipe";
+import { ChartService } from "../../services/chart.service";
+import { UserUnstakeInfo } from "../../models/classes/UserUnstakeInfo";
+import { Subscription } from "rxjs";
+import { ClaimIcxPayload } from "../../models/classes/ClaimIcxPayload";
+import { PrettyUntilBlockHeightTime } from "../../pipes/pretty-until-block-height-time";
+import { Wallet } from "../../models/classes/Wallet";
+import { Address, TokenSymbol } from "../../models/Types/ModalTypes";
+import { ICX, MIN_ICX_BALANCE_KEPT, ONE, SICX } from "../../common/constants";
+import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
+import { UnstakeInfoData } from "../../models/classes/UnstakeInfoData";
+import { RndDwnNPercPipe } from "../../pipes/round-down-percent.pipe";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
 
 @Component({
-  selector: 'app-stake-panel',
+  selector: "app-stake-panel",
   standalone: true,
   imports: [
     CommonModule,
@@ -41,20 +41,21 @@ import {HideElementPipe} from "../../pipes/hide-element-pipe";
     PrettyUntilBlockHeightTime,
     RndDwnPipePipe,
     RndDwnNPercPipe,
-    HideElementPipe
+    HideElementPipe,
   ],
-  templateUrl: './stake-panel.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "./stake-panel.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy {
-
   ONE = ONE;
 
   stakingAprChartEl: any;
   stakingAprChart: any;
-  @ViewChild("stkAprChart", { static: true}) set a(a: ElementRef) { this.stakingAprChartEl = a.nativeElement; }
+  @ViewChild("stkAprChart", { static: true }) set a(a: ElementRef) {
+    this.stakingAprChartEl = a.nativeElement;
+  }
 
-  @Input({ required: true}) active!: boolean;
+  @Input({ required: true }) active!: boolean;
 
   // User values
   userSicxBalance = new BigNumber(0);
@@ -93,9 +94,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   liquidStakingSub?: Subscription;
   stakingFeeSub?: Subscription;
 
-  constructor(public stateChangeService: StateChangeService,
-              private chartService: ChartService,
-              private cdRef: ChangeDetectorRef) {
+  constructor(
+    public stateChangeService: StateChangeService,
+    private chartService: ChartService,
+    private cdRef: ChangeDetectorRef,
+  ) {
     super();
   }
 
@@ -144,12 +147,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   private subscribeToStakingFeeChange(): void {
-    this.stakingFeeSub = this.stateChangeService.stakingFeeChange$.subscribe(value => {
+    this.stakingFeeSub = this.stateChangeService.stakingFeeChange$.subscribe((value) => {
       this.stakingFee = value;
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToLiquidStakingStatsChange(): void {
@@ -181,13 +184,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUnstakeInfoChange(): void {
-    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe(value => {
+    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe((value) => {
       this.unstakeInfoMap = value;
-
 
       this.recalculateUserUnstakeInfo();
 
@@ -197,7 +199,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   private subscribeToTokenPriceChange(): void {
-    this.tokenPriceSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+    this.tokenPriceSub = this.stateChangeService.tokenPricesChange$.subscribe((value) => {
       this.tokenPricesMap = value;
       this.icxPrice = this.tokenPricesMap.get(ICX.symbol) ?? new BigNumber(0);
 
@@ -205,11 +207,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUserTokenBalanceChange(): void {
-    this.userTokenBalanceSub = this.stateChangeService.userTokenBalanceUpdate$.subscribe(value => {
+    this.userTokenBalanceSub = this.stateChangeService.userTokenBalanceUpdate$.subscribe((value) => {
       if (value.token.symbol === SICX.symbol) {
         this.userSicxBalance = value.amount;
       } else if (value.token.symbol === ICX.symbol) {
@@ -218,11 +220,11 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToLatestBlockHeightChange(): void {
-    this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe(block => {
+    this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe((block) => {
       this.currentBlockHeight = new BigNumber(block.height);
 
       // Detect Changes
@@ -230,7 +232,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     });
   }
   private subscribeToUserUnstakeInfoChange(): void {
-    this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe(data => {
+    this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe((data) => {
       this.userUnstakeInfo = data;
 
       this.recalculateUserUnstakeInfo();
@@ -241,7 +243,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   private subscribeToUserLoginChange(): void {
-    this.userLoginSub = this.stateChangeService.loginChange$.subscribe(value => {
+    this.userLoginSub = this.stateChangeService.loginChange$.subscribe((value) => {
       this.userWallet = value;
 
       // user logout
@@ -255,7 +257,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   private subscribeToTodayRateChange(): void {
-    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
+    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe((todayRate) => {
       this.todaySicxRate = todayRate;
 
       this.recalculateSicxPrice();
@@ -266,7 +268,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   subscribeToClaimableIcxChange(): void {
-    this.claimableIcxSub = this.stateChangeService.userClaimableIcxChange$.subscribe(value => {
+    this.claimableIcxSub = this.stateChangeService.userClaimableIcxChange$.subscribe((value) => {
       this.claimableIcx = value;
 
       // Detect Changes
@@ -279,10 +281,10 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
 
     if (this.userLoggedIn()) {
       if (!this.userIcxBalanceLtInputAmount() && this.stakeInputAmount.gt(0) && this.unstakeInputAmount.gt(0)) {
-        this.stateChangeService.modalUpdate(ModalType.STAKE_ICX, new StakeIcxPayload(
-            new BigNumber(this.stakeInputAmount),
-            new BigNumber(this.unstakeInputAmount),
-        ));
+        this.stateChangeService.modalUpdate(
+          ModalType.STAKE_ICX,
+          new StakeIcxPayload(new BigNumber(this.stakeInputAmount), new BigNumber(this.unstakeInputAmount)),
+        );
 
         this.resetInputs();
       }
@@ -298,10 +300,10 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.claimableIcx && this.claimableIcx.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(
-          new BigNumber(this.claimableIcx),
-          new BigNumber(this.userIcxBalance)
-      ));
+      this.stateChangeService.modalUpdate(
+        ModalType.CLAIM_ICX,
+        new ClaimIcxPayload(new BigNumber(this.claimableIcx), new BigNumber(this.userIcxBalance)),
+      );
     }
   }
 
@@ -319,7 +321,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   onStakeInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
     this.delay(() => {
       this.processStakeInput(e);
-    }, 800 );
+    }, 800);
   }
 
   processStakeInput(e: KeyboardEvent | ClipboardEvent | FocusEvent | BigNumber) {
@@ -350,7 +352,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   onUnstakeInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
     this.delay(() => {
       this.processUnstakeInput(e);
-    }, 800 );
+    }, 800);
   }
 
   processUnstakeInput(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
@@ -384,7 +386,7 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
         const unstakeInfos = Array.from(this.unstakeInfoMap.values()).flat();
 
         if (unstakeInfos.length > 0) {
-          const equalUnstakeInfo = unstakeInfos.find(value => {
+          const equalUnstakeInfo = unstakeInfos.find((value) => {
             return value.blockHeight.eq(userUnstakeInfo.blockHeight) && value.amount.eq(userUnstakeInfo.amount);
           });
 
@@ -396,12 +398,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
               } else {
                 return prev;
               }
-            }, new BigNumber(0))
+            }, new BigNumber(0));
 
-            userUnstakeInfo.setSicxBefore(sIcxBefore)
+            userUnstakeInfo.setSicxBefore(sIcxBefore);
           }
         }
-      })
+      });
     }
   }
 
@@ -414,10 +416,12 @@ export class StakePanelComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   shouldShowUnstakeInfo(): boolean {
-    return this.userUnstakeInfo != undefined
-        && this.userUnstakeInfo.data != undefined
-        && this.userUnstakeInfo.data.length > 0
-        && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
-        && this.currentBlockHeight != undefined
+    return (
+      this.userUnstakeInfo != undefined &&
+      this.userUnstakeInfo.data != undefined &&
+      this.userUnstakeInfo.data.length > 0 &&
+      this.userUnstakeInfo.totalUnstakeAmount.gt(0) &&
+      this.currentBlockHeight != undefined
+    );
   }
 }

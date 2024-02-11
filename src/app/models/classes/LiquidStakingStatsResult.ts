@@ -1,5 +1,5 @@
-import {LiquidStakingStats} from "./LiquidStakingStats";
-import {Paginate} from "../interfaces/Paginate";
+import { LiquidStakingStats } from "./LiquidStakingStats";
+import { Paginate } from "../interfaces/Paginate";
 
 export class LiquidStakingStatsResult implements Paginate {
   docs: LiquidStakingStats[];

@@ -1,23 +1,23 @@
-import {Component, Input} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {IconexApiService} from "../../../services/iconex-api.service";
-import {DeviceDetectorService} from "ngx-device-detector";
-import {StateChangeService} from "../../../services/state-change.service";
-import {ModalType} from "../../../models/enums/ModalType";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { IconexApiService } from "../../../services/iconex-api.service";
+import { DeviceDetectorService } from "ngx-device-detector";
+import { StateChangeService } from "../../../services/state-change.service";
+import { ModalType } from "../../../models/enums/ModalType";
 
 @Component({
-  selector: 'app-sign-in-modal',
+  selector: "app-sign-in-modal",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './sign-in-modal.component.html'
+  templateUrl: "./sign-in-modal.component.html",
 })
 export class SignInModalComponent {
-
   @Input({ required: true }) active!: boolean;
-  constructor(private iconexApiService: IconexApiService,
-              private deviceService: DeviceDetectorService,
-              private stateChangeService: StateChangeService) {
-  }
+  constructor(
+    private iconexApiService: IconexApiService,
+    private deviceService: DeviceDetectorService,
+    private stateChangeService: StateChangeService,
+  ) {}
 
   onSignInIconexClick(event: MouseEvent): void {
     event.stopPropagation();

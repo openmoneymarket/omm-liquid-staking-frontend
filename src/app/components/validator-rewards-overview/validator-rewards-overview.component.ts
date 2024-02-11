@@ -1,29 +1,28 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Subscription} from "rxjs";
-import {StateChangeService} from "../../services/state-change.service";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Subscription } from "rxjs";
+import { StateChangeService } from "../../services/state-change.service";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
-import {ModalType} from "../../models/enums/ModalType";
-import {ClaimRewardsPayload} from "../../models/classes/ClaimRewardsPayload";
-import {ICX, SICX} from "../../common/constants";
-import {Calculations} from "../../common/calculations";
-import {Address, PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
-import {convertICXTosICX} from "../../common/utils";
-import {Wallet} from "../../models/classes/Wallet";
-import {Irc2Token} from "../../models/classes/Irc2Token";
-import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
+import { ModalType } from "../../models/enums/ModalType";
+import { ClaimRewardsPayload } from "../../models/classes/ClaimRewardsPayload";
+import { ICX, SICX } from "../../common/constants";
+import { Calculations } from "../../common/calculations";
+import { Address, PrepAddress, TokenSymbol } from "../../models/Types/ModalTypes";
+import { convertICXTosICX } from "../../common/utils";
+import { Wallet } from "../../models/classes/Wallet";
+import { Irc2Token } from "../../models/classes/Irc2Token";
+import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
 
 @Component({
-  selector: 'app-validator-rewards-overview',
+  selector: "app-validator-rewards-overview",
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, HideElementPipe, RndDwnPipePipe],
-  templateUrl: './validator-rewards-overview.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [CommonModule, UsFormatPipe, HideElementPipe, RndDwnPipePipe],
+  templateUrl: "./validator-rewards-overview.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
-
   // Core values
   delegationPower = new BigNumber(0);
   ommTotalDelegationPower = new BigNumber(0);
@@ -60,12 +59,13 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   tokenPricesSub?: Subscription;
   undelegatedIcxSub?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService,
-              private cdRef: ChangeDetectorRef) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private cdRef: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    this.registerSubscriptions()
+    this.registerSubscriptions();
   }
 
   ngOnDestroy(): void {
@@ -104,57 +104,57 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
     this.userAccumulatedFeeInSicx = new BigNumber(0);
     this.userValidatorCollectedFeeInSicx = new BigNumber(0);
     this.userValidatorPrepBommDelegation = new BigNumber(0);
-    this.userDelegationWorkingbOmmBalance = new BigNumber(0)
+    this.userDelegationWorkingbOmmBalance = new BigNumber(0);
   }
 
   private subscribeToUndelegatedIcxChange(): void {
-    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
+    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe((value) => {
       this.undelegatedIcx = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToTokenPricesChange(): void {
-    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe((value) => {
       this.tokenPrices = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUserCollectedFeeChange(): void {
-    this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe(value => {
+    this.userCollectedFeeSub = this.stateChangeService.userValidatorCollectedFeeChange$.subscribe((value) => {
       this.userValidatorCollectedFeeInSicx = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToActualPrepDelegationsChange(): void {
-    this.actualPrepDelegationsSub = this.stateChangeService.actualPrepDelegationsChange$.subscribe(value => {
+    this.actualPrepDelegationsSub = this.stateChangeService.actualPrepDelegationsChange$.subscribe((value) => {
       this.actualPrepDelegations = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   subscribeToUserDelegationWorkingbOmmChange(): void {
-    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
+    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe((value) => {
       this.userDelegationWorkingbOmmBalance = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   subscribeToAfterUserDataReload(): void {
@@ -167,7 +167,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeTobOmmTotalSupplyChange(): void {
-    this.bOmmTotalSupplySub = this.stateChangeService.bOmmTotalSupplyChange$.subscribe(value => {
+    this.bOmmTotalSupplySub = this.stateChangeService.bOmmTotalSupplyChange$.subscribe((value) => {
       this.bOmmTotalSupply = value;
       this.refreshValues();
 
@@ -177,17 +177,19 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToDelegationbOmmTotalWorkingSupplyChange(): void {
-    this.delegationOmmTotalWorkingSupplySub = this.stateChangeService.delegationbOmmTotalWorkingSupplyChange$.subscribe(value => {
-      this.delegationbOmmWorkingTotalSupply = value;
-      this.refreshValues();
+    this.delegationOmmTotalWorkingSupplySub = this.stateChangeService.delegationbOmmTotalWorkingSupplyChange$.subscribe(
+      (value) => {
+        this.delegationbOmmWorkingTotalSupply = value;
+        this.refreshValues();
 
-      // Detect changes
-      this.cdRef.detectChanges();
-    })
+        // Detect changes
+        this.cdRef.detectChanges();
+      },
+    );
   }
 
   private subscribeToTotalSicxAmountChange(): void {
-    this.totalSicxAmountSub = this.stateChangeService.totalSicxAmountChange$.subscribe(value => {
+    this.totalSicxAmountSub = this.stateChangeService.totalSicxAmountChange$.subscribe((value) => {
       this.totalSicxAmount = value;
       this.refreshValues();
 
@@ -197,7 +199,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToSicxTodayRateChange(): void {
-    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
+    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe((todayRate) => {
       this.todaySicxRate = todayRate;
       this.refreshValues();
 
@@ -207,7 +209,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserValidatorPrepBommDelegationChange(): void {
-    this.userValidatorPrepBommDelegationSub = this.stateChangeService.prepBommDelegationChange$.subscribe(value => {
+    this.userValidatorPrepBommDelegationSub = this.stateChangeService.prepBommDelegationChange$.subscribe((value) => {
       this.userValidatorPrepBommDelegation = value;
 
       this.refreshValues();
@@ -232,14 +234,14 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToUserAccumulatedFeeChange(): void {
-    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe(feeInSicx => {
+    this.userAccumulatedFeeSub = this.stateChangeService.userClaimableFeeChange$.subscribe((feeInSicx) => {
       this.userAccumulatedFeeInSicx = feeInSicx;
 
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private refreshValues(): void {
@@ -270,24 +272,28 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   private calculateOmmVotingPower(): void {
     if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
-      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
+      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(
+        this.delegationPower,
+        this.delegationbOmmWorkingTotalSupply,
+      );
     }
   }
-
 
   onClaimRewardsClick(e: MouseEvent): void {
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.userAccumulatedFeeInSicx.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_REWARDS, new ClaimRewardsPayload(
-          this.userAccumulatedFeeInSicx,
-          this.getUserTokenBalance(SICX)
-      ));
+      this.stateChangeService.modalUpdate(
+        ModalType.CLAIM_REWARDS,
+        new ClaimRewardsPayload(this.userAccumulatedFeeInSicx, this.getUserTokenBalance(SICX)),
+      );
     }
   }
 
   sicxUsdPrice(): BigNumber {
-    return convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0);
+    return (
+      convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
+    );
   }
 
   public userWalletAddress(): Address {
@@ -299,10 +305,12 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
   }
 
   shouldShowValidatorSection(): boolean {
-    return this.userAccumulatedFeeInSicx.gt(0)
-        || this.userValidatorCollectedFeeInSicx.gt(0)
-        || this.userValidatorPrepBommDelegation.gt(0)
-        || this.icxDelegation.gt(0)
+    return (
+      this.userAccumulatedFeeInSicx.gt(0) ||
+      this.userValidatorCollectedFeeInSicx.gt(0) ||
+      this.userValidatorPrepBommDelegation.gt(0) ||
+      this.icxDelegation.gt(0)
+    );
   }
 
   public userLoggedIn(): boolean {

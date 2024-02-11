@@ -1,22 +1,19 @@
-import { Injectable } from '@angular/core';
-import {Wallet} from "../models/classes/Wallet";
-import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {Proposal} from "../models/classes/Proposal";
+import { Injectable } from "@angular/core";
+import { Wallet } from "../models/classes/Wallet";
+import { AllAddresses } from "../models/interfaces/AllAddresses";
 import BigNumber from "bignumber.js";
-import {PrepList} from "../models/classes/Preps";
-import {YourPrepVote} from "../models/classes/YourPrepVote";
-import {Irc2Token} from "../models/classes/Irc2Token";
-import {ModalPayload, TokenSymbol} from "../models/Types/ModalTypes";
-import {ModalAction} from "../models/classes/ModalAction";
-import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
-import {Vote} from "../models/classes/Vote";
-import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
+import { PrepList } from "../models/classes/Preps";
+import { YourPrepVote } from "../models/classes/YourPrepVote";
+import { Irc2Token } from "../models/classes/Irc2Token";
+import { ModalPayload, TokenSymbol } from "../models/Types/ModalTypes";
+import { UserUnstakeInfo } from "../models/classes/UserUnstakeInfo";
+import { Vote } from "../models/classes/Vote";
+import { IProposalScoreDetails } from "../models/interfaces/IProposalScoreDetails";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StoreService {
-
   activeWallet?: Wallet;
 
   public allAddresses?: AllAddresses;
@@ -38,7 +35,7 @@ export class StoreService {
   public userUnstakeInfo?: UserUnstakeInfo;
   public userVotingWeightForProposal = new Map<string, BigNumber>(); // proposalId to voting weight
   public userProposalVotes = new Map<string, Vote>();
-  constructor() { }
+  constructor() {}
 
   public logoutUser(): void {
     // clean up user states
@@ -71,5 +68,4 @@ export class StoreService {
   public getLastModalAction(): ModalPayload | undefined {
     return this.lastModalPayload;
   }
-
 }

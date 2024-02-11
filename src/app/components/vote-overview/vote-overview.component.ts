@@ -1,27 +1,26 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {StateChangeService} from "../../services/state-change.service";
-import {Subscription} from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { StateChangeService } from "../../services/state-change.service";
+import { Subscription } from "rxjs";
 import BigNumber from "bignumber.js";
-import {TokenSymbol} from "../../models/Types/ModalTypes";
-import {IDaoFundBalance} from "../../models/interfaces/IDaoFundBalance";
-import {Irc2Token} from "../../models/classes/Irc2Token";
-import {ICX, OMM, SICX} from "../../common/constants";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {DollarUsLocalePipe} from "../../pipes/dollar-us-locale.pipe";
-import {convertICXToSICXPrice, convertSICXToICX} from "../../common/utils";
+import { TokenSymbol } from "../../models/Types/ModalTypes";
+import { IDaoFundBalance } from "../../models/interfaces/IDaoFundBalance";
+import { Irc2Token } from "../../models/classes/Irc2Token";
+import { ICX, OMM, SICX } from "../../common/constants";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { DollarUsLocalePipe } from "../../pipes/dollar-us-locale.pipe";
+import { convertICXToSICXPrice, convertSICXToICX } from "../../common/utils";
 
 @Component({
-  selector: 'app-vote-overview',
+  selector: "app-vote-overview",
   standalone: true,
   imports: [CommonModule, UsFormatPipe, DollarUsLocalePipe],
-  templateUrl: './vote-overview.component.html'
+  templateUrl: "./vote-overview.component.html",
 })
 export class VoteOverviewComponent implements OnInit, OnDestroy {
-
   // template variables
   daoFundUsdValue = new BigNumber(0);
-  stakingIncome  = new BigNumber(0); // balance of sICX in the Dao Fund
+  stakingIncome = new BigNumber(0); // balance of sICX in the Dao Fund
 
   // local state
   private tokenToUsdPriceMap = new Map<TokenSymbol, BigNumber>();
@@ -38,8 +37,7 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
   totalValidatorSub?: Subscription;
   bOmmHoldersCountSub?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService) {
-  }
+  constructor(private stateChangeService: StateChangeService) {}
 
   ngOnInit(): void {
     this.registerSubscriptions();
@@ -62,35 +60,35 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToDaoFundChange(): void {
-    this.daoFundBalanceSub = this.stateChangeService.daoFundBalanceChange$.subscribe(value => {
+    this.daoFundBalanceSub = this.stateChangeService.daoFundBalanceChange$.subscribe((value) => {
       this.daoFundBalances = value;
       this.refreshTemplateValues();
     });
   }
 
   private subscribeToSicxTodayRateChange(): void {
-    this.daoFundBalanceSub = this.stateChangeService.sicxTodayRateChange$.subscribe(value => {
+    this.daoFundBalanceSub = this.stateChangeService.sicxTodayRateChange$.subscribe((value) => {
       this.sicxTodayRate = value;
       this.refreshTemplateValues();
     });
   }
 
   private subscribeToTokenPricesChange(): void {
-    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe((value) => {
       this.tokenToUsdPriceMap = value;
       this.refreshTemplateValues();
     });
   }
 
   private subscribeToTotalValidatorRewardsChange(): void {
-    this.totalValidatorSub = this.stateChangeService.totalValidatorSicxRewardsChange$.subscribe(sicxRewards => {
+    this.totalValidatorSub = this.stateChangeService.totalValidatorSicxRewardsChange$.subscribe((sicxRewards) => {
       this.totalValidatorSicxRewards = sicxRewards;
       this.refreshTemplateValues();
     });
   }
 
   private subscribeTobOmmHoldersCountChange(): void {
-    this.bOmmHoldersCountSub = this.stateChangeService.bOmmHoldersCountChange$.subscribe(value => {
+    this.bOmmHoldersCountSub = this.stateChangeService.bOmmHoldersCountChange$.subscribe((value) => {
       this.bOmmHoldersCount = value;
     });
   }
@@ -106,13 +104,17 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
     if (!this.daoFundBalances || !this.tokenToUsdPriceMap) return new BigNumber(0);
 
     return this.daoFundBalances.balances.reduce(
-        (totalUsdValue, currentBalance) => totalUsdValue.plus(this.getTokenUsdPrice(currentBalance.token).multipliedBy(currentBalance.balance))
-        , new BigNumber(0)
+      (totalUsdValue, currentBalance) =>
+        totalUsdValue.plus(this.getTokenUsdPrice(currentBalance.token).multipliedBy(currentBalance.balance)),
+      new BigNumber(0),
     );
   }
 
   private getDaoFundsSicxBalance(): BigNumber {
-    return this.daoFundBalances.balances.find((tokenBalance) => tokenBalance.token.symbol == SICX.symbol)?.balance ?? new BigNumber(0);
+    return (
+      this.daoFundBalances.balances.find((tokenBalance) => tokenBalance.token.symbol == SICX.symbol)?.balance ??
+      new BigNumber(0)
+    );
   }
 
   private getTokenUsdPrice(token: Irc2Token): BigNumber {
@@ -129,7 +131,8 @@ export class VoteOverviewComponent implements OnInit, OnDestroy {
   }
 
   getsIcxBalance(): BigNumber {
-    return this.daoFundBalances.balances.find((value) => value.token.symbol == SICX.symbol)?.balance ?? new BigNumber(0);
+    return (
+      this.daoFundBalances.balances.find((value) => value.token.symbol == SICX.symbol)?.balance ?? new BigNumber(0)
+    );
   }
-
 }
