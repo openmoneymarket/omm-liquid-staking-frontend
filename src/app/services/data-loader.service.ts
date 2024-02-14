@@ -5,7 +5,15 @@ import { StateChangeService } from "./state-change.service";
 import log from "loglevel";
 import { CheckerService } from "./checker.service";
 import { ReloaderService } from "./reloader.service";
-import { ICON_BLOCK_INTERVAL, ICX, OMM, SEVEN_DAYS_IN_BLOCK_HEIGHT, SICX, supportedTokens } from "../common/constants";
+import {
+  defaultPrepLogoUrl,
+  ICON_BLOCK_INTERVAL,
+  ICX,
+  OMM,
+  SEVEN_DAYS_IN_BLOCK_HEIGHT,
+  SICX,
+  supportedTokens,
+} from "../common/constants";
 import BigNumber from "bignumber.js";
 import { AllAddresses } from "../models/interfaces/AllAddresses";
 import { PrepAddress, TokenSymbol } from "../models/Types/ModalTypes";
@@ -21,6 +29,7 @@ import { IconApiService } from "./icon-api.service";
 import { IProposalScoreDetails } from "../models/interfaces/IProposalScoreDetails";
 import { Mapper } from "../common/mapper";
 import { LiquidStakingStatsHistoryService } from "./liquid-staking-stats-history.service";
+import { IPrepInfo } from "../models/interfaces/IPrepInfo";
 
 @Injectable({
   providedIn: "root",
@@ -221,6 +230,35 @@ export class DataLoaderService {
     } catch (e) {
       log.error("Error in loadSicxHoldersAmount:");
       log.error(e);
+    }
+  }
+
+  public async getTrackerPrepsData(): Promise<Map<PrepAddress, string> | null> {
+    try {
+      const url = `${environment.trackerUrl}/api/v1/governance/preps`;
+      const res = await lastValueFrom(this.http.get<IPrepInfo[]>(url, { observe: "response" }));
+
+      if (res.body) {
+        return new Map<string, string>(res.body.map(v => {
+          let img = defaultPrepLogoUrl;
+
+          if (v.logo_256) {
+            img = v.logo_256
+          } else if (v.logo_svg) {
+            img = v.logo_svg
+          } else if (v.logo_1024) {
+            img = v.logo_1024
+          }
+
+          return [v.address.toLowerCase(), img]
+        }))
+      } else {
+        return null
+      }
+    } catch (e) {
+      log.error("Error in loadSicxHoldersAmount:");
+      log.error(e);
+      return null
     }
   }
 
@@ -587,25 +625,26 @@ export class DataLoaderService {
 
   public async loadPrepList(start = 1, end = 200): Promise<void> {
     try {
-      const [prepList, topPrepList] = await Promise.all([
+      const [prepList, topPrepList, prepToLogoMap] = await Promise.all([
         this.scoreService.getListOfPreps(start, end),
         this.scoreService.getTopPreps(),
+        this.getTrackerPrepsData()
       ]);
+
+      console.log("prepToLogoMap:", prepToLogoMap);
 
       // filter out preps which are not in topPrepList
       prepList.preps = prepList.preps.filter((prep) => topPrepList.includes(prep.address));
 
       // set logos
-      try {
-        let logoUrl;
-        prepList.preps?.forEach((prep) => {
-          logoUrl = environment.production ? `https://iconwat.ch/logos/${prep.address}.png` : "assets/img/logo/icx.svg";
-          prepList.prepAddressToLogoUrlMap.set(prep.address, logoUrl);
-          prep.setLogoUrl(logoUrl);
-        });
-      } catch (e) {
-        log.debug("Failed to fetch all logos");
-      }
+      let logoUrl;
+
+      prepList.preps.forEach((prep) => {
+        logoUrl = environment.production ? prepToLogoMap?.get(prep.address.toLowerCase()) ?? defaultPrepLogoUrl : "assets/img/logo/icx.svg";
+
+        console.log(`${prep.name} address=${prep.address} logo=${logoUrl}, prepToLogoMap?.get(prep.address.toLowerCase())=${prepToLogoMap?.get(prep.address.toLowerCase())}`)
+        prep.setLogoUrl(logoUrl);
+      });
 
       this.stateChangeService.prepListUpdate(prepList);
     } catch (e) {

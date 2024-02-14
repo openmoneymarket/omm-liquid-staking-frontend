@@ -3,7 +3,6 @@ import { defaultPrepLogoUrl } from "../../common/constants";
 
 export class PrepList {
   prepAddressToNameMap: Map<string, string>;
-  prepAddressToLogoUrlMap: Map<string, string>;
   totalDelegated: BigNumber;
   totalPower: BigNumber;
   totalStake: BigNumber;
@@ -25,10 +24,6 @@ export class PrepList {
     this.prepAddressToNameMap = new Map<string, string>();
     preps.forEach((prep) => {
       this.prepAddressToNameMap.set(prep.address, prep.name);
-    });
-    this.prepAddressToLogoUrlMap = new Map<string, string>();
-    preps.forEach((prep) => {
-      this.prepAddressToLogoUrlMap.set(prep.address, prep.logoUrl);
     });
   }
 }
