@@ -631,8 +631,6 @@ export class DataLoaderService {
         this.getTrackerPrepsData()
       ]);
 
-      console.log("prepToLogoMap:", prepToLogoMap);
-
       // filter out preps which are not in topPrepList
       prepList.preps = prepList.preps.filter((prep) => topPrepList.includes(prep.address));
 
@@ -641,8 +639,6 @@ export class DataLoaderService {
 
       prepList.preps.forEach((prep) => {
         logoUrl = environment.production ? prepToLogoMap?.get(prep.address.toLowerCase()) ?? defaultPrepLogoUrl : "assets/img/logo/icx.svg";
-
-        console.log(`${prep.name} address=${prep.address} logo=${logoUrl}, prepToLogoMap?.get(prep.address.toLowerCase())=${prepToLogoMap?.get(prep.address.toLowerCase())}`)
         prep.setLogoUrl(logoUrl);
       });
 
