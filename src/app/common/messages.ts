@@ -11,6 +11,11 @@ import { ManageStakedIcxAction } from "../models/classes/ManageStakedIcxAction";
 import { ommForumDomain } from "./constants";
 import { ScoreParamType } from "../models/classes/ScoreParamType";
 
+// Header refresh related messages
+export const PRE_DATA_REFRESH = "Refreshing data...";
+export const SUCCESS_DATA_REFRESH = "Data refreshed.";
+export const FAILURE_DATA_REFRESH = "Couldn't refresh the data.";
+
 // Copy related messages
 export const UNABLE_TO_COPY = "Couldn't copy address.";
 export const SUCCESS_COPY = "Address copied.";

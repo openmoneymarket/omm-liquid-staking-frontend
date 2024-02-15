@@ -10,8 +10,15 @@ import { LoginService } from "../../services/login.service";
 import { WalletType } from "../../models/enums/WalletType";
 import { formatIconAddressToShort } from "../../common/utils";
 import { ClickOutsideDirective } from "../../directives/click-outside.directive";
-import { SUCCESS_COPY, UNABLE_TO_COPY } from "../../common/messages";
+import {
+  FAILURE_DATA_REFRESH,
+  PRE_DATA_REFRESH,
+  SUCCESS_COPY,
+  SUCCESS_DATA_REFRESH,
+  UNABLE_TO_COPY,
+} from "../../common/messages";
 import { NotificationService } from "../../services/notification.service";
+import { DataLoaderService } from "../../services/data-loader.service";
 
 @Component({
   selector: "app-header",
@@ -29,6 +36,7 @@ export class HeaderComponent {
     private storeService: StoreService,
     private loginService: LoginService,
     private notificationService: NotificationService,
+    private dataLoaderService: DataLoaderService
   ) {
     router.events.subscribe((event) => event instanceof NavigationEnd && this.handleRouteChange());
   }
@@ -46,6 +54,24 @@ export class HeaderComponent {
 
   onSignOutClick(): void {
     this.loginService.signOutUser();
+  }
+
+  async onRefreshClick(): Promise<void> {
+    this.notificationService.showNewNotification(PRE_DATA_REFRESH);
+
+    try {
+      await this.dataLoaderService.loadCoreData();
+
+      if (this.storeService.activeWallet) {
+        await this.loginService.signInUser(this.storeService.activeWallet);
+
+        this.notificationService.hideAll();
+        this.notificationService.showNewNotification(SUCCESS_DATA_REFRESH);
+      }
+    } catch (e) {
+      this.notificationService.hideAll();
+      this.notificationService.showNewNotification(FAILURE_DATA_REFRESH);
+    }
   }
 
   onCopyIconAddressClick(e: MouseEvent): void {
