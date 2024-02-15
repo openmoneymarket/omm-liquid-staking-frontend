@@ -57,19 +57,15 @@ export class HeaderComponent {
   }
 
   async onRefreshClick(): Promise<void> {
-    this.notificationService.showNewNotification(PRE_DATA_REFRESH);
-
     try {
       await this.dataLoaderService.loadCoreData();
 
       if (this.storeService.activeWallet) {
         await this.loginService.signInUser(this.storeService.activeWallet);
 
-        this.notificationService.hideAll();
         this.notificationService.showNewNotification(SUCCESS_DATA_REFRESH);
       }
     } catch (e) {
-      this.notificationService.hideAll();
       this.notificationService.showNewNotification(FAILURE_DATA_REFRESH);
     }
   }
