@@ -62,9 +62,9 @@ export class HeaderComponent {
 
       if (this.storeService.activeWallet) {
         await this.loginService.signInUser(this.storeService.activeWallet);
-
-        this.notificationService.showNewNotification(SUCCESS_DATA_REFRESH);
       }
+
+      this.notificationService.showNewNotification(SUCCESS_DATA_REFRESH);
     } catch (e) {
       this.notificationService.showNewNotification(FAILURE_DATA_REFRESH);
     }
