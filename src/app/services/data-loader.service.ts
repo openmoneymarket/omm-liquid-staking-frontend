@@ -239,26 +239,28 @@ export class DataLoaderService {
       const res = await lastValueFrom(this.http.get<IPrepInfo[]>(url, { observe: "response" }));
 
       if (res.body) {
-        return new Map<string, string>(res.body.map(v => {
-          let img = defaultPrepLogoUrl;
+        return new Map<string, string>(
+          res.body.map((v) => {
+            let img = defaultPrepLogoUrl;
 
-          if (v.logo_256) {
-            img = v.logo_256
-          } else if (v.logo_svg) {
-            img = v.logo_svg
-          } else if (v.logo_1024) {
-            img = v.logo_1024
-          }
+            if (v.logo_256) {
+              img = v.logo_256;
+            } else if (v.logo_svg) {
+              img = v.logo_svg;
+            } else if (v.logo_1024) {
+              img = v.logo_1024;
+            }
 
-          return [v.address.toLowerCase(), img]
-        }))
+            return [v.address.toLowerCase(), img];
+          }),
+        );
       } else {
-        return null
+        return null;
       }
     } catch (e) {
       log.error("Error in loadSicxHoldersAmount:");
       log.error(e);
-      return null
+      return null;
     }
   }
 
@@ -628,7 +630,7 @@ export class DataLoaderService {
       const [prepList, topPrepList, prepToLogoMap] = await Promise.all([
         this.scoreService.getListOfPreps(start, end),
         this.scoreService.getTopPreps(),
-        this.getTrackerPrepsData()
+        this.getTrackerPrepsData(),
       ]);
 
       // filter out preps which are not in topPrepList
@@ -638,7 +640,9 @@ export class DataLoaderService {
       let logoUrl;
 
       prepList.preps.forEach((prep) => {
-        logoUrl = environment.production ? prepToLogoMap?.get(prep.address.toLowerCase()) ?? defaultPrepLogoUrl : "assets/img/logo/icx.svg";
+        logoUrl = environment.production
+          ? prepToLogoMap?.get(prep.address.toLowerCase()) ?? defaultPrepLogoUrl
+          : "assets/img/logo/icx.svg";
         prep.setLogoUrl(logoUrl);
       });
 

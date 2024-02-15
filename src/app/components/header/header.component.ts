@@ -36,7 +36,7 @@ export class HeaderComponent {
     private storeService: StoreService,
     private loginService: LoginService,
     private notificationService: NotificationService,
-    private dataLoaderService: DataLoaderService
+    private dataLoaderService: DataLoaderService,
   ) {
     router.events.subscribe((event) => event instanceof NavigationEnd && this.handleRouteChange());
   }
