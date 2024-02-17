@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import {IActionPayload} from "../interfaces/IActionPayload";
+import { IActionPayload } from "../interfaces/IActionPayload";
 import {
   FAILURE_INCREASE_LOCK_OMM,
   FAILURE_INCREASE_LOCK_TIME,
@@ -9,12 +9,11 @@ import {
   SUCCESS_INCREASE_LOCK_TIME,
   SUCCESS_INCREASE_LOCK_TIME_AND_AMOUNT,
   SUCCESS_INCREASE_LOCKED_OMM,
-  SUCCESS_LOCK_OMM
+  SUCCESS_LOCK_OMM,
 } from "../../common/messages";
-import {ModalType} from "../enums/ModalType";
+import { ModalType } from "../enums/ModalType";
 
 export class OmmLockingPayload implements IActionPayload {
-
   modalType: ModalType;
   before: number;
   after: number;

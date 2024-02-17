@@ -1,10 +1,10 @@
-import {Address} from "../Types/ModalTypes";
+import { Address } from "../Types/ModalTypes";
 
 export interface IUserUnstakeInfo {
-    amount: string;
-    blockHeight: string;
-    from: Address;
-    sender: Address;
+  amount: string;
+  blockHeight: string;
+  from: Address;
+  sender: Address;
 }
 
 // EXAMPLE

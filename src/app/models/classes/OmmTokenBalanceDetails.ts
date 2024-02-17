@@ -7,9 +7,13 @@ export class OmmTokenBalanceDetails {
   unstakingBalance: BigNumber;
   unstakingTimeInMills: BigNumber;
 
-
-  constructor(totalBalance: BigNumber, availableBalance: BigNumber, stakedBalance: BigNumber, unstakingBalance: BigNumber,
-              unstakingTimeInMills: BigNumber) {
+  constructor(
+    totalBalance: BigNumber,
+    availableBalance: BigNumber,
+    stakedBalance: BigNumber,
+    unstakingBalance: BigNumber,
+    unstakingTimeInMills: BigNumber,
+  ) {
     this.totalBalance = totalBalance;
     this.availableBalance = availableBalance;
     this.stakedBalance = stakedBalance;
@@ -23,10 +27,9 @@ export class OmmTokenBalanceDetails {
       this.availableBalance.dp(0),
       this.stakedBalance.dp(0),
       this.unstakingBalance.dp(0),
-      this.unstakingTimeInMills
+      this.unstakingTimeInMills,
     );
   }
-
 }
 
 // Example response

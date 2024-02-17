@@ -1,59 +1,59 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Observable, Subscription} from "rxjs";
-import {StateChangeService} from "../../services/state-change.service";
-import {YourPrepVote} from "../../models/classes/YourPrepVote";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Observable, Subscription } from "rxjs";
+import { StateChangeService } from "../../services/state-change.service";
+import { YourPrepVote } from "../../models/classes/YourPrepVote";
 import BigNumber from "bignumber.js";
 import {
   contributorsMap,
-  defaultPrepLogoUrl, ICX,
+  defaultPrepLogoUrl,
+  ICX,
   prepsOfferingIncentiveMap,
-  VALIDATOR_INPUT_DELAY_MS
+  VALIDATOR_INPUT_DELAY_MS,
 } from "../../common/constants";
-import {Prep, PrepList} from "../../models/classes/Preps";
-import {DeviceDetectorService} from "ngx-device-detector";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
-import {PrepAddress, TokenSymbol} from "../../models/Types/ModalTypes";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {BaseClass} from "../../models/classes/BaseClass";
-import {usLocale} from "../../common/formats";
-import {ModalType} from "../../models/enums/ModalType";
-import {UpdateDelegationPayload} from "../../models/classes/updateDelegationPayload";
-import {RemoveDelegationsPayload} from "../../models/classes/removeDelegationsPayload";
-import {Calculations} from "../../common/calculations";
-import {Wallet} from "../../models/classes/Wallet";
-import {IntersectionObserverDirective} from "../../directives/observe-visibility.directive";
-import {IntersectionStatus} from "../../directives/from-intersection-observer";
-import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {convertICXTosICX, toNDecimalRoundedDownPercentString} from "../../common/utils";
-import {DefaultValuePercent} from "../../models/enums/DefaultValuePercent";
+import { Prep, PrepList } from "../../models/classes/Preps";
+import { DeviceDetectorService } from "ngx-device-detector";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
+import { PrepAddress, TokenSymbol } from "../../models/Types/ModalTypes";
+import { RndDwnNPercPipe } from "../../pipes/round-down-percent.pipe";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { BaseClass } from "../../models/classes/BaseClass";
+import { usLocale } from "../../common/formats";
+import { ModalType } from "../../models/enums/ModalType";
+import { UpdateDelegationPayload } from "../../models/classes/updateDelegationPayload";
+import { RemoveDelegationsPayload } from "../../models/classes/removeDelegationsPayload";
+import { Calculations } from "../../common/calculations";
+import { Wallet } from "../../models/classes/Wallet";
+import { IntersectionObserverDirective } from "../../directives/observe-visibility.directive";
+import { IntersectionStatus } from "../../directives/from-intersection-observer";
+import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
+import { convertICXTosICX, toNDecimalRoundedDownPercentString } from "../../common/utils";
+import { DefaultValuePercent } from "../../models/enums/DefaultValuePercent";
 
 @Component({
-  selector: 'app-validators-bomm-votes',
+  selector: "app-validators-bomm-votes",
   standalone: true,
-    imports: [
-        CommonModule,
-        HideElementPipe,
-        RndDwnPipePipe,
-        UsFormatPipe,
-        IntersectionObserverDirective,
-        RndDwnPipePipe,
-        RndDwnPipePipe,
-        RndDwnNPercPipe
-    ],
-  templateUrl: './validators-bomm-votes.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    CommonModule,
+    HideElementPipe,
+    RndDwnPipePipe,
+    UsFormatPipe,
+    IntersectionObserverDirective,
+    RndDwnPipePipe,
+    RndDwnPipePipe,
+    RndDwnNPercPipe,
+  ],
+  templateUrl: "./validators-bomm-votes.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, OnDestroy {
-
   // used for pagination, start with 22 and increase when last element becomes visible
   PREP_PAGE_SIZE_INDEX = 10;
 
   _isbOmmVotesActive = false;
   @Input({ required: true }) set isbOmmVotesActive(value: boolean) {
     const oldValue = this._isbOmmVotesActive;
-    this._isbOmmVotesActive = value
+    this._isbOmmVotesActive = value;
 
     this.handleIsbOmmVotesActiveChange(value, oldValue);
   }
@@ -67,8 +67,8 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   prepList?: PrepList;
   prepAddressList?: PrepAddress[];
   preps: Prep[] = [];
-  prepsBommDelegationsInIcxMap = new Map<PrepAddress, BigNumber>;
-  allValidatorCollectedFeesMap = new Map<PrepAddress, BigNumber>;
+  prepsBommDelegationsInIcxMap = new Map<PrepAddress, BigNumber>();
+  allValidatorCollectedFeesMap = new Map<PrepAddress, BigNumber>();
   totalPrepsBommDelegations = new BigNumber(0);
   totalAllValidatorCollectedFees = new BigNumber(0);
   delegationbOmmWorkingTotalSupply = new BigNumber(0);
@@ -99,10 +99,11 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   loginSub?: Subscription;
   tokenPricesSub?: Subscription;
 
-  constructor(private stateChangeService: StateChangeService,
-              private deviceService: DeviceDetectorService,
-              private cdRef: ChangeDetectorRef
-              ) {
+  constructor(
+    private stateChangeService: StateChangeService,
+    private deviceService: DeviceDetectorService,
+    private cdRef: ChangeDetectorRef,
+  ) {
     super();
   }
   ngOnInit(): void {
@@ -130,7 +131,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     this.subscribeToSearchStringChange();
     this.subscribeToUserDelegationDetailsChange();
     this.subscribeToUserDelegationWorkingbOmmChange();
-    this.subscribeToUndelegatedIcxChange()
+    this.subscribeToUndelegatedIcxChange();
     this.subscribeToPrepListChange();
     this.subscribeToPrepsBommDelegationsChange();
     this.subscribeToAllValidatorsCollectedFeesChange();
@@ -148,21 +149,21 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private resetDynamicState(): void {
-    this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v.percentage]));
+    this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map((v) => [v.address, v.percentage]));
   }
 
   private subscribeToTokenPricesChange(): void {
-    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe(value => {
+    this.tokenPricesSub = this.stateChangeService.tokenPricesChange$.subscribe((value) => {
       this.tokenPrices = value;
       this.refreshValues();
 
       // Detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUserLoginChange(): void {
-    this.loginSub = this.stateChangeService.loginChange$.subscribe(value => {
+    this.loginSub = this.stateChangeService.loginChange$.subscribe((value) => {
       this.userWallet = value;
 
       if (!value) {
@@ -175,7 +176,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private subscribeToTotalSicxAmountChange(): void {
-    this.totalSicxAmountSub = this.stateChangeService.totalSicxAmountChange$.subscribe(value => {
+    this.totalSicxAmountSub = this.stateChangeService.totalSicxAmountChange$.subscribe((value) => {
       this.totalSicxAmount = value;
       this.refreshValues();
 
@@ -185,7 +186,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private subscribeToSicxTodayRateChange(): void {
-    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
+    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe((todayRate) => {
       this.todaySicxRate = todayRate;
       this.refreshValues();
 
@@ -195,11 +196,12 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private subscribeToSearchStringChange(): void {
-    this.searchSubject$.subscribe(searchString => {
+    this.searchSubject$.subscribe((searchString) => {
       if (searchString == undefined || searchString == "") {
         this.preps = this.prepList?.preps ?? [];
       } else {
-        this.preps = this.prepList?.preps.filter(prep => prep.name.toLowerCase().includes(searchString.toLowerCase())) ?? [];
+        this.preps =
+          this.prepList?.preps.filter((prep) => prep.name.toLowerCase().includes(searchString.toLowerCase())) ?? [];
       }
 
       // detect changes
@@ -208,19 +210,27 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private subscribeToAllValidatorsCollectedFeesChange(): void {
-    this.allValidatorsCollectedFeesSub = this.stateChangeService.allValidatorsCollectedFeesChange$.subscribe(value => {
-      this.allValidatorCollectedFeesMap = value;
-      this.totalAllValidatorCollectedFees = Array.from(value.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
+    this.allValidatorsCollectedFeesSub = this.stateChangeService.allValidatorsCollectedFeesChange$.subscribe(
+      (value) => {
+        this.allValidatorCollectedFeesMap = value;
+        this.totalAllValidatorCollectedFees = Array.from(value.values()).reduce(
+          (total, value) => total.plus(value),
+          new BigNumber(0),
+        );
 
-      // detect changes
-      this.cdRef.detectChanges();
-    })
+        // detect changes
+        this.cdRef.detectChanges();
+      },
+    );
   }
 
   private subscribeToPrepsBommDelegationsChange(): void {
-    this.prepsBommDelegationsSub = this.stateChangeService.prepsBommDelegationsChange$.subscribe(value => {
+    this.prepsBommDelegationsSub = this.stateChangeService.prepsBommDelegationsChange$.subscribe((value) => {
       this.prepsBommDelegationsInIcxMap = value;
-      this.totalPrepsBommDelegations = Array.from(value.values()).reduce((total, value) => total.plus(value), new BigNumber(0));
+      this.totalPrepsBommDelegations = Array.from(value.values()).reduce(
+        (total, value) => total.plus(value),
+        new BigNumber(0),
+      );
 
       // detect changes
       this.cdRef.detectChanges();
@@ -228,23 +238,23 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   private subscribeToUserDelegationDetailsChange(): void {
-    this.userDelegationDetailsSub = this.stateChangeService.userDelegationDetailsChange$.subscribe(value => {
+    this.userDelegationDetailsSub = this.stateChangeService.userDelegationDetailsChange$.subscribe((value) => {
       this.userDelegationDetails = value;
-      this.userDelegationDetailsMap = new Map(value.map(v => [v.address, v]));
-      this.userDynamicDelegationDetailsMap = new Map(value.map(v => [v.address, v.percentage]));
+      this.userDelegationDetailsMap = new Map(value.map((v) => [v.address, v]));
+      this.userDynamicDelegationDetailsMap = new Map(value.map((v) => [v.address, v.percentage]));
 
       // filter out non top preps from user delegation
       this.filterOutNonTopPrepsFromUserDelegation();
 
       // detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToPrepListChange(): void {
-    this.prepListChangeSub = this.stateChangeService.prepListChange$.subscribe(value => {
+    this.prepListChangeSub = this.stateChangeService.prepListChange$.subscribe((value) => {
       this.prepList = value;
-      this.prepAddressList = value.preps.map(prep => prep.address);
+      this.prepAddressList = value.preps.map((prep) => prep.address);
       this.preps = value.preps;
 
       // filter out non top preps from user delegation
@@ -252,75 +262,79 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
       // detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private filterOutNonTopPrepsFromUserDelegation(): void {
     if (
-        this.prepList
-        && this.userDelegationDetails
-        && this.userDelegationDetailsMap
-        && this.prepAddressList && this.prepAddressList.length > 0
-        && this.userDynamicDelegationDetailsMap
+      this.prepList &&
+      this.userDelegationDetails &&
+      this.userDelegationDetailsMap &&
+      this.prepAddressList &&
+      this.prepAddressList.length > 0 &&
+      this.userDynamicDelegationDetailsMap
     ) {
       const topPreps = this.prepAddressList;
-      this.userDelegationDetails = this.userDelegationDetails.filter(v => topPreps.includes(v.address));
-      this.userDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v]));
-      this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map(v => [v.address, v.percentage]));
+      this.userDelegationDetails = this.userDelegationDetails.filter((v) => topPreps.includes(v.address));
+      this.userDelegationDetailsMap = new Map(this.userDelegationDetails.map((v) => [v.address, v]));
+      this.userDynamicDelegationDetailsMap = new Map(this.userDelegationDetails.map((v) => [v.address, v.percentage]));
     }
   }
 
   private subscribeToUserDelegationWorkingbOmmChange(): void {
-    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
+    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe((value) => {
       this.userDelegationWorkingbOmmBalance = value;
       this.refreshValues();
 
       // detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUndelegatedIcxChange(): void {
-    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe(value => {
+    this.undelegatedIcxSub = this.stateChangeService.undelegatedIcxChange$.subscribe((value) => {
       this.undelegatedIcx = value;
       this.refreshValues();
 
       // detect changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToDelegationbOmmTotalWorkingSupplyChange(): void {
-    this.delegationOmmTotalWorkingSupplySub = this.stateChangeService.delegationbOmmTotalWorkingSupplyChange$.subscribe(value => {
-      this.delegationbOmmWorkingTotalSupply = value;
-      this.refreshValues();
+    this.delegationOmmTotalWorkingSupplySub = this.stateChangeService.delegationbOmmTotalWorkingSupplyChange$.subscribe(
+      (value) => {
+        this.delegationbOmmWorkingTotalSupply = value;
+        this.refreshValues();
 
-      // detect changes
-      this.cdRef.detectChanges();
-    })
+        // detect changes
+        this.cdRef.detectChanges();
+      },
+    );
   }
 
   onVisibilityChanged(index: number, status: IntersectionStatus) {
-    if (index == Math.round(this.PREP_PAGE_SIZE_INDEX / 1.5)  && status == IntersectionStatus.Visible) {
-      this.PREP_PAGE_SIZE_INDEX  = this.PREP_PAGE_SIZE_INDEX * 2 < this.preps.length ? this.PREP_PAGE_SIZE_INDEX * 2 : this.preps.length;
+    if (index == Math.round(this.PREP_PAGE_SIZE_INDEX / 1.5) && status == IntersectionStatus.Visible) {
+      this.PREP_PAGE_SIZE_INDEX =
+        this.PREP_PAGE_SIZE_INDEX * 2 < this.preps.length ? this.PREP_PAGE_SIZE_INDEX * 2 : this.preps.length;
     }
   }
 
   onDelegationInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
     this.delay(() => {
       this.processDelegationInput(e, address);
-    }, VALIDATOR_INPUT_DELAY_MS );
+    }, VALIDATOR_INPUT_DELAY_MS);
   }
 
   processDelegationInput(e: KeyboardEvent | ClipboardEvent | FocusEvent, address: PrepAddress) {
-    const element: HTMLInputElement = (<HTMLInputElement>e.target);
+    const element: HTMLInputElement = <HTMLInputElement>e.target;
     const inputAmount: number = element.value ? +usLocale.from(element.value) : -1;
 
     let delegationPercentage = undefined;
 
     if (Number.isInteger(inputAmount) && inputAmount >= 0) {
       delegationPercentage = new BigNumber(inputAmount).dividedBy(100);
-      this.userDynamicDelegationDetailsMap.set(address, delegationPercentage)
+      this.userDynamicDelegationDetailsMap.set(address, delegationPercentage);
     }
 
     if (delegationPercentage) {
@@ -344,17 +358,13 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
       if (this.userAllocatedVotesPercent().eq(1)) {
         // update delegations
         const payload = new UpdateDelegationPayload(
-            Array.from(this.userDynamicDelegationDetailsMap.entries())
-                .filter(([, value]) => value.gt(0))
-                .map(([address, value]) => {
-                  return new YourPrepVote(
-                      address,
-                      (this.prepList?.prepAddressToNameMap.get(address) ?? ""),
-                      value
-                  )
-                }),
-            this._isbOmmVotesActive,
-            this.userDelegationWorkingbOmmBalance.gt(0)
+          Array.from(this.userDynamicDelegationDetailsMap.entries())
+            .filter(([, value]) => value.gt(0))
+            .map(([address, value]) => {
+              return new YourPrepVote(address, this.prepList?.prepAddressToNameMap.get(address) ?? "", value);
+            }),
+          this._isbOmmVotesActive,
+          this.userDelegationWorkingbOmmBalance.gt(0),
         );
         this.stateChangeService.modalUpdate(ModalType.UPDATE_DELEGATIONS, payload);
 
@@ -420,17 +430,22 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   private calculateOmmVotingPower(): void {
     if (this.delegationPower.gt(0) && this.delegationbOmmWorkingTotalSupply.gt(0)) {
-      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(this.delegationPower, this.delegationbOmmWorkingTotalSupply);
+      this.ommTotalDelegationPower = Calculations.ommTotalDelegationPower(
+        this.delegationPower,
+        this.delegationbOmmWorkingTotalSupply,
+      );
     }
   }
 
   sicxUsdPrice(): BigNumber {
-    return convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0);
+    return (
+      convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
+    );
   }
 
   prepBommDelegationPercent(address: string): BigNumber {
     if (this.prepBommDdelegationIcx(address).gt(0) && this.totalPrepsBommDelegations.gt(0)) {
-      return (this.prepBommDdelegationIcx(address)).dividedBy(this.totalPrepsBommDelegations);
+      return this.prepBommDdelegationIcx(address).dividedBy(this.totalPrepsBommDelegations);
     } else {
       return new BigNumber(0);
     }
@@ -438,7 +453,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   prepCollectedFeesPercent(address: string): BigNumber {
     if (this.prepCollectedFees(address).gt(0) && this.totalAllValidatorCollectedFees.gt(0)) {
-      return (this.prepCollectedFees(address)).dividedBy(this.totalAllValidatorCollectedFees);
+      return this.prepCollectedFees(address).dividedBy(this.totalAllValidatorCollectedFees);
     } else {
       return new BigNumber(0);
     }
@@ -470,10 +485,10 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
     // iterate user dynamic delegations and compare to user delegations
     for (const userDelegation of Array.from(this.userDelegationDetailsMap.values())) {
-      const userDynamicDelegation = this.userDynamicDelegationDetailsMap.get(userDelegation.address)
+      const userDynamicDelegation = this.userDynamicDelegationDetailsMap.get(userDelegation.address);
 
       // if dynamic user delegation for prep address don't exist or is not equal to user delegation return true
-      if (userDynamicDelegation == undefined || (!userDelegation.percentage.eq(userDynamicDelegation))) {
+      if (userDynamicDelegation == undefined || !userDelegation.percentage.eq(userDynamicDelegation)) {
         return true;
       }
     }
@@ -484,14 +499,20 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   userAllocatedVotesPercent(): BigNumber {
     if (this.userLoggedIn()) {
       return Array.from(this.userDynamicDelegationDetailsMap.values()).reduce(
-          (res, vote) => res.plus(vote), new BigNumber(0));
+        (res, vote) => res.plus(vote),
+        new BigNumber(0),
+      );
     }
 
     return new BigNumber(0);
   }
 
   userBommDelegation(address: string): BigNumber {
-    if (this.userDelegationDetailsMap.size > 0 && this.userDelegationWorkingbOmmBalance.gt(0) && this.userDynPrepDelegationPercent(address).gt(0)) {
+    if (
+      this.userDelegationDetailsMap.size > 0 &&
+      this.userDelegationWorkingbOmmBalance.gt(0) &&
+      this.userDynPrepDelegationPercent(address).gt(0)
+    ) {
       return this.userDelegationWorkingbOmmBalance.multipliedBy(this.userDynPrepDelegationPercent(address));
     } else {
       return new BigNumber(0);
@@ -525,7 +546,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
     return this.deviceService.isMobile();
   }
 
-  prepAddress(index : number, prep: Prep) {
+  prepAddress(index: number, prep: Prep) {
     return prep.address;
   }
 
@@ -534,7 +555,9 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
   }
 
   shouldShowUserDelegations(): boolean {
-    return this.userLoggedIn() && (this.userDelegationWorkingbOmmBalance.gt(0) || this.userDelegationDetails.length > 0);
+    return (
+      this.userLoggedIn() && (this.userDelegationWorkingbOmmBalance.gt(0) || this.userDelegationDetails.length > 0)
+    );
   }
 
   private handleIsbOmmVotesActiveChange(newValue: boolean, oldValue: boolean): void {

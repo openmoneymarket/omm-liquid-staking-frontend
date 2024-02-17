@@ -1,19 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ValidatorsBommVotesComponent} from "../validators-bomm-votes/validators-bomm-votes.component";
-import {ValidatorsSicxVotesComponent} from "../validators-sicx-votes/validators-sicx-votes.component";
-import {Subject} from "rxjs";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {BaseClass} from "../../models/classes/BaseClass";
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ValidatorsBommVotesComponent } from "../validators-bomm-votes/validators-bomm-votes.component";
+import { ValidatorsSicxVotesComponent } from "../validators-sicx-votes/validators-sicx-votes.component";
+import { Subject } from "rxjs";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { BaseClass } from "../../models/classes/BaseClass";
 
 @Component({
-  selector: 'app-validators',
+  selector: "app-validators",
   standalone: true,
   imports: [CommonModule, ValidatorsBommVotesComponent, ValidatorsSicxVotesComponent, UsFormatPipe],
-  templateUrl: './validators.component.html'
+  templateUrl: "./validators.component.html",
 })
 export class ValidatorsComponent extends BaseClass implements OnInit {
-
   private searchSubject = new Subject<string>();
   searchSubject$ = this.searchSubject.asObservable();
 
@@ -28,7 +27,7 @@ export class ValidatorsComponent extends BaseClass implements OnInit {
   onSearchInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
     this.delay(() => {
       this.processSearchInput(e);
-    }, 350 );
+    }, 350);
   }
 
   processSearchInput(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
@@ -59,5 +58,4 @@ export class ValidatorsComponent extends BaseClass implements OnInit {
     this.searchInput = "";
     this.searchSubject.next("");
   }
-
 }

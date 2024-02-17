@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import {Irc2Token} from "./Irc2Token";
+import { Irc2Token } from "./Irc2Token";
 
 export class AssetAction {
   token: Irc2Token;

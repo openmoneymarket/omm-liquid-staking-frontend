@@ -1,8 +1,7 @@
 import BigNumber from "bignumber.js";
-import {IProposalTransactions} from "../interfaces/IProposalTransactions";
-import {Times} from "./Times";
-import {ReloaderService} from "../../services/reloader.service";
-import {timestampNowMicroseconds} from "../../common/utils";
+import { IProposalTransactions } from "../interfaces/IProposalTransactions";
+import { Times } from "./Times";
+import { timestampNowMicroseconds } from "../../common/utils";
 
 export class Proposal {
   against: BigNumber;
@@ -22,9 +21,24 @@ export class Proposal {
   forumLink: string;
   transactions?: IProposalTransactions[];
 
-  constructor(against: BigNumber, againstVoterCount: BigNumber, description: string, endDay: BigNumber, forVotes: BigNumber,
-              forVoterCount: BigNumber, id: string, majority: BigNumber, name: string, proposer: string, quorum: BigNumber,
-              startDay: BigNumber, status: ProposalStatus, voteSnapshot: BigNumber, forumLink: string, transactions?: IProposalTransactions[]) {
+  constructor(
+    against: BigNumber,
+    againstVoterCount: BigNumber,
+    description: string,
+    endDay: BigNumber,
+    forVotes: BigNumber,
+    forVoterCount: BigNumber,
+    id: string,
+    majority: BigNumber,
+    name: string,
+    proposer: string,
+    quorum: BigNumber,
+    startDay: BigNumber,
+    status: ProposalStatus,
+    voteSnapshot: BigNumber,
+    forumLink: string,
+    transactions?: IProposalTransactions[],
+  ) {
     this.against = against;
     this.againstVoterCount = againstVoterCount;
     this.description = description;
@@ -48,21 +62,23 @@ export class Proposal {
   }
 
   public toString(): string {
-    return `against = ${this.against} \n`
-      + `againstVoterCount = ${this.againstVoterCount} \n`
-      + `description = ${this.description} \n`
-      + `endDay = ${this.endDay} \n`
-      + `forVotes = ${this.forVotes} \n`
-      + `forVoterCount = ${this.forVoterCount} \n`
-      + `id = ${this.id} \n`
-      + `majority = ${this.majority} \n`
-      + `name = ${this.name} \n`
-      + `proposer = ${this.proposer} \n`
-      + `quorum = ${this.quorum} \n`
-      + `startDay = ${this.startDay} \n`
-      + `status = ${this.status} \n`
-      + `voteSnapshot = ${this.voteSnapshot} \n`
-      + `forumLink = ${this.forumLink}`;
+    return (
+      `against = ${this.against} \n` +
+      `againstVoterCount = ${this.againstVoterCount} \n` +
+      `description = ${this.description} \n` +
+      `endDay = ${this.endDay} \n` +
+      `forVotes = ${this.forVotes} \n` +
+      `forVoterCount = ${this.forVoterCount} \n` +
+      `id = ${this.id} \n` +
+      `majority = ${this.majority} \n` +
+      `name = ${this.name} \n` +
+      `proposer = ${this.proposer} \n` +
+      `quorum = ${this.quorum} \n` +
+      `startDay = ${this.startDay} \n` +
+      `status = ${this.status} \n` +
+      `voteSnapshot = ${this.voteSnapshot} \n` +
+      `forumLink = ${this.forumLink}`
+    );
   }
 
   getShortDescription(): string {
@@ -82,7 +98,11 @@ export class Proposal {
   }
 
   public getApprovedPercentage(): BigNumber {
-    if (!this.forVotes.isZero() && this.getTotalVotePercentage().isFinite() && !this.getTotalVotePercentage().isZero()) {
+    if (
+      !this.forVotes.isZero() &&
+      this.getTotalVotePercentage().isFinite() &&
+      !this.getTotalVotePercentage().isZero()
+    ) {
       return this.forVotes.dividedBy(this.getTotalVotePercentage());
     }
     return new BigNumber("0");
@@ -129,11 +149,13 @@ export class Proposal {
       case ProposalStatus.SUCCEEDED:
         return "Approved";
       default:
-        const secondsUntilStart = (this.endDay.minus(currentTimestampMicro)).dividedBy(new BigNumber("1000000"))
-          .dp(2);
+        const secondsUntilStart = this.endDay.minus(currentTimestampMicro).dividedBy(new BigNumber("1000000")).dp(2);
         const daysUntilStart = secondsUntilStart.dividedBy(Times.DAY_IN_SECONDS).dp(0);
-        const hoursUntilStart = secondsUntilStart.dividedBy(Times.HOUR_IN_SECONDS).dp(0)
-          .minus(daysUntilStart.multipliedBy(24)).dp(0);
+        const hoursUntilStart = secondsUntilStart
+          .dividedBy(Times.HOUR_IN_SECONDS)
+          .dp(0)
+          .minus(daysUntilStart.multipliedBy(24))
+          .dp(0);
         const minutesUntilStart = secondsUntilStart.dividedBy(Times.MINUTE_IN_SECONDS).dp(0);
 
         let res = "";
@@ -174,9 +196,15 @@ export class CreateProposal {
   snapshot: BigNumber;
   voteDefinitionFee: BigNumber;
 
-
-  constructor(title: string, description: string, voteStart: BigNumber, snapshot: BigNumber, voteDefinitionFee: BigNumber,
-              forumLink: string, transactions?: string) {
+  constructor(
+    title: string,
+    description: string,
+    voteStart: BigNumber,
+    snapshot: BigNumber,
+    voteDefinitionFee: BigNumber,
+    forumLink: string,
+    transactions?: string,
+  ) {
     this.title = title;
     this.description = description;
     this.voteStart = voteStart;
@@ -191,11 +219,11 @@ export enum ProposalStatus {
   PENDING = "Pending",
   ACTIVE = "Active",
   CANCELLED = "Cancelled",
-  DEFEATED =  "Defeated",
+  DEFEATED = "Defeated",
   SUCCEEDED = "Succeeded",
   NO_QUORUM = "No Quorum",
   EXECUTED = "Executed",
-  FAILED_EXECUTION = "Failed Execution"
+  FAILED_EXECUTION = "Failed Execution",
 }
 
 // EXAMPLE RESPONSE

@@ -1,22 +1,21 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {timestampInMillisecondsToPrettyDate} from "../../../common/utils";
-import {OmmLockingPayload} from "../../../models/classes/OmmLockingPayload";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { timestampInMillisecondsToPrettyDate } from "../../../common/utils";
+import { OmmLockingPayload } from "../../../models/classes/OmmLockingPayload";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {StateChangeService} from "../../../services/state-change.service";
-import {ModalType} from "../../../models/enums/ModalType";
-import {ScoreService} from "../../../services/score.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
+import { StateChangeService } from "../../../services/state-change.service";
+import { ModalType } from "../../../models/enums/ModalType";
+import { ScoreService } from "../../../services/score.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
 
 @Component({
-  selector: 'app-lock-omm-modal',
+  selector: "app-lock-omm-modal",
   standalone: true,
   imports: [CommonModule, UsFormatPipe],
-  templateUrl: './lock-omm-modal.component.html'
+  templateUrl: "./lock-omm-modal.component.html",
 })
 export class LockOmmModalComponent {
-
   lockOmmProcessing = false;
 
   @Input({ required: true }) active!: boolean;
@@ -27,15 +26,17 @@ export class LockOmmModalComponent {
     this.lockOmmProcessing = false;
   }
 
-  get payload(): OmmLockingPayload | undefined { return this._payload };
+  get payload(): OmmLockingPayload | undefined {
+    return this._payload;
+  }
 
   protected readonly timestampInMillisecondsToPrettyDate = timestampInMillisecondsToPrettyDate;
 
-  constructor(private stateChangeService: StateChangeService,
-              private scoreService: ScoreService,
-              private transactionDispatcher: TransactionDispatcherService) {
-
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private scoreService: ScoreService,
+    private transactionDispatcher: TransactionDispatcherService,
+  ) {}
 
   subscribeToLockedOmmActionSucceeded(): void {
     // change lock modal button text to default and open apply bOMM boost modal
@@ -87,7 +88,7 @@ export class LockOmmModalComponent {
     const lockingTime = this.lockingTime();
 
     let tx;
-    if (this.payload?.modalType  === ModalType.INCREASE_LOCK_OMM) {
+    if (this.payload?.modalType === ModalType.INCREASE_LOCK_OMM) {
       tx = this.scoreService.buildIncreaseLockAmountOmmTx(amount);
     } else if (this.payload?.modalType === ModalType.INCREASE_LOCK_TIME) {
       tx = this.scoreService.buildIncreaseLockTimeOmmTx(lockingTime);

@@ -1,24 +1,23 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 import IconService from "icon-sdk-js";
 import BigNumber from "bignumber.js";
-import {StoreService} from "./store.service";
-import {IconexApiService} from "./iconex-api.service";
-import {LedgerService} from "./ledger.service";
-import {NotificationService} from "./notification.service";
-import {IconApiService} from "./icon-api.service";
-import {TransactionResultService} from "./transaction-result.service";
-import {IconexId} from "../models/enums/IconexId";
-import {WalletType} from "../models/enums/WalletType";
-import {ModalPayload} from "../models/Types/ModalTypes";
-import {StateChangeService} from "./state-change.service";
+import { StoreService } from "./store.service";
+import { IconexApiService } from "./iconex-api.service";
+import { LedgerService } from "./ledger.service";
+import { NotificationService } from "./notification.service";
+import { IconApiService } from "./icon-api.service";
+import { TransactionResultService } from "./transaction-result.service";
+import { IconexId } from "../models/enums/IconexId";
+import { WalletType } from "../models/enums/WalletType";
+import { ModalPayload } from "../models/Types/ModalTypes";
+import { StateChangeService } from "./state-change.service";
 
 const { IconConverter } = IconService;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class TransactionDispatcherService {
-
   /**
    * Service responsible for dispatching transactions using appropriate Icon supported wallets
    */
@@ -30,14 +29,18 @@ export class TransactionDispatcherService {
     private notificationService: NotificationService,
     private iconApiService: IconApiService,
     private transactionResultService: TransactionResultService,
-    private stateChangeService: StateChangeService
-  ) { }
+    private stateChangeService: StateChangeService,
+  ) {}
 
   /**
    * Method that dispatches the built tx to Icon network (through Iconex, Bridge or directly) and triggers the proper notification
    */
-  async dispatchTransaction(tx: any, modalPayload: ModalPayload, showSendTxMessage = true, iconexId = IconexId.SHOW_MESSAGE_HIDE_MODAL): Promise<void> {
-
+  async dispatchTransaction(
+    tx: any,
+    modalPayload: ModalPayload,
+    showSendTxMessage = true,
+    iconexId = IconexId.SHOW_MESSAGE_HIDE_MODAL,
+  ): Promise<void> {
     try {
       const estimateTx = IconConverter.toRawTransaction(tx);
       delete estimateTx["stepLimit"];
@@ -53,7 +56,7 @@ export class TransactionDispatcherService {
 
       if (this.storeService.activeWallet?.type == WalletType.ICON) {
         // save notification to be shown when Iconex sends tx
-        this.notificationService.setNotificationToShow(modalPayload.sendTxMessage())
+        this.notificationService.setNotificationToShow(modalPayload.sendTxMessage());
 
         this.iconexApiService.dispatchSendTransactionEvent(tx, iconexId);
       } else if (this.storeService.activeWallet?.type == WalletType.LEDGER) {
@@ -76,5 +79,4 @@ export class TransactionDispatcherService {
       this.notificationService.showNewNotification("Transaction dispatch failed.");
     }
   }
-
 }

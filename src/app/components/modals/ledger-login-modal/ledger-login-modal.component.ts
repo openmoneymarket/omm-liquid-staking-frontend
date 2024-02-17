@@ -1,26 +1,25 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Wallet} from "../../../models/classes/Wallet";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Wallet } from "../../../models/classes/Wallet";
 import log from "loglevel";
-import {LEDGER_NOT_DETECTED} from "../../../common/messages";
-import {LedgerService} from "../../../services/ledger.service";
-import {NotificationService} from "../../../services/notification.service";
-import {LoginService} from "../../../services/login.service";
-import {StateChangeService} from "../../../services/state-change.service";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
+import { LEDGER_NOT_DETECTED } from "../../../common/messages";
+import { LedgerService } from "../../../services/ledger.service";
+import { NotificationService } from "../../../services/notification.service";
+import { LoginService } from "../../../services/login.service";
+import { StateChangeService } from "../../../services/state-change.service";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
-import {ICX} from "../../../common/constants";
-import {ShortenAddressPipePipe} from "../../../pipes/shorten-address";
+import { ICX } from "../../../common/constants";
+import { ShortenAddressPipePipe } from "../../../pipes/shorten-address";
 
 @Component({
-  selector: 'app-ledger-login-modal',
+  selector: "app-ledger-login-modal",
   standalone: true,
   imports: [CommonModule, UsFormatPipe, ShortenAddressPipePipe],
-  templateUrl: './ledger-login-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "./ledger-login-modal.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LedgerLoginModalComponent implements OnInit {
-
   loading = false;
   _active = false;
   @Input({ required: true }) set active(value: boolean) {
@@ -44,14 +43,13 @@ export class LedgerLoginModalComponent implements OnInit {
 
   ledgerWallets: Wallet[] = [];
 
-
-  constructor(private ledgerService: LedgerService,
-              private notificationService: NotificationService,
-              private loginService: LoginService,
-              private stateChangeService: StateChangeService,
-              private cdRef: ChangeDetectorRef) {
-
-  }
+  constructor(
+    private ledgerService: LedgerService,
+    private notificationService: NotificationService,
+    private loginService: LoginService,
+    private stateChangeService: StateChangeService,
+    private cdRef: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.resetBaseValues();
@@ -72,7 +70,7 @@ export class LedgerLoginModalComponent implements OnInit {
     this.ledgerWallets = [];
 
     // detect new changes
-    this.cdRef.detectChanges()
+    this.cdRef.detectChanges();
   }
 
   ledgerIcxBalance(wallet: Wallet): BigNumber {
@@ -126,35 +124,38 @@ export class LedgerLoginModalComponent implements OnInit {
   }
 
   fetchLedgerWallets(): void {
-    this.showLoading()
+    this.showLoading();
 
-    this.ledgerService.getLedgerWallets(this.selectedLedgerAddressPage).then(wallets => {
-      this.ledgerWallets = wallets;
+    this.ledgerService
+      .getLedgerWallets(this.selectedLedgerAddressPage)
+      .then((wallets) => {
+        this.ledgerWallets = wallets;
 
-      this.hideLoading();
+        this.hideLoading();
 
-      // detect new changes
-      this.cdRef.detectChanges()
-    }).catch(e => {
-      this.hideLoading();
-      this.stateChangeService.hideActiveModal();
-      log.error(e);
-      this.notificationService.showNewNotification(LEDGER_NOT_DETECTED);
-    });
+        // detect new changes
+        this.cdRef.detectChanges();
+      })
+      .catch((e) => {
+        this.hideLoading();
+        this.stateChangeService.hideActiveModal();
+        log.error(e);
+        this.notificationService.showNewNotification(LEDGER_NOT_DETECTED);
+      });
   }
 
   showLoading(): void {
     this.loading = true;
 
     // detect new changes
-    this.cdRef.detectChanges()
+    this.cdRef.detectChanges();
   }
 
   hideLoading(): void {
     this.loading = false;
 
     // detect new changes
-    this.cdRef.detectChanges()
+    this.cdRef.detectChanges();
   }
 
   get active(): boolean {

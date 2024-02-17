@@ -1,6 +1,6 @@
-import {IScoreParameter} from "./IScoreParameter";
+import { IScoreParameter } from "./IScoreParameter";
 
 export interface IParamInput {
-  param: IScoreParameter,
+  param: IScoreParameter;
   value: string;
 }

@@ -1,304 +1,313 @@
 import BigNumber from "bignumber.js";
-import {DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL} from "./constants";
-import {environment} from "../../environments/environment";
-import {UserUnstakeData} from "../models/classes/UserUnstakeInfo";
+import { DEFAULT_ROUNDING_PRECISION, ICON_BLOCK_INTERVAL } from "./constants";
+import { environment } from "../../environments/environment";
+import { UserUnstakeData } from "../models/classes/UserUnstakeInfo";
 import IconService from "icon-sdk-js";
-import {DefaultValuePercent} from "../models/enums/DefaultValuePercent";
+import { DefaultValuePercent } from "../models/enums/DefaultValuePercent";
 
 export function hashStringToUniqueId(data: string): number {
-    let hash = 0, i, chr;
-    if (data.length === 0) return hash;
-    for (i = 0; i < data.length; i++) {
-        chr = data.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
+  let hash = 0,
+    i,
+    chr;
+  if (data.length === 0) return hash;
+  for (i = 0; i < data.length; i++) {
+    chr = data.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
 
-    return hash;
+  return hash;
 }
 
 export function numToUsLocaleString(num: BigNumber | string): string {
-    const dp = new BigNumber(num).dp() ?? 0;
-    const value = +num;
-    const minimumFractionDigits = value > 100 ? 0 : (dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION);
-    const maximumFractionDigits = value > 100 ? 0 : DEFAULT_ROUNDING_PRECISION;
+  const dp = new BigNumber(num).dp() ?? 0;
+  const value = +num;
+  const minimumFractionDigits = value > 100 ? 0 : dp < DEFAULT_ROUNDING_PRECISION ? dp : DEFAULT_ROUNDING_PRECISION;
+  const maximumFractionDigits = value > 100 ? 0 : DEFAULT_ROUNDING_PRECISION;
 
-    if (typeof num === "string") {
-        return (+num).toLocaleString('en-US', {
-            minimumFractionDigits: minimumFractionDigits,
-            maximumFractionDigits: maximumFractionDigits
-        });
-    } else {
-        return num.toNumber().toLocaleString('en-US', {
-            minimumFractionDigits: minimumFractionDigits,
-            maximumFractionDigits: maximumFractionDigits
-        });
-    }
+  if (typeof num === "string") {
+    return (+num).toLocaleString("en-US", {
+      minimumFractionDigits: minimumFractionDigits,
+      maximumFractionDigits: maximumFractionDigits,
+    });
+  } else {
+    return num.toNumber().toLocaleString("en-US", {
+      minimumFractionDigits: minimumFractionDigits,
+      maximumFractionDigits: maximumFractionDigits,
+    });
+  }
 }
 
 export function toDollarUSLocaleString(num?: BigNumber | string, defaultZero = false): string {
-    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultZero ? "0" : "-"; }
-    return `$${numToUsLocaleString(num)}`;
+  if (!num || !new BigNumber(num).isFinite() || +num <= 0) {
+    return defaultZero ? "0" : "-";
+  }
+  return `$${numToUsLocaleString(num)}`;
 }
 
 export function timestampInMillisecondsToPrettyDate(timestamp: BigNumber): string {
-    const date = new Date(timestamp.toNumber());
-    return date.toLocaleDateString('en-GB', {
-        day: 'numeric', month: 'short', year: 'numeric'
-    });
+  const date = new Date(timestamp.toNumber());
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export function isBrowserTabActive(): boolean {
-    return !document.hidden
+  return !document.hidden;
 }
 
 export function addSecondsToTimestamp(timestamp: BigNumber, seconds: number): BigNumber {
-    const microSecond = new BigNumber("1000000");
-    return timestamp.plus(microSecond.multipliedBy(seconds));
+  const microSecond = new BigNumber("1000000");
+  return timestamp.plus(microSecond.multipliedBy(seconds));
 }
 
 export function normalisedAmountToBaseAmountString(amount: BigNumber, decimals = 18): string {
-    return amount.multipliedBy(new BigNumber("10").pow(decimals)).toFixed();
+  return amount.multipliedBy(new BigNumber("10").pow(decimals)).toFixed();
 }
 
 export function roundDownTo2Decimals(value: BigNumber | number | string | undefined): string {
-    if (!value || !(new BigNumber(value).isFinite())) {
-        return "0";
-    } else if (value instanceof BigNumber) {
-        return value.toFixed(2, BigNumber.ROUND_DOWN);
-    } else {
-        return new BigNumber(value).toFixed(2, BigNumber.ROUND_DOWN);
-    }
+  if (!value || !new BigNumber(value).isFinite()) {
+    return "0";
+  } else if (value instanceof BigNumber) {
+    return value.toFixed(2, BigNumber.ROUND_DOWN);
+  } else {
+    return new BigNumber(value).toFixed(2, BigNumber.ROUND_DOWN);
+  }
 }
 
 export function isAddress(address: string): boolean {
-    if (!address) { return false; }
-    return IconService.IconValidator.isAddress(address);
+  if (!address) {
+    return false;
+  }
+  return IconService.IconValidator.isAddress(address);
 }
 
 export function textContainsDomain(domain: string, text: string): boolean {
-    const regExp = new RegExp('^(?:https?:\\/\\/)?(?:[^@\\/\\n]+@)?(?:www\\.)?([^:\\/?\\n]+)');
-    const res = regExp.exec(text);
-    return res ? res[0].includes(domain) : false;
+  const regExp = new RegExp("^(?:https?:\\/\\/)?(?:[^@\\/\\n]+@)?(?:www\\.)?([^:\\/?\\n]+)");
+  const res = regExp.exec(text);
+  return res ? res[0].includes(domain) : false;
 }
 
 export function isPositiveNumeric(value: string) {
-    return /^\d+$/.test(value);
-}
-
-export function extractTxFailureMessage(tx: any): string {
-    return tx?.failure?.message ?? "";
+  return /^\d+$/.test(value);
 }
 
 export function isHex(value: any): boolean {
-    if (isString(value)) {
-        return /^(0x)[0-9a-f]+$/g.test(value);
-    }
+  if (isString(value)) {
+    return /^(0x)[0-9a-f]+$/g.test(value);
+  }
 
-    return false;
+  return false;
 }
 
 export function isString(value: any): boolean {
-    return (typeof value === 'string' || value instanceof String);
+  return typeof value === "string" || value instanceof String;
 }
 
 export function hexToBigNumber(value: string | BigNumber): BigNumber {
-    if (!value || !(new BigNumber(value).isFinite())) {
-        return new BigNumber("0");
-    } else if (typeof value === "string") {
-        return new BigNumber(value, 16);
-    } else {
-        return new BigNumber(value);
-    }
+  if (!value || !new BigNumber(value).isFinite()) {
+    return new BigNumber("0");
+  } else if (typeof value === "string") {
+    return new BigNumber(value, 16);
+  } else {
+    return new BigNumber(value);
+  }
 }
 
 export function dateToDateOnlyIsoString(date: Date): string {
-    return date.toISOString().split("T")[0];
+  return date.toISOString().split("T")[0];
 }
 
 export function timestampNowMicroseconds(): BigNumber {
-    return new BigNumber(Date.now()).multipliedBy(new BigNumber("1000"));
+  return new BigNumber(Date.now()).multipliedBy(new BigNumber("1000"));
 }
 
 export function timestampNowMilliseconds(): BigNumber {
-    return new BigNumber(Date.now());
+  return new BigNumber(Date.now());
 }
 
 // Returns number divided by the 10^decimals
 export function hexToNormalisedNumber(value: BigNumber | string, decimals: number | BigNumber = 18): BigNumber {
-    if (!value || !(new BigNumber(value).isFinite())) {
-        return new BigNumber("0");
-    } else if (typeof value === "string") {
-        return new BigNumber(value, 16).dividedBy(new BigNumber("10").pow(decimals));
-    } else {
-        return value.dividedBy(new BigNumber("10").pow(decimals));
-    }
+  if (!value || !new BigNumber(value).isFinite()) {
+    return new BigNumber("0");
+  } else if (typeof value === "string") {
+    return new BigNumber(value, 16).dividedBy(new BigNumber("10").pow(decimals));
+  } else {
+    return value.dividedBy(new BigNumber("10").pow(decimals));
+  }
 }
 
 export function toNDecimalRoundedDownPercentString(
-    num?: BigNumber | string | number,
-    decimals = 0,
-    defaultValue = DefaultValuePercent.MINUS_SIGN,
-    keepZero= false
+  num?: BigNumber | string | number,
+  decimals = 0,
+  defaultValue = DefaultValuePercent.MINUS_SIGN,
+  keepZero = false,
 ): string {
-    if (num && +num == 0 && keepZero) { return "0%" }
+  if (num && +num == 0 && keepZero) {
+    return "0%";
+  }
 
-    if (!num || !(new BigNumber(num).isFinite()) || (+num) <= 0) { return defaultValue }
+  if (!num || !new BigNumber(num).isFinite() || +num <= 0) {
+    return defaultValue;
+  }
 
-    // convert in to percentage
-    num = new BigNumber(num).multipliedBy(new BigNumber("100"));
+  // convert in to percentage
+  num = new BigNumber(num).multipliedBy(new BigNumber("100"));
 
-    // handle values smaller than 0.01%
-    if (num.isLessThan(new BigNumber("0.01"))) {
-        return "<0.01%";
-    }
+  // handle values smaller than 0.01%
+  if (num.isLessThan(new BigNumber("0.01"))) {
+    return "<0.01%";
+  }
 
-    return `${(numToUsLocaleString(num.toFixed(decimals, BigNumber.ROUND_DOWN)))}%`;
+  return `${numToUsLocaleString(num.toFixed(decimals, BigNumber.ROUND_DOWN))}%`;
 }
 
 export function hexToBoolean(value: any): boolean {
-    if (typeof value === "string") {
-        return value !== "0x0";
-    } else if (value instanceof BigNumber) {
-        return value.isEqualTo(1);
-    } else {
-        return value;
-    }
+  if (typeof value === "string") {
+    return value !== "0x0";
+  } else if (value instanceof BigNumber) {
+    return value.isEqualTo(1);
+  } else {
+    return value;
+  }
 }
 
 export function formatIconAddressToShort(address: string, n = 7): string {
-    const length = address.length;
-    return address.substring(0, n) + "..." + address.substring(length - n, length);
+  const length = address.length;
+  return address.substring(0, n) + "..." + address.substring(length - n, length);
 }
 
 export function uriDecodeIfEncodedUri(uri: string): string {
-    uri = uri || '';
+  uri = uri || "";
 
-    let isStringUriEncoded;
-    try {
-        isStringUriEncoded =  uri !== decodeURIComponent(uri);
-    } catch {
-        isStringUriEncoded = false;
-    }
+  let isStringUriEncoded;
+  try {
+    isStringUriEncoded = uri !== decodeURIComponent(uri);
+  } catch {
+    isStringUriEncoded = false;
+  }
 
-    if (isStringUriEncoded) {
-        return decodeURIComponent(uri);
-    } else {
-        return uri;
-    }
+  if (isStringUriEncoded) {
+    return decodeURIComponent(uri);
+  } else {
+    return uri;
+  }
 }
 
 export function subtract(val1: BigNumber, val2: BigNumber): BigNumber {
-    return val1.minus(val2);
+  return val1.minus(val2);
 }
 
 export function add(val1: BigNumber, val2: BigNumber): BigNumber {
-    return val1.plus(val2);
+  return val1.plus(val2);
 }
 
 export function divide(val1: BigNumber, val2: BigNumber): BigNumber {
-    return val1.dividedBy(val2);
+  return val1.dividedBy(val2);
 }
 
 export function multiply(val1: BigNumber, val2: BigNumber): BigNumber {
-    return val1.multipliedBy(val2);
+  return val1.multipliedBy(val2);
 }
 
 export function convertICXTosICX(value: BigNumber, todayRate: BigNumber): BigNumber {
-    if (value.isZero() || todayRate.isZero()) return new BigNumber(0);
+  if (value.isZero() || todayRate.isZero()) return new BigNumber(0);
 
-    return value.dividedBy(todayRate);
+  return value.dividedBy(todayRate);
 }
 
 export function convertICXToSICXPrice(icxPrice: BigNumber, sICXRate: BigNumber): BigNumber {
-    if (icxPrice.isZero() || sICXRate.isZero()) return new BigNumber(0);
+  if (icxPrice.isZero() || sICXRate.isZero()) return new BigNumber(0);
 
-    return icxPrice.multipliedBy(sICXRate);
+  return icxPrice.multipliedBy(sICXRate);
 }
 
 export function convertSICXToICX(sICXvalue: BigNumber, sIcxToIcxRate: BigNumber): BigNumber {
-    if (sICXvalue.isZero() || sIcxToIcxRate.isZero()) return new BigNumber(0);
+  if (sICXvalue.isZero() || sIcxToIcxRate.isZero()) return new BigNumber(0);
 
-    return sICXvalue.multipliedBy(sIcxToIcxRate);
+  return sICXvalue.multipliedBy(sIcxToIcxRate);
 }
 
 export function constructTxHashLink(txhash: string): string {
-    return `${environment.trackerUrl}/transaction/${txhash}`;
+  return `${environment.trackerUrl}/transaction/${txhash}`;
 }
 
-export function getPrettyTimeForBlockHeightDiff(currentBlockHeight: BigNumber, targetBlockHeight: BigNumber): string | undefined {
-    const secondsUntilTargetBlock = (targetBlockHeight.minus(currentBlockHeight)).multipliedBy(ICON_BLOCK_INTERVAL);
+export function getPrettyTimeForBlockHeightDiff(
+  currentBlockHeight: BigNumber,
+  targetBlockHeight: BigNumber,
+): string | undefined {
+  const secondsUntilTargetBlock = targetBlockHeight.minus(currentBlockHeight).multipliedBy(ICON_BLOCK_INTERVAL);
 
-    if (secondsUntilTargetBlock.isNegative()) return undefined;
+  if (secondsUntilTargetBlock.isNegative()) return undefined;
 
-    return convertSecondsToDHM(secondsUntilTargetBlock.toNumber());
+  return convertSecondsToDHM(secondsUntilTargetBlock.toNumber());
 }
 
-export function getPrettyUntilBlockHeightTime(userUnstakeInfo: UserUnstakeData | undefined, currentBlockHeight?: BigNumber): string | undefined {
-    if (userUnstakeInfo && currentBlockHeight) {
-        return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.blockHeight);
-    } else {
-        return undefined;
-    }
+export function getPrettyUntilBlockHeightTime(
+  userUnstakeInfo: UserUnstakeData | undefined,
+  currentBlockHeight?: BigNumber,
+): string | undefined {
+  if (userUnstakeInfo && currentBlockHeight) {
+    return getPrettyTimeForBlockHeightDiff(currentBlockHeight, userUnstakeInfo.blockHeight);
+  } else {
+    return undefined;
+  }
 }
 
 export function convertSecondsToDHM(seconds: number): string {
-    let res = "";
+  let res = "";
 
-    const days = Math.floor(seconds / (24 * 60 * 60));
-    seconds -= days * 24 * 60 * 60;
+  const days = Math.floor(seconds / (24 * 60 * 60));
+  seconds -= days * 24 * 60 * 60;
 
-    if (days > 0) res += `${days}d`;
+  if (days > 0) res += `${days}d`;
 
-    const hours = Math.floor(seconds / (60 * 60));
-    seconds -= hours * 60 * 60;
+  const hours = Math.floor(seconds / (60 * 60));
+  seconds -= hours * 60 * 60;
 
-    if (hours > 0) res += ` ${hours}h`;
+  if (hours > 0) res += ` ${hours}h`;
 
-    const minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
+  const minutes = Math.floor(seconds / 60);
+  seconds -= minutes * 60;
 
-    if (hours > 0) res += ` ${minutes}m`;
+  if (hours > 0) res += ` ${minutes}m`;
 
-    return res;
+  return res;
 }
 
 export function convertSecondsToDH(seconds: number): string {
-    let res = "";
+  let res = "";
 
-    const days = Math.floor(seconds / (24 * 60 * 60));
-    seconds -= days * 24 * 60 * 60;
+  const days = Math.floor(seconds / (24 * 60 * 60));
+  seconds -= days * 24 * 60 * 60;
 
-    if (days > 0) res += `${days}d`;
+  if (days > 0) res += `${days}d`;
 
-    const hours = Math.floor(seconds / (60 * 60));
+  const hours = Math.floor(seconds / (60 * 60));
 
-    if (hours > 0) res += ` ${hours}h`;
+  if (hours > 0) res += ` ${hours}h`;
 
-    return res;
+  return res;
 }
 
 export function convertSecondsToDays(seconds: number, roundUp = false): number {
-    if (roundUp) {
-        return Math.ceil(seconds / (24 * 60 * 60));
-    } else {
-        return Math.floor(seconds / (24 * 60 * 60));
-    }
+  if (roundUp) {
+    return Math.ceil(seconds / (24 * 60 * 60));
+  } else {
+    return Math.floor(seconds / (24 * 60 * 60));
+  }
 }
 
 export function filterMapByKeys<K, V>(originalMap: Map<K, V>, keysToKeep: K[]): Map<K, V> {
-    const filteredMap = new Map<K, V>();
+  const filteredMap = new Map<K, V>();
 
-    keysToKeep.forEach(key => {
-        if (originalMap.has(key)) {
-            filteredMap.set(key, originalMap.get(key)!);
-        }
-    });
+  keysToKeep.forEach((key) => {
+    if (originalMap.has(key)) {
+      filteredMap.set(key, originalMap.get(key)!);
+    }
+  });
 
-    return filteredMap;
+  return filteredMap;
 }
-
-
-
-
-

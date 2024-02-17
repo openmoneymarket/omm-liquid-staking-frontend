@@ -1,31 +1,29 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 // @ts-ignore
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import log from "loglevel";
-import {Icx} from "../libs/hw-app-icx/Icx";
-import {NotificationService} from "./notification.service";
-import {environment} from "../../environments/environment";
-import {StoreService} from "./store.service";
-import {IconApiService} from "./icon-api.service";
+import { Icx } from "../libs/hw-app-icx/Icx";
+import { NotificationService } from "./notification.service";
+import { environment } from "../../environments/environment";
+import { StoreService } from "./store.service";
+import { IconApiService } from "./icon-api.service";
 import {
   LEDGER_ERROR,
   LEDGER_NOT_SUPPORTED,
   LEDGER_PLEASE_CONFIRM,
   LEDGER_UNABLE_TO_SIGN_TX,
-  LEDGER_WAIT_ADDRESS
+  LEDGER_WAIT_ADDRESS,
 } from "../common/messages";
-import {LedgerIcxBaseData} from "../models/interfaces/LedgerIcxBaseData";
-import {Wallet} from "../models/classes/Wallet";
-import {WalletType} from "../models/enums/WalletType";
-import {ICX} from "../common/constants";
-import {LocalStorageService} from "./local-storage.service";
-
+import { LedgerIcxBaseData } from "../models/interfaces/LedgerIcxBaseData";
+import { Wallet } from "../models/classes/Wallet";
+import { WalletType } from "../models/enums/WalletType";
+import { ICX } from "../common/constants";
+import { LocalStorageService } from "./local-storage.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LedgerService {
-
   private icx?: TransportWebHID;
   private transport: any;
 
@@ -35,11 +33,10 @@ export class LedgerService {
     private notificationService: NotificationService,
     private storeService: StoreService,
     private iconApiService: IconApiService,
-    private localStorageService: LocalStorageService
-    ) { }
+    private localStorageService: LocalStorageService,
+  ) {}
 
   async signIn(): Promise<LedgerIcxBaseData | undefined> {
-
     if (!TransportWebHID.isSupported) {
       this.notificationService.showNewNotification(LEDGER_NOT_SUPPORTED);
     }
@@ -107,13 +104,15 @@ export class LedgerService {
       try {
         const wallets = JSON.parse(walletsJsonString) as Wallet[];
 
-        return Promise.all(wallets.map(async (wallet) => {
-          const newWallet = new Wallet(wallet.address, WalletType.LEDGER, wallet.ledgerPath);
-          const icxBalance = await this.iconApiService.getIcxBalance(newWallet.address);
-          newWallet.irc2TokenBalancesMap.set(ICX.symbol, icxBalance);
+        return Promise.all(
+          wallets.map(async (wallet) => {
+            const newWallet = new Wallet(wallet.address, WalletType.LEDGER, wallet.ledgerPath);
+            const icxBalance = await this.iconApiService.getIcxBalance(newWallet.address);
+            newWallet.irc2TokenBalancesMap.set(ICX.symbol, icxBalance);
 
-          return newWallet;
-        }))
+            return newWallet;
+          }),
+        );
       } catch (e) {
         log.error(`[getWalletsPageFromLocalStorage] Failed to parse wallets from localstorage!`);
         return Promise.resolve(undefined);
@@ -268,5 +267,4 @@ export class LedgerService {
     newString = newString.split("]").join("\\]");
     return newString;
   }
-
 }

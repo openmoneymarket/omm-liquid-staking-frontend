@@ -1,4 +1,4 @@
-import {ModalType} from "../enums/ModalType";
+import { ModalType } from "../enums/ModalType";
 
 export interface IActionPayload {
   modalType: ModalType;

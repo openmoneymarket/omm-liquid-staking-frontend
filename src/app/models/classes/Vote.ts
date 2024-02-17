@@ -18,7 +18,6 @@ export class VotersCount {
   againstVoters: BigNumber;
   forVoters: BigNumber;
 
-
   constructor(againstVoters: BigNumber, forVoters: BigNumber) {
     this.againstVoters = againstVoters;
     this.forVoters = forVoters;

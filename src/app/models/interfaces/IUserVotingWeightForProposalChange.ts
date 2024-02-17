@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 
 export interface IUserVotingWeightForProposalChange {
-    proposalId: string;
-    votingWeight: BigNumber;
+  proposalId: string;
+  votingWeight: BigNumber;
 }

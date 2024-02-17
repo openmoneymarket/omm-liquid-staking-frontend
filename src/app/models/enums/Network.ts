@@ -1,4 +1,4 @@
 export enum Network {
-    MAINNET = "Mainnet",
-    LISBON = "Lisbon",
+  MAINNET = "Mainnet",
+  LISBON = "Lisbon",
 }

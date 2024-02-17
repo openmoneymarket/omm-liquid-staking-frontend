@@ -1,7 +1,7 @@
-import {Utils} from "./Utils";
+import { Utils } from "./Utils";
 // @ts-ignore
 import type Transport from "@ledgerhq/hw-transport";
-const Buffer = require('buffer').Buffer
+const Buffer = require("buffer").Buffer;
 import log from "loglevel";
 
 export class Icx {
@@ -11,12 +11,7 @@ export class Icx {
     this.transport = transport;
     transport.decorateAppAPIMethods(
       this,
-      [
-        "getAddress",
-        "signTransaction",
-        "getAppConfiguration",
-        "setTestPrivateKey",
-      ],
+      ["getAddress", "signTransaction", "getAppConfiguration", "setTestPrivateKey"],
       "ICON",
     );
   }
@@ -31,7 +26,11 @@ export class Icx {
    * @example
    * icx.getAddress("44'/4801368'/0'", true, true).then(o => o.address)
    */
-  getAddress(path: string, boolDisplay: boolean = false, boolChaincode: boolean = true): Promise<{
+  getAddress(
+    path: string,
+    boolDisplay: boolean = false,
+    boolChaincode: boolean = true,
+  ): Promise<{
     publicKey: string;
     address: string;
     chainCode?: string;
@@ -43,13 +42,7 @@ export class Icx {
       buffer.writeUInt32BE(element, 1 + 4 * index);
     });
     return this.transport
-      .send(
-        0xe0,
-        0x02,
-        boolDisplay ? 0x01 : 0x00,
-        boolChaincode ? 0x01 : 0x00,
-        buffer,
-      )
+      .send(0xe0, 0x02, boolDisplay ? 0x01 : 0x00, boolChaincode ? 0x01 : 0x00, buffer)
       .then((response: Buffer) => {
         const publicKeyLength = response[0];
         const addressLength = response[1 + publicKeyLength];
@@ -57,7 +50,7 @@ export class Icx {
         const result = {
           publicKey: response.slice(1, 1 + publicKeyLength).toString("hex"),
           address: response.slice(1 + publicKeyLength + 1, 1 + publicKeyLength + 1 + addressLength).toString(),
-          chainCode: ""
+          chainCode: "",
         };
 
         log.debug(result.address.toString());
@@ -83,7 +76,7 @@ export class Icx {
    *     "to.hx4c5101add2caa6a920420cf951f7dd7c7df6ca24.value.0xde0b6b3a7640000")
    *   .then(result => ...)
    */
-  signTransaction(path: string, rawTxAscii: string): Promise<{signedRawTxBase64: string; hashHex: string; } | {}> {
+  signTransaction(path: string, rawTxAscii: string): Promise<{ signedRawTxBase64: string; hashHex: string } | {}> {
     const paths = Utils.splitPath(path);
     let offset = 0;
     const rawTx = new Buffer(rawTxAscii);
@@ -101,8 +94,7 @@ export class Icx {
           buffer.writeUInt32BE(element, 1 + 4 * index);
         });
         buffer.writeUInt32BE(rawTx.length, 1 + 4 * paths.length);
-        rawTx.copy(buffer, 1 + 4 * paths.length + 4, offset, offset + chunkSize,
-        );
+        rawTx.copy(buffer, 1 + 4 * paths.length + 4, offset, offset + chunkSize);
       } else {
         rawTx.copy(buffer, 0, offset, offset + chunkSize);
       }
@@ -112,13 +104,13 @@ export class Icx {
 
     return Utils.foreach(toSend, (data, i) =>
       this.transport.send(0xe0, 0x04, i === 0 ? 0x00 : 0x80, 0x00, data).then((apduResponse: any) => {
-          response = apduResponse;
-        }),
+        response = apduResponse;
+      }),
     ).then(() => {
       return {
         // r, s, v are aligned sequentially
         signedRawTxBase64: Utils.hexToBase64(response.slice(0, 32 + 32 + 1).toString("hex")),
-        hashHex: response.slice(32 + 32 + 1, 32 + 32 + 1 + 32).toString("hex")
+        hashHex: response.slice(32 + 32 + 1, 32 + 32 + 1 + 32).toString("hex"),
       };
     });
   }
@@ -136,7 +128,7 @@ export class Icx {
       return {
         majorVersion: response[0],
         minorVersion: response[1],
-        patchVersion: response[2]
+        patchVersion: response[2],
       };
     });
   }

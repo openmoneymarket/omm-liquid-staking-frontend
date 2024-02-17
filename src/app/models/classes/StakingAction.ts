@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 
-export class StakingAction{
+export class StakingAction {
   before: BigNumber;
   after: BigNumber;
   amount: BigNumber;

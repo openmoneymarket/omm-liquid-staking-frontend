@@ -1,8 +1,8 @@
-import {IScoreParameterValue} from "./IScoreParameter";
+import { IScoreParameterValue } from "./IScoreParameter";
 
 export interface IProposalScoreDetails {
-  address: string,
-  name: string,
-  method: string,
-  parameters: IScoreParameterValue[]
+  address: string;
+  name: string;
+  method: string;
+  parameters: IScoreParameterValue[];
 }

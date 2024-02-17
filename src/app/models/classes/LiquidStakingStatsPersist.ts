@@ -1,4 +1,4 @@
-import {LiquidStakingStats} from "./LiquidStakingStats";
+import { LiquidStakingStats } from "./LiquidStakingStats";
 
 export class LiquidStakingStatsPersist {
   from: string;

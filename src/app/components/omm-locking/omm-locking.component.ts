@@ -1,41 +1,45 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {OmmLockSliderComponent} from "../omm-lock-slider/omm-lock-slider.component";
-import {StoreService} from "../../services/store.service";
-import {Subscription} from "rxjs";
-import {StateChangeService} from "../../services/state-change.service";
-import {LockedOmm} from "../../models/classes/LockedOmm";
-import {OmmTokenBalanceDetails} from "../../models/classes/OmmTokenBalanceDetails";
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { OmmLockSliderComponent } from "../omm-lock-slider/omm-lock-slider.component";
+import { StoreService } from "../../services/store.service";
+import { Subscription } from "rxjs";
+import { StateChangeService } from "../../services/state-change.service";
+import { LockedOmm } from "../../models/classes/LockedOmm";
+import { OmmTokenBalanceDetails } from "../../models/classes/OmmTokenBalanceDetails";
 import BigNumber from "bignumber.js";
 import {
   timestampInMillisecondsToPrettyDate,
   timestampNowMicroseconds,
-  timestampNowMilliseconds
+  timestampNowMilliseconds,
 } from "../../common/utils";
-import {LockDate} from "../../models/enums/LockDate";
-import {Calculations} from "../../common/calculations";
+import { LockDate } from "../../models/enums/LockDate";
+import { Calculations } from "../../common/calculations";
 import {
   DEFAULT_INPUT_DELAY_MS,
   getLockDateFromMilliseconds,
   LOCKED_UNTIL_DATE_OPTIONS,
-  lockedDatesToMilliseconds
+  lockedDatesToMilliseconds,
 } from "../../common/constants";
-import {Times} from "../../models/classes/Times";
-import {usLocale} from "../../common/formats";
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
-import {BaseClass} from "../../models/classes/BaseClass";
+import { Times } from "../../models/classes/Times";
+import { usLocale } from "../../common/formats";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
+import { BaseClass } from "../../models/classes/BaseClass";
 import log from "loglevel";
-import {ClickOutsideDirective} from "../../directives/click-outside.directive";
-import {ModalType} from "../../models/enums/ModalType";
-import {WithdrawLockedOmmPayload} from "../../models/classes/WithdrawLockedOmmPayload";
-import {LOCK_AMOUNT_LOWER_THAN_CURRENT, LOCKING_PERIOD_NOT_SELECTED, TOO_LOW_LOCK_AMOUNT} from "../../common/messages";
-import {NotificationService} from "../../services/notification.service";
-import {OmmLockingPayload} from "../../models/classes/OmmLockingPayload";
-import {VotingPowerOverviewComponent} from "../voting-power-overview/voting-power-overview.component";
+import { ClickOutsideDirective } from "../../directives/click-outside.directive";
+import { ModalType } from "../../models/enums/ModalType";
+import { WithdrawLockedOmmPayload } from "../../models/classes/WithdrawLockedOmmPayload";
+import {
+  LOCK_AMOUNT_LOWER_THAN_CURRENT,
+  LOCKING_PERIOD_NOT_SELECTED,
+  TOO_LOW_LOCK_AMOUNT,
+} from "../../common/messages";
+import { NotificationService } from "../../services/notification.service";
+import { OmmLockingPayload } from "../../models/classes/OmmLockingPayload";
+import { VotingPowerOverviewComponent } from "../voting-power-overview/voting-power-overview.component";
 
 @Component({
-  selector: 'app-omm-locking',
+  selector: "app-omm-locking",
   standalone: true,
   imports: [
     CommonModule,
@@ -43,12 +47,11 @@ import {VotingPowerOverviewComponent} from "../voting-power-overview/voting-powe
     UsFormatPipe,
     HideElementPipe,
     ClickOutsideDirective,
-    VotingPowerOverviewComponent
+    VotingPowerOverviewComponent,
   ],
-  templateUrl: './omm-locking.component.html'
+  templateUrl: "./omm-locking.component.html",
 })
 export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy {
-
   protected readonly timestampInMillisecondsToPrettyDate = timestampInMillisecondsToPrettyDate;
 
   @ViewChild(OmmLockSliderComponent) lockOmmSliderCmp!: OmmLockSliderComponent;
@@ -71,7 +74,8 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   userDynamicDelegationWorkingbOmmBalance = new BigNumber(0);
 
   // default to 1 week
-  selectedLockTimeInMillisec = lockedDatesToMilliseconds.get(this.currentLockPeriodDate()) ?? Times.WEEK_IN_MILLISECONDS;
+  selectedLockTimeInMillisec =
+    lockedDatesToMilliseconds.get(this.currentLockPeriodDate()) ?? Times.WEEK_IN_MILLISECONDS;
   selectedLockTime = this.currentLockPeriodDate();
   userHasSelectedLockTime = false;
   inputLockOmm = 0;
@@ -82,9 +86,11 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   userDelegationWorkingbOmmSub?: Subscription;
   modalChangeSub?: Subscription;
 
-  constructor(private storeService: StoreService,
-              private stateChangeService: StateChangeService,
-              private notificationService: NotificationService) {
+  constructor(
+    private storeService: StoreService,
+    private stateChangeService: StateChangeService,
+    private notificationService: NotificationService,
+  ) {
     super();
   }
   ngOnInit(): void {
@@ -126,16 +132,15 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   subscribeToModalChange(): void {
-    this.modalChangeSub = this.stateChangeService.modalPayloadChange$.subscribe(modalChange => {
+    this.modalChangeSub = this.stateChangeService.modalPayloadChange$.subscribe((modalChange) => {
       if (modalChange.modalType === ModalType.UNDEFINED) {
         this.resetDynamicValues();
       }
     });
   }
 
-
   subscribeToUserLockedOmmChange(): void {
-    this.userLockedOmmBalanceSub = this.stateChangeService.userLockedOmmChange$.subscribe(lockedOmm => {
+    this.userLockedOmmBalanceSub = this.stateChangeService.userLockedOmmChange$.subscribe((lockedOmm) => {
       this.userLockedOmm = lockedOmm;
       this.userLockedOmmBalance = lockedOmm.amount.toNumber();
       this.userDynamicLockedOmmAmount = this.userLockedOmmBalance;
@@ -143,16 +148,18 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   subscribeTouUerOmmTokenBalanceDetailsChange(): void {
-    this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(value => {
-      this.userOmmTokenBalanceDetails = value;
-    })
+    this.userOmmTokenBalanceDetailsSub = this.stateChangeService.userOmmTokenBalanceDetailsChange$.subscribe(
+      (value) => {
+        this.userOmmTokenBalanceDetails = value;
+      },
+    );
   }
 
   subscribeToUserDelegationWorkingbOmmChange(): void {
-    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe(value => {
+    this.userDelegationWorkingbOmmSub = this.stateChangeService.userDelegationWorkingbOmmChange$.subscribe((value) => {
       this.userDelegationWorkingbOmmBalance = value;
       this.userDynamicDelegationWorkingbOmmBalance = value;
-    })
+    });
   }
 
   onConfirmLockOmmClick(e: MouseEvent): void {
@@ -186,23 +193,35 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
     log.debug("unlockPeriod:", unlockPeriod);
 
     if (diff > 0 || unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
-      if (this.storeService.minOmmLockAmount.isGreaterThan(diff) && !unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
+      if (
+        this.storeService.minOmmLockAmount.isGreaterThan(diff) &&
+        !unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)
+      ) {
         this.notificationService.showNewNotification(TOO_LOW_LOCK_AMOUNT(this.storeService.minOmmLockAmount));
-      }
-      else if (before > 0 && after > before) {
+      } else if (before > 0 && after > before) {
         if (unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
           // increase both locked amount and unlock period if lock amount and unlock period are greater than current
-          this.stateChangeService.modalUpdate(ModalType.INCREASE_LOCK_TIME_AND_AMOUNT, new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_TIME_AND_AMOUNT));
+          this.stateChangeService.modalUpdate(
+            ModalType.INCREASE_LOCK_TIME_AND_AMOUNT,
+            new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_TIME_AND_AMOUNT),
+          );
         } else if (unlockPeriod.eq(userCurrentLockedOmmEndInMilliseconds)) {
           // increase lock amount only if new one is greater and unlock period is same as current
-          this.stateChangeService.modalUpdate(ModalType.INCREASE_LOCK_OMM, new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_OMM));
+          this.stateChangeService.modalUpdate(
+            ModalType.INCREASE_LOCK_OMM,
+            new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_OMM),
+          );
         }
-      }
-      else if (before == after && unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
-        this.stateChangeService.modalUpdate(ModalType.INCREASE_LOCK_TIME, new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_TIME));
-      }
-      else {
-        this.stateChangeService.modalUpdate(ModalType.LOCK_OMM, new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.LOCK_OMM));
+      } else if (before == after && unlockPeriod.gt(userCurrentLockedOmmEndInMilliseconds)) {
+        this.stateChangeService.modalUpdate(
+          ModalType.INCREASE_LOCK_TIME,
+          new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.INCREASE_LOCK_TIME),
+        );
+      } else {
+        this.stateChangeService.modalUpdate(
+          ModalType.LOCK_OMM,
+          new OmmLockingPayload(before, after, Math.abs(diff), unlockPeriod, ModalType.LOCK_OMM),
+        );
       }
     } else {
       this.notificationService.showNewNotification(LOCK_AMOUNT_LOWER_THAN_CURRENT);
@@ -231,7 +250,10 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
       const lockedOmm = this.userLockedOmm!.amount.dp(2);
       const after = currentOmmBalance.plus(lockedOmm).dp(2);
 
-      this.stateChangeService.modalUpdate(ModalType.WITHDRAW_LOCKED_OMM, new WithdrawLockedOmmPayload( currentOmmBalance, after, lockedOmm));
+      this.stateChangeService.modalUpdate(
+        ModalType.WITHDRAW_LOCKED_OMM,
+        new WithdrawLockedOmmPayload(currentOmmBalance, after, lockedOmm),
+      );
     } else {
       this.lockAdjustActive = true;
       this.lockOmmSliderCmp.enableSlider();
@@ -260,7 +282,7 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   onLockedOmmInputLostFocus(e: KeyboardEvent | ClipboardEvent | FocusEvent): void {
     this.delay(() => {
       this.processLockedOmmInput(e);
-    }, DEFAULT_INPUT_DELAY_MS );
+    }, DEFAULT_INPUT_DELAY_MS);
   }
 
   processLockedOmmInput(e: KeyboardEvent | ClipboardEvent | FocusEvent): void {
@@ -283,7 +305,7 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
       this.userDynamicLockedOmmAmount = value;
 
       // update dynamic values only if user current and dynamic locked OMM amounts are different
-      if (this.userLockedOmmBalance != value)  {
+      if (this.userLockedOmmBalance != value) {
         this.updateUserbOmmBalance(value);
       }
 
@@ -293,7 +315,11 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   updateUserbOmmBalance(newLockedOmmAmount: number): void {
-    const newUserbOmmBalance = Calculations.calculateNewbOmmBalance(new BigNumber(newLockedOmmAmount), this.selectedLockTimeInMillisec, this.userCurrentLockedOmmEndInMilliseconds());
+    const newUserbOmmBalance = Calculations.calculateNewbOmmBalance(
+      new BigNumber(newLockedOmmAmount),
+      this.selectedLockTimeInMillisec,
+      this.userCurrentLockedOmmEndInMilliseconds(),
+    );
     this.userDynamicDelegationWorkingbOmmBalance = newUserbOmmBalance;
   }
 
@@ -318,12 +344,17 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   }
 
   shouldShowbOmmBalance(): boolean {
-    return this.userLoggedIn() && (this.lockAdjustActive || this.userDelegationWorkingbOmmBalance.gt(0) || this.userHasOmmUnlocked());
+    return (
+      this.userLoggedIn() &&
+      (this.lockAdjustActive || this.userDelegationWorkingbOmmBalance.gt(0) || this.userHasOmmUnlocked())
+    );
   }
 
   userHasOmmUnlocked(): boolean {
     // if user locked Omm is greater than zero and end timestamp has passed return true
-    return this.userLockedOmm ? this.userLockedOmm.amount.gt(0) && this.userLockedOmm.end.lt(timestampNowMicroseconds()) : false;
+    return this.userLockedOmm
+      ? this.userLockedOmm.amount.gt(0) && this.userLockedOmm.end.lt(timestampNowMicroseconds())
+      : false;
   }
 
   shouldHideLockedOmmThreshold(): boolean {
@@ -341,13 +372,17 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
     if (!this.userHasLockedOmm()) {
       return LOCKED_UNTIL_DATE_OPTIONS;
     } else {
-      return Calculations.getAvailableLockPeriods(this.userCurrentLockedOmmEndInMilliseconds()) ?? [LockDate.FOUR_YEARS];
+      return (
+        Calculations.getAvailableLockPeriods(this.userCurrentLockedOmmEndInMilliseconds()) ?? [LockDate.FOUR_YEARS]
+      );
     }
   }
 
   calculatePercentLocked(): number {
     if (this.userOmmTokenBalanceDetails && this.userLockedOmm) {
-      return this.userLockedOmm.amount.dividedBy(this.userLockedOmm.amount.plus(this.userOmmTokenBalanceDetails.availableBalance)).toNumber();
+      return this.userLockedOmm.amount
+        .dividedBy(this.userLockedOmm.amount.plus(this.userOmmTokenBalanceDetails.availableBalance))
+        .toNumber();
     }
 
     return 0;
@@ -419,5 +454,4 @@ export class OmmLockingComponent extends BaseClass implements OnInit, OnDestroy 
   public userLoggedIn(): boolean {
     return this.storeService.userLoggedIn();
   }
-
 }

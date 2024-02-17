@@ -1,29 +1,29 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {WithdrawLockedOmmPayload} from "../../../models/classes/WithdrawLockedOmmPayload";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { WithdrawLockedOmmPayload } from "../../../models/classes/WithdrawLockedOmmPayload";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {StateChangeService} from "../../../services/state-change.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
-import {ScoreService} from "../../../services/score.service";
-import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
+import { StateChangeService } from "../../../services/state-change.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
+import { ScoreService } from "../../../services/score.service";
+import { RndDwnPipePipe } from "../../../pipes/round-down.pipe";
 
 @Component({
-  selector: 'app-withdraw-omn-modal',
+  selector: "app-withdraw-omn-modal",
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
-  templateUrl: './withdraw-omn-modal.component.html'
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
+  templateUrl: "./withdraw-omn-modal.component.html",
 })
 export class WithdrawOmnModalComponent {
-
   @Input({ required: true }) active!: boolean;
 
   @Input() payload: WithdrawLockedOmmPayload | undefined;
 
-  constructor(private stateChangeService: StateChangeService,
-              private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private transactionDispatcher: TransactionDispatcherService,
+    private scoreService: ScoreService,
+  ) {}
   amount(): BigNumber {
     return this.payload?.amount ?? new BigNumber(0);
   }
@@ -49,5 +49,4 @@ export class WithdrawOmnModalComponent {
 
     this.transactionDispatcher.dispatchTransaction(tx, this.payload!);
   }
-
 }

@@ -1,30 +1,29 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ClaimIcxPayload} from "../../../models/classes/ClaimIcxPayload";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ClaimIcxPayload } from "../../../models/classes/ClaimIcxPayload";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {StateChangeService} from "../../../services/state-change.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
-import {ScoreService} from "../../../services/score.service";
-import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
+import { StateChangeService } from "../../../services/state-change.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
+import { ScoreService } from "../../../services/score.service";
+import { RndDwnPipePipe } from "../../../pipes/round-down.pipe";
 
 @Component({
-  selector: 'app-claim-icx-modal',
+  selector: "app-claim-icx-modal",
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
-  templateUrl: './claim-icx-modal.component.html'
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
+  templateUrl: "./claim-icx-modal.component.html",
 })
 export class ClaimIcxModalComponent {
-
   @Input({ required: true }) active!: boolean;
 
   @Input() claimIcxPayload: ClaimIcxPayload | undefined;
 
-  constructor(private stateChangeService: StateChangeService,
-              private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService,
-  ) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private transactionDispatcher: TransactionDispatcherService,
+    private scoreService: ScoreService,
+  ) {}
   getClaimableAmount(): BigNumber {
     return this.claimIcxPayload?.claimableAmount ?? new BigNumber(0);
   }

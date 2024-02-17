@@ -1,39 +1,38 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, Subject} from "rxjs";
-import {Address, ModalPayload, PrepAddress, TokenSymbol} from "../models/Types/ModalTypes";
-import {ModalActionsResult} from "../models/classes/ModalAction";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from "rxjs";
+import { Address, ModalPayload, PrepAddress, TokenSymbol } from "../models/Types/ModalTypes";
+import { ModalActionsResult } from "../models/classes/ModalAction";
 import BigNumber from "bignumber.js";
-import {Irc2Token} from "../models/classes/Irc2Token";
-import {StoreService} from "./store.service";
-import {ITokenBalanceUpdate} from "../models/interfaces/ITokenBalanceUpdate";
-import {Wallet} from "../models/classes/Wallet";
-import {ModalType} from "../models/enums/ModalType";
-import {AllAddresses} from "../models/interfaces/AllAddresses";
-import {supportedTokens} from "../common/constants";
-import {UserUnstakeInfo} from "../models/classes/UserUnstakeInfo";
-import {Block} from "icon-sdk-js";
-import {BalancedDexFees} from "../models/classes/BalancedDexFees";
-import {PoolStats} from "../models/classes/PoolStats";
-import {IDaoFundBalance} from "../models/interfaces/IDaoFundBalance";
-import {LockedOmm} from "../models/classes/LockedOmm";
-import {OmmTokenBalanceDetails} from "../models/classes/OmmTokenBalanceDetails";
-import {IModalChange} from "../models/interfaces/IModalChange";
-import {Proposal} from "../models/classes/Proposal";
-import {IUserProposalVoteChange} from "../models/interfaces/IUserProposalVoteChange";
-import {Vote} from "../models/classes/Vote";
-import {IUserVotingWeightForProposalChange} from "../models/interfaces/IUserVotingWeightForProposalChange";
-import {IProposalScoreDetailsChange} from "../models/interfaces/IProposalScoreDetailsChange";
-import {IProposalScoreDetails} from "../models/interfaces/IProposalScoreDetails";
-import {YourPrepVote} from "../models/classes/YourPrepVote";
-import {PrepList} from "../models/classes/Preps";
-import {UnstakeInfoData} from "../models/classes/UnstakeInfoData";
-import {LiquidStakingStats} from "../models/classes/LiquidStakingStats";
+import { Irc2Token } from "../models/classes/Irc2Token";
+import { StoreService } from "./store.service";
+import { ITokenBalanceUpdate } from "../models/interfaces/ITokenBalanceUpdate";
+import { Wallet } from "../models/classes/Wallet";
+import { ModalType } from "../models/enums/ModalType";
+import { AllAddresses } from "../models/interfaces/AllAddresses";
+import { supportedTokens } from "../common/constants";
+import { UserUnstakeInfo } from "../models/classes/UserUnstakeInfo";
+import { Block } from "icon-sdk-js";
+import { BalancedDexFees } from "../models/classes/BalancedDexFees";
+import { PoolStats } from "../models/classes/PoolStats";
+import { IDaoFundBalance } from "../models/interfaces/IDaoFundBalance";
+import { LockedOmm } from "../models/classes/LockedOmm";
+import { OmmTokenBalanceDetails } from "../models/classes/OmmTokenBalanceDetails";
+import { IModalChange } from "../models/interfaces/IModalChange";
+import { Proposal } from "../models/classes/Proposal";
+import { IUserProposalVoteChange } from "../models/interfaces/IUserProposalVoteChange";
+import { Vote } from "../models/classes/Vote";
+import { IUserVotingWeightForProposalChange } from "../models/interfaces/IUserVotingWeightForProposalChange";
+import { IProposalScoreDetailsChange } from "../models/interfaces/IProposalScoreDetailsChange";
+import { IProposalScoreDetails } from "../models/interfaces/IProposalScoreDetails";
+import { YourPrepVote } from "../models/classes/YourPrepVote";
+import { PrepList } from "../models/classes/Preps";
+import { UnstakeInfoData } from "../models/classes/UnstakeInfoData";
+import { LiquidStakingStats } from "../models/classes/LiquidStakingStats";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StateChangeService {
-
   private allAddressesLoaded = new ReplaySubject<AllAddresses>(1);
   public allAddressesLoaded$ = this.allAddressesLoaded.asObservable();
 
@@ -46,11 +45,11 @@ export class StateChangeService {
   private afterCoreDataReload: Subject<void> = new Subject<void>();
   afterCoreDataReload$: Observable<void> = this.afterCoreDataReload.asObservable();
 
-  private currentTimestampChange = new ReplaySubject<{ currentTimestamp: number, currentTimestampMicro: BigNumber }>(1);
+  private currentTimestampChange = new ReplaySubject<{ currentTimestamp: number; currentTimestampMicro: BigNumber }>(1);
   currentTimestampChange$ = this.currentTimestampChange.asObservable();
 
   private modalPayloadChange = new ReplaySubject<IModalChange>(1);
-  modalPayloadChange$= this.modalPayloadChange.asObservable();
+  modalPayloadChange$ = this.modalPayloadChange.asObservable();
 
   private lockedOmmActionSucceeded = new ReplaySubject<boolean>(1);
   lockedOmmActionSucceeded$: Observable<boolean> = this.lockedOmmActionSucceeded.asObservable();
@@ -187,8 +186,7 @@ export class StateChangeService {
   private stakingFeeChange = new BehaviorSubject<BigNumber>(new BigNumber(0));
   stakingFeeChange$ = this.stakingFeeChange.asObservable();
 
-  constructor(private storeService: StoreService) {
-  }
+  constructor(private storeService: StoreService) {}
 
   public stakingFeeUpdate(value: BigNumber): void {
     this.stakingFeeChange.next(value);
@@ -226,7 +224,6 @@ export class StateChangeService {
     this.actualPrepDelegationsChange.next(value);
   }
 
-
   public prepBommDelegationUpdate(value: BigNumber): void {
     this.prepBommDelegationChange.next(value);
   }
@@ -253,17 +250,17 @@ export class StateChangeService {
 
   public proposalScoreDetailsUpdate(proposalId: string, proposalScoreDetails: IProposalScoreDetails[]): void {
     this.storeService.proposalScoreDetailsMap.set(proposalId, proposalScoreDetails);
-    this.proposalScoreDetailsChange.next({proposalId, proposalScoreDetails});
+    this.proposalScoreDetailsChange.next({ proposalId, proposalScoreDetails });
   }
 
   public userProposalVotesUpdate(proposalId: string, vote: Vote): void {
     this.storeService.userProposalVotes.set(proposalId, vote);
-    this.userProposalVotesChange.next({proposalId, vote});
+    this.userProposalVotesChange.next({ proposalId, vote });
   }
 
   public userVotingWeightForProposalUpdate(proposalId: string, votingWeight: BigNumber): void {
     this.storeService.userVotingWeightForProposal.set(proposalId, votingWeight);
-    this.userVotingWeightForProposalChange.next({proposalId, votingWeight});
+    this.userVotingWeightForProposalChange.next({ proposalId, votingWeight });
   }
 
   public updateProposalsList(proposalList: Proposal[]) {
@@ -275,7 +272,7 @@ export class StateChangeService {
   }
 
   public delegationbOmmTotalWorkingSupplyUpdate(value: BigNumber): void {
-      this.delegationbOmmTotalWorkingSupplyChange.next(value);
+    this.delegationbOmmTotalWorkingSupplyChange.next(value);
   }
 
   public undelegatedIcxUpdate(value: BigNumber): void {
@@ -357,7 +354,7 @@ export class StateChangeService {
 
   public allAddressesLoadedUpdate(allAddresses: AllAddresses): void {
     // @ts-ignore
-    supportedTokens.forEach(token => token.address = allAddresses.collateral[token.symbol] as Address)
+    supportedTokens.forEach((token) => (token.address = allAddresses.collateral[token.symbol] as Address));
     this.storeService.allAddresses = allAddresses;
     this.allAddressesLoaded.next(allAddresses);
   }
@@ -386,7 +383,7 @@ export class StateChangeService {
 
   public updateUserTokenBalance(balance: BigNumber, token: Irc2Token): void {
     this.storeService.activeWallet?.irc2TokenBalancesMap.set(token.symbol, balance);
-    this.userTokenBalanceUpdate.next({ token, amount: balance })
+    this.userTokenBalanceUpdate.next({ token, amount: balance });
   }
 
   public userDataReloadUpdate(): void {
@@ -402,11 +399,10 @@ export class StateChangeService {
   }
 
   public currentTimestampUpdate(currentTimestamp: number, currentTimestampMicro: BigNumber): void {
-    this.currentTimestampChange.next({ currentTimestamp, currentTimestampMicro});
+    this.currentTimestampChange.next({ currentTimestamp, currentTimestampMicro });
   }
 
   public lockedOmmActionSucceededUpdate(succeeded: boolean): void {
     this.lockedOmmActionSucceeded.next(succeeded);
   }
-
 }

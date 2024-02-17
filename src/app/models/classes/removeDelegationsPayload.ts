@@ -1,30 +1,25 @@
-import {IActionPayload} from "../interfaces/IActionPayload";
-import {ModalType} from "../enums/ModalType";
-import {
-    FAILURE_REMOVE_ALL_VOTES,
-    PRE_REMOVE_ALL_VOTES,
-    SUCCESS_REMOVE_VOTES,
-} from "../../common/messages";
+import { IActionPayload } from "../interfaces/IActionPayload";
+import { ModalType } from "../enums/ModalType";
+import { FAILURE_REMOVE_ALL_VOTES, PRE_REMOVE_ALL_VOTES, SUCCESS_REMOVE_VOTES } from "../../common/messages";
 
 export class RemoveDelegationsPayload implements IActionPayload {
+  modalType = ModalType.REMOVE_ALL_DELEGATIONS;
 
-    modalType = ModalType.REMOVE_ALL_DELEGATIONS;
+  isBommDelegation: boolean;
 
-    isBommDelegation: boolean
+  constructor(isBommDelegation: boolean) {
+    this.isBommDelegation = isBommDelegation;
+  }
 
-    constructor(isBommDelegation: boolean) {
-        this.isBommDelegation = isBommDelegation;
-    }
+  sendTxMessage(): string {
+    return PRE_REMOVE_ALL_VOTES;
+  }
 
-    sendTxMessage(): string {
-        return PRE_REMOVE_ALL_VOTES;
-    }
+  successMessage(): string {
+    return SUCCESS_REMOVE_VOTES;
+  }
 
-    successMessage(): string {
-        return SUCCESS_REMOVE_VOTES;
-    }
-
-    errorMessage(): string {
-        return FAILURE_REMOVE_ALL_VOTES;
-    }
+  errorMessage(): string {
+    return FAILURE_REMOVE_ALL_VOTES;
+  }
 }

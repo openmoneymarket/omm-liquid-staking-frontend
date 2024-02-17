@@ -1,32 +1,31 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {SubmitProposalPayload} from "../../../models/classes/SubmitProposalPayload";
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { SubmitProposalPayload } from "../../../models/classes/SubmitProposalPayload";
 import BigNumber from "bignumber.js";
-import {UsFormatPipe} from "../../../pipes/us-format.pipe";
-import {Calculations} from "../../../common/calculations";
-import {StateChangeService} from "../../../services/state-change.service";
-import {TransactionDispatcherService} from "../../../services/transaction-dispatcher.service";
-import {ScoreService} from "../../../services/score.service";
-import {addSecondsToTimestamp, timestampNowMicroseconds} from "../../../common/utils";
-import {RndDwnPipePipe} from "../../../pipes/round-down.pipe";
+import { UsFormatPipe } from "../../../pipes/us-format.pipe";
+import { Calculations } from "../../../common/calculations";
+import { StateChangeService } from "../../../services/state-change.service";
+import { TransactionDispatcherService } from "../../../services/transaction-dispatcher.service";
+import { ScoreService } from "../../../services/score.service";
+import { addSecondsToTimestamp, timestampNowMicroseconds } from "../../../common/utils";
+import { RndDwnPipePipe } from "../../../pipes/round-down.pipe";
 
 @Component({
-  selector: 'app-submit-proposal-modal',
+  selector: "app-submit-proposal-modal",
   standalone: true,
-    imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
-  templateUrl: './submit-proposal-modal.component.html'
+  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe],
+  templateUrl: "./submit-proposal-modal.component.html",
 })
 export class SubmitProposalModalComponent {
-
   @Input({ required: true }) active!: boolean;
 
   @Input() payload: SubmitProposalPayload | undefined;
 
-  constructor(private stateChangeService: StateChangeService,
-              private transactionDispatcher: TransactionDispatcherService,
-              private scoreService: ScoreService,
-  ) {
-  }
+  constructor(
+    private stateChangeService: StateChangeService,
+    private transactionDispatcher: TransactionDispatcherService,
+    private scoreService: ScoreService,
+  ) {}
   voteDefinitionFee(): BigNumber {
     return this.payload?.newProposal?.voteDefinitionFee ?? new BigNumber(0);
   }
@@ -53,8 +52,7 @@ export class SubmitProposalModalComponent {
 
       this.transactionDispatcher.dispatchTransaction(tx, this.payload);
     } else {
-      throw Error("[SubmitProposalModalComponent] payload undefined!")
+      throw Error("[SubmitProposalModalComponent] payload undefined!");
     }
   }
-
 }

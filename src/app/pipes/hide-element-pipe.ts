@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'hide',
-  standalone: true
+  name: "hide",
+  standalone: true,
 })
 export class HideElementPipe implements PipeTransform {
   /**
@@ -10,7 +10,6 @@ export class HideElementPipe implements PipeTransform {
    * @param hide - boolean flag indicating whether to hide element or not
    */
   transform(hide: boolean): any {
-    return {display: hide ? 'none' : null};
+    return { display: hide ? "none" : null };
   }
-
 }

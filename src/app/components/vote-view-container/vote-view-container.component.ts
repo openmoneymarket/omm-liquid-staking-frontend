@@ -1,13 +1,11 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {RouterOutlet} from "@angular/router";
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterOutlet } from "@angular/router";
 
 @Component({
-  selector: 'app-vote-view-container',
+  selector: "app-vote-view-container",
   standalone: true,
   imports: [CommonModule, RouterOutlet],
-  templateUrl: './vote-view-container.component.html'
+  templateUrl: "./vote-view-container.component.html",
 })
-export class VoteViewContainerComponent {
-
-}
+export class VoteViewContainerComponent {}

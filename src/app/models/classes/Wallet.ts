@@ -1,7 +1,7 @@
-import {WalletType} from "../enums/WalletType";
+import { WalletType } from "../enums/WalletType";
 import BigNumber from "bignumber.js";
-import {Address, TokenSymbol} from "../Types/ModalTypes";
-import {supportedTokens} from "../../common/constants";
+import { Address, TokenSymbol } from "../Types/ModalTypes";
+import { supportedTokens } from "../../common/constants";
 
 export class Wallet {
   address: string;
@@ -18,17 +18,15 @@ export class Wallet {
     this.irc2TokenBalancesMap = new Map<TokenSymbol, BigNumber>();
 
     // init asset balances
-    supportedTokens.forEach(token => this.irc2TokenBalancesMap.set(token.symbol, new BigNumber(0)));
+    supportedTokens.forEach((token) => this.irc2TokenBalancesMap.set(token.symbol, new BigNumber(0)));
   }
-
-
 }
 
 export function getPrettyWalletName(type: WalletType): string {
   switch (type) {
     case WalletType.ICON:
-      return "ICON wallet"
+      return "ICON wallet";
     case WalletType.LEDGER:
-      return "Ledger wallet"
+      return "Ledger wallet";
   }
 }

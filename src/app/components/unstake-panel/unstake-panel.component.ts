@@ -6,54 +6,67 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild
-} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {UsFormatPipe} from "../../pipes/us-format.pipe";
+  ViewChild,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { UsFormatPipe } from "../../pipes/us-format.pipe";
 import BigNumber from "bignumber.js";
-import {ChartService} from "../../services/chart.service";
-import {usLocale} from "../../common/formats";
-import {convertSecondsToDays, convertSICXToICX} from "../../common/utils";
-import {BaseClass} from "../../models/classes/BaseClass";
-import {ModalType} from "../../models/enums/ModalType";
-import {StateChangeService} from "../../services/state-change.service";
-import {UnstakeWaitSicxPayload} from "../../models/classes/UnstakeWaitSicxPayload";
-import {Subscription} from "rxjs";
-import {UserUnstakeInfo} from "../../models/classes/UserUnstakeInfo";
-import {BalancedDexFees} from "../../models/classes/BalancedDexFees";
-import {UnstakeInstantSicxPayload} from "../../models/classes/UnstakeInstantSicxPayload";
-import {PoolStats} from "../../models/classes/PoolStats";
-import {ClaimIcxPayload} from "../../models/classes/ClaimIcxPayload";
-import {PrettyUntilBlockHeightTime} from "../../pipes/pretty-until-block-height-time";
-import {FormsModule} from "@angular/forms";
-import {ICX, SICX} from "../../common/constants";
-import {Wallet} from "../../models/classes/Wallet";
-import {RndDwnPipePipe} from "../../pipes/round-down.pipe";
-import {RndDwnNPercPipe} from "../../pipes/round-down-percent.pipe";
-import {SecondsToDaysPipe} from "../../pipes/seconds-to-days";
-import {Address} from "../../models/Types/ModalTypes";
-import {UnstakeInfoData} from "../../models/classes/UnstakeInfoData";
-import {HideElementPipe} from "../../pipes/hide-element-pipe";
-import {SecToDhPipe} from "../../pipes/seconds-to-dh";
+import { ChartService } from "../../services/chart.service";
+import { usLocale } from "../../common/formats";
+import { convertSecondsToDays, convertSICXToICX } from "../../common/utils";
+import { BaseClass } from "../../models/classes/BaseClass";
+import { ModalType } from "../../models/enums/ModalType";
+import { StateChangeService } from "../../services/state-change.service";
+import { UnstakeWaitSicxPayload } from "../../models/classes/UnstakeWaitSicxPayload";
+import { Subscription } from "rxjs";
+import { UserUnstakeInfo } from "../../models/classes/UserUnstakeInfo";
+import { BalancedDexFees } from "../../models/classes/BalancedDexFees";
+import { UnstakeInstantSicxPayload } from "../../models/classes/UnstakeInstantSicxPayload";
+import { PoolStats } from "../../models/classes/PoolStats";
+import { ClaimIcxPayload } from "../../models/classes/ClaimIcxPayload";
+import { PrettyUntilBlockHeightTime } from "../../pipes/pretty-until-block-height-time";
+import { FormsModule } from "@angular/forms";
+import { ICX, SICX } from "../../common/constants";
+import { Wallet } from "../../models/classes/Wallet";
+import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
+import { RndDwnNPercPipe } from "../../pipes/round-down-percent.pipe";
+import { SecondsToDaysPipe } from "../../pipes/seconds-to-days";
+import { Address } from "../../models/Types/ModalTypes";
+import { UnstakeInfoData } from "../../models/classes/UnstakeInfoData";
+import { HideElementPipe } from "../../pipes/hide-element-pipe";
+import { SecToDhPipe } from "../../pipes/seconds-to-dh";
 
 @Component({
-  selector: 'app-unstake-panel',
+  selector: "app-unstake-panel",
   standalone: true,
-  imports: [CommonModule, UsFormatPipe, RndDwnPipePipe, PrettyUntilBlockHeightTime, FormsModule, RndDwnPipePipe, RndDwnNPercPipe, SecondsToDaysPipe, SecToDhPipe, HideElementPipe],
-  templateUrl: './unstake-panel.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    CommonModule,
+    UsFormatPipe,
+    RndDwnPipePipe,
+    PrettyUntilBlockHeightTime,
+    FormsModule,
+    RndDwnPipePipe,
+    RndDwnNPercPipe,
+    SecondsToDaysPipe,
+    SecToDhPipe,
+    HideElementPipe,
+  ],
+  templateUrl: "./unstake-panel.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestroy {
-
   unstakingChartEl: any;
   unstakingChart: any;
-  @ViewChild("unstkApyChart", { static: true}) set a(a: ElementRef) { this.unstakingChartEl = a.nativeElement; }
+  @ViewChild("unstkApyChart", { static: true }) set a(a: ElementRef) {
+    this.unstakingChartEl = a.nativeElement;
+  }
 
   instantCheckboxEl!: HTMLInputElement;
-  @ViewChild("instantBox", { static: true}) set b(b: ElementRef) { this.instantCheckboxEl = b.nativeElement; }
+  @ViewChild("instantBox", { static: true }) set b(b: ElementRef) {
+    this.instantCheckboxEl = b.nativeElement;
+  }
 
-
-  @Input({ required: true}) active!: boolean;
+  @Input({ required: true }) active!: boolean;
 
   // User values
   userSicxBalance = new BigNumber(0);
@@ -93,9 +106,11 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   liquidStakingSub?: Subscription;
   maxUnstakeLockPeriodSub?: Subscription;
 
-  constructor(private chartService: ChartService,
-              public stateChangeService: StateChangeService,
-              private cdRef: ChangeDetectorRef) {
+  constructor(
+    private chartService: ChartService,
+    public stateChangeService: StateChangeService,
+    private cdRef: ChangeDetectorRef,
+  ) {
     super();
   }
 
@@ -142,7 +157,6 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     this.unstakeInputAmount = new BigNumber(0);
     this.receivedIcxAmount = new BigNumber(0);
     this.instantReceivedIcxAmount = new BigNumber(0);
-
   }
 
   private resetUserState(): void {
@@ -153,12 +167,12 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToMaxUnstakeLockPeriodChange(): void {
-    this.maxUnstakeLockPeriodSub = this.stateChangeService.maxUnstakeLockPeriodChange$.subscribe(value => {
+    this.maxUnstakeLockPeriodSub = this.stateChangeService.maxUnstakeLockPeriodChange$.subscribe((value) => {
       this.maxUnstakingTimeInSeconds = value;
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToLiquidStakingStatsChange(): void {
@@ -188,16 +202,14 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
         this.chartFailedToLoad = true;
       }
 
-
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeToUnstakeInfoChange(): void {
-    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe(value => {
+    this.unstakeInfoSub = this.stateChangeService.unstakeInfoChange$.subscribe((value) => {
       this.unstakeInfoMap = value;
-
 
       this.recalculateUserUnstakeInfo();
 
@@ -207,7 +219,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToUnstakingTimeChange(): void {
-    this.avgUnstakingTimeSub = this.stateChangeService.avgUnstakingTimeInSecondsChange$.subscribe(value => {
+    this.avgUnstakingTimeSub = this.stateChangeService.avgUnstakingTimeInSecondsChange$.subscribe((value) => {
       this.avgUnstakingTimeInSeconds = value;
 
       // Detect Changes
@@ -216,7 +228,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToTodayRateChange(): void {
-    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe(todayRate => {
+    this.todayRateSub = this.stateChangeService.sicxTodayRateChange$.subscribe((todayRate) => {
       this.todaySicxRate = todayRate;
 
       this.recalculateInputs();
@@ -227,7 +239,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToUserTokenBalanceChange(): void {
-    this.userTokenBalanceSub = this.stateChangeService.userTokenBalanceUpdate$.subscribe(value => {
+    this.userTokenBalanceSub = this.stateChangeService.userTokenBalanceUpdate$.subscribe((value) => {
       if (value.token.symbol === SICX.symbol) {
         this.userSicxBalance = value.amount;
       } else if (value.token.symbol === ICX.symbol) {
@@ -238,11 +250,11 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
 
       // Detect Changes
       this.cdRef.detectChanges();
-    })
+    });
   }
 
   private subscribeIcxSicxPoolStatsChange(): void {
-    this.icxSicxPoolStatsSub = this.stateChangeService.icxSicxPoolStatsChange$.subscribe(value => {
+    this.icxSicxPoolStatsSub = this.stateChangeService.icxSicxPoolStatsChange$.subscribe((value) => {
       this.icxSicxPoolStats = value;
 
       this.recalculateInputs();
@@ -253,7 +265,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToBalancedDexFeeChange(): void {
-    this.balancedDexFeeSub = this.stateChangeService.balancedDexFeesChange$.subscribe(fees => {
+    this.balancedDexFeeSub = this.stateChangeService.balancedDexFeesChange$.subscribe((fees) => {
       this.balancedDexFees = fees;
 
       this.recalculateInputs();
@@ -264,7 +276,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToLatestBlockHeightChange(): void {
-    this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe(block => {
+    this.latestBlockHeightSub = this.stateChangeService.lastBlockHeightChange$.subscribe((block) => {
       this.currentBlockHeight = new BigNumber(block.height);
 
       // Detect Changes
@@ -272,7 +284,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     });
   }
   private subscribeToUserUnstakeInfoChange(): void {
-    this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe(data => {
+    this.userUnstakeInfoSub = this.stateChangeService.userUnstakeInfoChange$.subscribe((data) => {
       this.userUnstakeInfo = data;
 
       this.recalculateUserUnstakeInfo();
@@ -283,7 +295,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   private subscribeToUserLoginChange(): void {
-    this.userLoginSub = this.stateChangeService.loginChange$.subscribe(value => {
+    this.userLoginSub = this.stateChangeService.loginChange$.subscribe((value) => {
       this.userWallet = value;
 
       // user logout
@@ -297,7 +309,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   subscribeToClaimableIcxChange(): void {
-    this.claimableIcxSub = this.stateChangeService.userClaimableIcxChange$.subscribe(value => {
+    this.claimableIcxSub = this.stateChangeService.userClaimableIcxChange$.subscribe((value) => {
       this.claimableIcx = value;
 
       // Detect Changes
@@ -309,20 +321,30 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     e.stopPropagation();
 
     if (this.userLoggedIn()) {
-      if (!this.inputUnstakeAmountGtUserSicxBalance() && this.unstakeInputAmount.gt(0) && this.receivedIcxAmount.gt(0)) {
+      if (
+        !this.inputUnstakeAmountGtUserSicxBalance() &&
+        this.unstakeInputAmount.gt(0) &&
+        this.receivedIcxAmount.gt(0)
+      ) {
         if (this.unstakeWaitActive) {
-          this.stateChangeService.modalUpdate(ModalType.UNSTAKE_WAIT_SICX, new UnstakeWaitSicxPayload(
+          this.stateChangeService.modalUpdate(
+            ModalType.UNSTAKE_WAIT_SICX,
+            new UnstakeWaitSicxPayload(
               new BigNumber(this.unstakeInputAmount),
               new BigNumber(this.receivedIcxAmount),
               new BigNumber(this.avgUnstakingTimeInSeconds),
               new BigNumber(this.maxUnstakingTimeInSeconds),
-          ));
+            ),
+          );
         } else {
-          this.stateChangeService.modalUpdate(ModalType.UNSTAKE_INSTANT_SICX, new UnstakeInstantSicxPayload(
+          this.stateChangeService.modalUpdate(
+            ModalType.UNSTAKE_INSTANT_SICX,
+            new UnstakeInstantSicxPayload(
               new BigNumber(this.unstakeInputAmount),
               new BigNumber(this.instantReceivedIcxAmount),
               new BigNumber(this.feeAmount),
-          ));
+            ),
+          );
         }
 
         this.resetInputs();
@@ -339,17 +361,17 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     e.stopPropagation();
 
     if (this.userLoggedIn() && this.claimableIcx && this.claimableIcx.gt(0)) {
-      this.stateChangeService.modalUpdate(ModalType.CLAIM_ICX, new ClaimIcxPayload(
-          new BigNumber(this.claimableIcx),
-          new BigNumber(this.userIcxBalance)
-      ));
+      this.stateChangeService.modalUpdate(
+        ModalType.CLAIM_ICX,
+        new ClaimIcxPayload(new BigNumber(this.claimableIcx), new BigNumber(this.userIcxBalance)),
+      );
     }
   }
 
   onUnstakeInputKeyUp(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
     this.delay(() => {
       this.processUnstakeInput(e);
-    }, 800 );
+    }, 800);
   }
 
   processUnstakeInput(e: KeyboardEvent | ClipboardEvent | FocusEvent) {
@@ -358,8 +380,8 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
     if (!unstakeInputAmount || unstakeInputAmount <= 0) {
       this.unstakeInputAmount = new BigNumber(0);
       this.receivedIcxAmount = new BigNumber(0);
-      this.instantReceivedIcxAmount= new BigNumber(0);
-      this.feeAmount= new BigNumber(0);
+      this.instantReceivedIcxAmount = new BigNumber(0);
+      this.feeAmount = new BigNumber(0);
     } else {
       this.unstakeInputAmount = new BigNumber(unstakeInputAmount);
       const receivedIcxBigNumAmount = convertSICXToICX(this.unstakeInputAmount, this.todaySicxRate);
@@ -458,7 +480,7 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
         const unstakeInfos = Array.from(this.unstakeInfoMap.values()).flat();
 
         if (unstakeInfos.length > 0) {
-          const equalUnstakeInfo = unstakeInfos.find(value => {
+          const equalUnstakeInfo = unstakeInfos.find((value) => {
             return value.blockHeight.eq(userUnstakeInfo.blockHeight) && value.amount.eq(userUnstakeInfo.amount);
           });
 
@@ -470,18 +492,20 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
               } else {
                 return prev;
               }
-            }, new BigNumber(0))
+            }, new BigNumber(0));
 
-            userUnstakeInfo.setSicxBefore(sIcxBefore)
+            userUnstakeInfo.setSicxBefore(sIcxBefore);
           }
         }
-      })
+      });
     }
   }
 
   unstakingTimesAreEqual(): boolean {
-    return convertSecondsToDays(+this.avgUnstakingTimeInSeconds, true)
-        == convertSecondsToDays(+this.maxUnstakingTimeInSeconds, true);
+    return (
+      convertSecondsToDays(+this.avgUnstakingTimeInSeconds, true) ==
+      convertSecondsToDays(+this.maxUnstakingTimeInSeconds, true)
+    );
   }
 
   unstakeWaitIsActive(): boolean {
@@ -497,10 +521,11 @@ export class UnstakePanelComponent extends BaseClass implements OnInit, OnDestro
   }
 
   shouldShowUnstakeInfo(): boolean {
-    return this.userUnstakeInfo?.data != undefined
-        && this.userUnstakeInfo.data.length > 0
-        && this.userUnstakeInfo.totalUnstakeAmount.gt(0)
-        && this.currentBlockHeight != undefined
+    return (
+      this.userUnstakeInfo?.data != undefined &&
+      this.userUnstakeInfo.data.length > 0 &&
+      this.userUnstakeInfo.totalUnstakeAmount.gt(0) &&
+      this.currentBlockHeight != undefined
+    );
   }
-
 }

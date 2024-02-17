@@ -1,14 +1,9 @@
 import BigNumber from "bignumber.js";
-import {IActionPayload} from "../interfaces/IActionPayload";
-import {
-  FAILURE_CAST_VOTE,
-  PRE_CAST_VOTE,
-  SUCCESS_CAST_VOTE,
-} from "../../common/messages";
-import {ModalType} from "../enums/ModalType";
+import { IActionPayload } from "../interfaces/IActionPayload";
+import { FAILURE_CAST_VOTE, PRE_CAST_VOTE, SUCCESS_CAST_VOTE } from "../../common/messages";
+import { ModalType } from "../enums/ModalType";
 
 export class GovernanceVotePayload implements IActionPayload {
-
   modalType = ModalType.CAST_VOTE;
 
   proposalId: string;
@@ -33,5 +28,3 @@ export class GovernanceVotePayload implements IActionPayload {
     return FAILURE_CAST_VOTE;
   }
 }
-
-

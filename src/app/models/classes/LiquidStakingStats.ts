@@ -1,4 +1,4 @@
-import {LiquidStakingStatsData} from "./LiquidStakingStatsData";
+import { LiquidStakingStatsData } from "./LiquidStakingStatsData";
 
 export class LiquidStakingStats {
   date: Date;
