@@ -10,7 +10,7 @@ import { ClaimRewardsPayload } from "../../models/classes/ClaimRewardsPayload";
 import { ICX, SICX } from "../../common/constants";
 import { Calculations } from "../../common/calculations";
 import { Address, PrepAddress, TokenSymbol } from "../../models/Types/ModalTypes";
-import { convertICXTosICX } from "../../common/utils";
+import { convertICXTosICX, convertICXToSICXPrice } from "../../common/utils";
 import { Wallet } from "../../models/classes/Wallet";
 import { Irc2Token } from "../../models/classes/Irc2Token";
 import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
@@ -292,7 +292,7 @@ export class ValidatorRewardsOverviewComponent implements OnInit, OnDestroy {
 
   sicxUsdPrice(): BigNumber {
     return (
-      convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
+      convertICXToSICXPrice(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
     );
   }
 

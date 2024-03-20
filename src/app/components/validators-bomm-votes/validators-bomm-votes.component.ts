@@ -27,7 +27,7 @@ import { Wallet } from "../../models/classes/Wallet";
 import { IntersectionObserverDirective } from "../../directives/observe-visibility.directive";
 import { IntersectionStatus } from "../../directives/from-intersection-observer";
 import { RndDwnPipePipe } from "../../pipes/round-down.pipe";
-import { convertICXTosICX, toNDecimalRoundedDownPercentString } from "../../common/utils";
+import { convertICXToSICXPrice, toNDecimalRoundedDownPercentString } from "../../common/utils";
 import { DefaultValuePercent } from "../../models/enums/DefaultValuePercent";
 
 @Component({
@@ -439,7 +439,7 @@ export class ValidatorsBommVotesComponent extends BaseClass implements OnInit, O
 
   sicxUsdPrice(): BigNumber {
     return (
-      convertICXTosICX(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
+      convertICXToSICXPrice(this.tokenPrices.get(ICX.symbol) ?? new BigNumber(0), this.todaySicxRate) ?? new BigNumber(0)
     );
   }
 
